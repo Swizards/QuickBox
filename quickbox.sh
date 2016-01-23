@@ -913,7 +913,7 @@ function _adduser() {
   fi
   if [[ $sudoers == "yes" ]]; then
   awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-  echo "${username}" > /root/master.txt
+  echo -n "${username}" > /root/master.txt
   fi
 }
 
