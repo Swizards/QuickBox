@@ -9,7 +9,7 @@
 
 function _installplugin-show_peers_like_wtorrent() {
   rutorrent="/srv/rutorrent/";
-  PLUGINVAULT="/etc/quickbox/plugins/"; cd "${rutorrent}plugins"
+  PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"; cd "${rutorrent}plugins"
   PLUGIN="show_peers_like_wtorrent"
     for i in $PLUGIN; do
       cp -R "${PLUGINVAULT}$i" .

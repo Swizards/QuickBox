@@ -9,9 +9,11 @@
 # find server hostname and repo location for quick-box configuration
 #################################################################################
 HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/QuickBox-2.0.1"
+REPOURL="/root/tmp/QuickBox-2.0.2"
+PLUGINURL="/root/tmp/QuickBox-2.0.2/commands/rutorrent/plugins/"
+PACKAGEURL="/root/tmp/QuickBox-2.0.2/commands/system/packages/"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="2.0.1"
+QBVERSION="2.0.2"
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
@@ -661,7 +663,7 @@ fi
 
 # ban public trackers (7)
 function _denyhosts() {
-echo -ne "Block Public Trackers?: (Default: \033[1mY\033[0m)"; read responce
+echo -ne "Block Public Trackers?: (Default: ${green}Y${normal})"; read responce
 case $responce in
   [yY] | [yY][Ee][Ss] | "")
 echo -n "Blocking public trackers ... "
@@ -724,8 +726,8 @@ fi
   (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA >>"${OUTTO}" 2>&1
   sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
   mount -o remount / || mount -o remount /home >>"${OUTTO}" 2>&1
-  quotacheck -auMF vfsv1
-  quotaon -uv /
+  quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+  quotaon -uv / >>"${OUTTO}" 2>&1
   service quota start>>"${OUTTO}" 2>&1
 cat >/etc/lshell.conf<<'LS'
 [global]
@@ -875,7 +877,6 @@ EOF
 
 # ask for bash or lshell function (14)
 function _askshell() {
-  theshell="/bin/bash";
   #echo -ne "${yellow}Set user shell to lshell?${normal} (Default: ${red}N${normal}): "; read responce
   #case $responce in
   #  [yY] | [yY][Ee][Ss] ) theshell="/usr/bin/lshell" ;;
@@ -892,9 +893,10 @@ function _askshell() {
 
 # adduser function (15)
 function _adduser() {
+  theshell="/bin/bash";
   echo -n "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
-  useradd "${username}" -m -G www-data -s ${theshell}
+  useradd "${username}" -m -G www-data -s "${theshell}"
   echo -n "Password: (hit enter to generate a password) "; read password
   if [[ ! -z "${password}" ]]; then
     echo "setting password to ${password}"
@@ -1091,7 +1093,7 @@ EOF
   chown -R www-data.www-data "${rutorrent}"
   cd /srv/rutorrent/plugins/theme/themes/
   
-  cp $REPOURL/plugins/rutorrent-quickbox-dark.zip .
+  cp /etc/quickbox/rutorrent/plugins/rutorrent-quickbox-dark.zip .
   unzip rutorrent-quickbox-dark.zip >>"${OUTTO}" 2>&1
   rm -rf rutorrent-quickbox-dark.zip
   cd /srv/rutorrent/plugins
@@ -1141,16 +1143,16 @@ ADC
 }
 
 function _plugincommands() {
-  mkdir -p /etc/quickbox/rutorrent/plugins/commands
-  mv "${REPOURL}/commands/rutorrent/plugins/" /etc/quickbox/rutorrent/plugins/
-  PLUGINCOMMANDS="/etc/quickbox/rutorrent/plugins/commands/"; cd "/usr/bin"
+  mkdir -p /etc/quickbox/commands/rutorrent/plugins
+  mv "${PLUGINURL}" /etc/quickbox/commands/rutorrent/
+  PLUGINCOMMANDS="/etc/quickbox/commands/rutorrent/plugins/"; cd "/usr/bin"
   LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspace removeplugin-diskspace installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PLUGINCOMMANDS}$i" .
-  dos2unix installplugin* >>"${OUTTO}" 2>&1; dos2unix removeplugin* >>"${OUTTO}" 2>&1
-  chmod +x installplugin*; chmod +x removeplugin*
-  echo "${OK}"
+  dos2unix installplugin* >>"${OUTTO}" 2>&1; dos2unix removeplugin* >>"${OUTTO}" 2>&1;
+  chmod +x installplugin* >>"${OUTTO}" 2>&1; chmod +x removeplugin* >>"${OUTTO}" 2>&1;
+  #echo "${OK}"
   done
 }
 
@@ -1169,10 +1171,10 @@ function _cronfile() {
 cat >"/home/${username}/.startup"<<'EOF'
 #!/bin/bash
 export USER=`id -un`
-IRSSI_CLIENT= 
+IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-BTSYNC= 
+BTSYNC=
 ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -1190,10 +1192,7 @@ if [ "$BTSYNC" == "yes" ]; then
 fi
 EOF
 if [[ $btsync == "yes" ]]; then
-  sed -is 's/BTSYNC=/BTSYNC=yes/g' /home/${username}/.startup
-fi
-if [[ $irssi == "yes" ]]; then
-  sed -is 's/IRSSI_CLIENT=/IRSSI_CLIENT=yes/g' /home/${username}/.startup
+  sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${username}/.startup
 fi
 echo "${OK}"
 }
@@ -1384,16 +1383,16 @@ function _askbtsync() {
 }
 
 function _packagecommands() {
-  mkdir -p /etc/quickbox/system/packages/commands
-  mv "${REPOURL}/commands/system/packages/" /etc/quickbox/system/packages/
-  PACKAGECOMMANDS="/etc/quickbox/system/packages/commands/"; cd "/usr/bin"
+  mkdir -p /etc/quickbox/commands/system/packages
+  mv "${PACKAGEURL}" /etc/quickbox/commands/system/
+  PACKAGECOMMANDS="/etc/quickbox/commands/system/packages/"; cd "/usr/bin"
   LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync"
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PACKAGECOMMANDS}$i" .
-  dos2unix installpackage* >>"${OUTTO}" 2>&1; dos2unix removepackage* >>"${OUTTO}" 2>&1
-  chmod +x installpackage*; chmod +x removepackage*
-  echo "${OK}"
+  dos2unix installpackage* >>"${OUTTO}" 2>&1; dos2unix removepackage* >>"${OUTTO}" 2>&1;
+  chmod +x installpackage* >>"${OUTTO}" 2>&1; chmod +x removepackage* >>"${OUTTO}" 2>&1;
+  #echo "${OK}"
   done
 }
 
@@ -1419,6 +1418,11 @@ function _quickstats() {
   echo "    date_default_timezone_set('$(cat tz.txt)');" >> /srv/rutorrent/home/req/config.php
   echo "" >> /srv/rutorrent/home/req/config.php
   echo "?>" >> /srv/rutorrent/home/req/config.php
+}
+
+function _quickconsole() {
+  sed -i 's/console-username/"${username}"/g' /home/${username}/.console/index.php
+  sed -i 's/console-password/"${password}"/g' /home/${username}/.console/index.php
 }
 
 # function to show finished data (32)
@@ -1505,7 +1509,7 @@ echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;
 echo -n "Writing seedbox reload script ... ";_reloadscript
 echo -n "Installing VSFTPd ... ";_installpureftpd
 echo -n "Setting up VSFTPd ... ";_pureftpdconfig
-_askplex;_askbtsync;_packagecommands;_quickstats
+_askplex;_askbtsync;_packagecommands;_quickstats;_quickconsole
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot
 echo -n "Setting permissions on ${username} ... ";_perms
 

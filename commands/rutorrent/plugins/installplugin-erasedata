@@ -9,7 +9,7 @@
 
 function _installplugin-erasedata() {
   rutorrent="/srv/rutorrent/";
-  PLUGINVAULT="/etc/quickbox/plugins/"; cd "${rutorrent}plugins"
+  PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"; cd "${rutorrent}plugins"
   PLUGIN="erasedata"
     for i in $PLUGIN; do
       cp -R "${PLUGINVAULT}$i" .

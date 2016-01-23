@@ -337,14 +337,6 @@ break;
   }
   diskstats();
 
-  //function plugindata() {
-  //  $.ajax({url: "req/plugin_data.php", cache:false, success: function (result) {
-  //    $('#plugin_data').html(result);
-  //    setTimeout(function(){plugindata()}, 1000);
-  //  }});
-  //}
-  //plugindata();
-
   }); 
   //success: function (result)
 </script> 
@@ -391,7 +383,7 @@ break;
       <ul class="nav nav-tabs nav-justified nav-sidebar">
         <li class="tooltips active" data-toggle="tooltip" title="Main Menu" data-placement="bottom"><a data-toggle="tab" data-target="#mainmenu"><i class="tooltips fa fa-ellipsis-h"></i></a></li>
         <?php 
-        if ($username == "$master"){
+        if ($master){
           echo "<li class=\"tooltips\" data-toggle=\"tooltip\" title=\"ruTorrent Plugins Menu\" data-placement=\"bottom\"><a data-toggle=\"tab\" data-target=\"#plugins\"><i class=\"tooltips fa fa-puzzle-piece\"></i></a></li>";
         }
         ?>
@@ -415,7 +407,7 @@ break;
             <li><a href="?reload=true"><i class="fa fa-refresh"></i> <span>Reload Services</span></a></li>
             <li><a href="/<?php echo "$username"; ?>.console"><i class="fa fa-keyboard-o"></i> <span>Web Console</span></a></li>
             <?php
-            if ($username == "$master"){
+            if ($master){
             echo "<li class=\"nav-parent\"> <a href=\"\"><i class=\"fa fa-cubes\"></i> <span>Packages</span></a>";
               echo "<ul class=\"children\">";
                 echo "<li class=\"info-quote\"><p class=\"info-quote\">Easily install and uninstall any software package simply by clicking on the software package name</p></li>";
@@ -444,7 +436,7 @@ break;
         <div class="tab-pane" id="help">
           <h5 class="sidebar-title">Quick System Tips</h5>
           <?php
-          if ($username == "$master"){
+          if ($master){
           echo "<ul class=\"nav nav-pills nav-stacked nav-quirk nav-mail\">";
             echo "<li style=\"padding: 7px\"><span style=\"font-size: 12px; color:#eee\">disktest</span><br/>";
             echo "<small>Type this command to perform a quick r/w test of your disk.</small></li>";
@@ -914,7 +906,7 @@ break;
                     <?php echo "$ival"; ?>
                   </li>
                   <?php
-                  if ($username == "$master"){
+                  if ($master){
                   echo "<li>";
                     echo "$bval";
                   echo "</li>";
@@ -941,7 +933,7 @@ break;
                     <?php echo "$cbodyi"; ?>
                   </li>
                   <?php
-                  if ($username == "$master"){
+                  if ($master){
                   echo "<li>";
                     echo "$cbodyb";
                   echo "</li>";
@@ -1022,7 +1014,7 @@ break;
                 </div><!-- panel -->
               </div><!-- col-sm-6 -->
               <?php
-              if ($username == "$master"){
+              if ($master){
                 echo "<div id=\"bw_tables\" style=\"padding:0;margin:0;\"></div>";
               } ?>
             </div>

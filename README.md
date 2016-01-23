@@ -152,7 +152,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 **Run the following command to grab our latest release and install the goodies ...**
 ```
 apt-get -yqq update; apt-get -yqq install curl; \
-wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.1.tar.gz; \
+wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.2.tar.gz; \
 mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 

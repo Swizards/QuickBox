@@ -9,7 +9,7 @@
 
 function _installplugin-filemanager() {
   rutorrent="/srv/rutorrent/";
-  PLUGINVAULT="/etc/quickbox/plugins/"; cd "${rutorrent}plugins"
+  PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"; cd "${rutorrent}plugins"
   PLUGIN="filemanager"
     for i in $PLUGIN; do
       cp -R "${PLUGINVAULT}$i" .
