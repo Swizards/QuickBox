@@ -9,11 +9,11 @@
 # find server hostname and repo location for quick-box configuration
 #################################################################################
 HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/QuickBox-2.0.3"
-PLUGINURL="/root/tmp/QuickBox-2.0.3/commands/rutorrent/plugins/"
-PACKAGEURL="/root/tmp/QuickBox-2.0.3/commands/system/packages/"
+REPOURL="/root/tmp/QuickBox-2.0.4"
+PLUGINURL="/root/tmp/QuickBox-2.0.4/commands/rutorrent/plugins/"
+PACKAGEURL="/root/tmp/QuickBox-2.0.4/commands/system/packages/"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="2.0.3"
+QBVERSION="2.0.4"
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
