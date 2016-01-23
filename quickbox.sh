@@ -233,6 +233,7 @@ PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$(($PORT + 1500))
 #RPORT=$(($PORT + 1500))
 RPORT=$(shuf -i 2000-61000 -n 1)
+ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 # --END HERE --
 echo -n "Username: "; read username
   if grep -Fxq "$username" /etc/passwd; then
@@ -421,8 +422,9 @@ cat >>/etc/apache2/sites-enabled/scgimount.conf<<SC
 SCGIMount /${username} 127.0.0.1:$RPORT
 SC
 
-sed -i 's/console-username/${username}/g' /home/${username}/.console/index.php
-sed -i 's/console-password/${password}/g' /home/${username}/.console/index.php
+sed -i -e "s/console-username/${username}/g" \
+       -e "s/console-password/${password}/g" \
+       -e "s/ipaccess/${ip}/g" /home/${username}/.console/index.php
 
 }
 function deleteSeedboxUser() {
@@ -1061,7 +1063,7 @@ EOF
 function _plugins() {
   mkdir -p /etc/quickbox/rutorrent/plugins/
   mv "${REPOURL}/plugins/" /etc/quickbox/rutorrent/
-  PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"; cd "${rutorrent}plugins"
+  PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"
   mkdir -p "${rutorrent}plugins"; cd "${rutorrent}plugins"
   LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
   for i in $LIST; do
@@ -1421,8 +1423,9 @@ function _quickstats() {
 }
 
 function _quickconsole() {
-  sed -i 's/console-username/"${username}"/g' /home/${username}/.console/index.php
-  sed -i 's/console-password/"${password}"/g' /home/${username}/.console/index.php
+  sed -i -e "s/console-username/${username}/g" \
+         -e "s/console-password/${password}/g" \
+         -e "s/ipaccess/${ip}/g" /home/${username}/.console/index.php
 }
 
 # function to show finished data (32)
