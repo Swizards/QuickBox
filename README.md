@@ -153,7 +153,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 ```
 apt-get -yqq update; apt-get -yqq install curl; \
 wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.0.tar.gz; \
-mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/quick-box*; \
+mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
 ```
