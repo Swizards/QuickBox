@@ -262,7 +262,7 @@ break;
   <script type="text/javascript" src="lib/flot/jquery.flot.canvas.js"></script>
   <script src="https://rawgit.com/hippich/bower-semver/master/semver.min.js"></script>
   <script>
-  var gitHubPath = 'JMSDOnline/quick-box';  // quick-box repo
+  var gitHubPath = 'JMSDOnline/QuickBox';  // quick-box repo
   var url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
 
   $.get(url).done(function (data) {
