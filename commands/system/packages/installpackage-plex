@@ -39,8 +39,9 @@ ProxyPassReverse / http://"${PUBLICIP}":32400/
 <IfModule mod_proxy.c>
         Listen 31400
 </IfModule>
+PMI
 
 }
-PMI
+
 
 _installPlex
