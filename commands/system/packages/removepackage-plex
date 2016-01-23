@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# [Quick Box :: Remove plexmediaserver package]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+
+function _removePlex() {
+  apt-get purge -y --force-yes plexmediaserver
+  rm -rf /var/lib/plexmediaserver
+  userdel plex
+  rm /etc/init/plexmediaserver.conf
+  rm /etc/default/plexmediaserver
+  rm /etc/apache2/conf-available/fqdn.conf
+  rm /etc/apache2/conf-enabled/fqdn.conf
+  rm /etc/apache2/sites-enabled/plex.conf
+  rm /srv/rutorrent/home/.plex
+}
+
+_removePlex

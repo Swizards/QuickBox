@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# [Quick Box :: Install BTSync package]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+REPOURL="https://github.com/JMSDOnline/quick-box/raw/master/sources/"
+MASTER=$(cat /root/master.txt)
+BTSYNCIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+OUTTO="/root/quick-box.log"
+
+function _installBTSync() {
+  wget -qq "${REPOURL}"btsync.latest.tar.gz .
+  tar xf btsync.latest.tar.gz -C /home/${MASTER}/
+  sudo -u ${MASTER} /home/${MASTER}/btsync --webui.listen ${BTSYNCIP}:8888 >>"${OUTTO}" 2>&1
+  rm -rf btsync.latest.tar.gz
+  sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${MASTER}/.startup
+}
+
+_installBTSync

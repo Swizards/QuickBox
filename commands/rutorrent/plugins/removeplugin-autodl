@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# [Quick Box :: Remove autodl plugin]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+
+function _removeplugin-autodl() {
+  username=$(whoami);
+  rutorrent="/srv/rutorrent/";
+  PLUGIN="autodl-irssi"
+    for i in $PLUGIN; do
+      rm -rf "${rutorrent}plugins/$i"
+    done
+}
+
+_removeplugin-autodl

@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# [Quick Box :: Remove screenshots plugin]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+
+function _removeplugin-screenshots() {
+  rutorrent="/srv/rutorrent/";
+  PLUGIN="screenshots"
+    for i in $PLUGIN; do
+      rm -rf "${rutorrent}plugins/$i"
+    done
+}
+
+_removeplugin-screenshots

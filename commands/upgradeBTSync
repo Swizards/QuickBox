@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# [Quick Box BTSync Update Script]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+#################################################################################
+#Script Console Colors
+black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
+blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7); 
+on_red=$(tput setab 1); on_green=$(tput setab 2); on_yellow=$(tput setab 3); on_blue=$(tput setab 4); 
+on_magenta=$(tput setab 5); on_cyan=$(tput setab 6); on_white=$(tput setab 7); bold=$(tput bold); 
+dim=$(tput dim); underline=$(tput smul); reset_underline=$(tput rmul); standout=$(tput smso); 
+reset_standout=$(tput rmso); normal=$(tput sgr0); alert=${white}${on_red}; title=${standout}; 
+sub_title=${bold}${yellow}; repo_title=${black}${on_green};
+#################################################################################
+
+
+PROGNAME=$(basename $0)
+HTPASSWD="/etc/htpasswd"
+OUTTO="/root/upgrade.log"
+ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+
+
+function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
+
+# adduser function (1)
+function _whosudo() {
+  echo -n "${yellow}Please enter the username of your master account below${normal}"
+  echo
+  echo "(This is the username you created on install)"
+  echo
+  read -p "${bold}Master Account Username ${normal} : " username
+  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then 
+    echo "Username ${username} wasnt found ... please check your username and try again"
+    exit 1
+  fi
+}
+
+# function to ask for btsync (2)
+function _askbtsync() {
+  echo -ne "${yellow}Would you like to upgrade BTSync?${normal} (Y/n): (Default: ${green}Y${normal}) "; read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] | "")
+    echo -n "Installing and Upgrading BTSync ... "
+      killall btsync
+      wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
+      tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
+      sudo -u "${username}" /home/"${username}"/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
+      rm -rf btsync_x64-2.2.7.tar.gz >>"${OUTTO}" 2>&1
+    echo "${OK}"
+    ;;
+    [nN] | [nN][Oo] ) echo "Skipping ... " ;;
+    *) echo "${cyan}Skipping BTSync install${normal} ... " ;;
+  esac
+  echo
+}
+
+function _complete() {
+  echo "${green}Congrats! Upgrade is complete - Enjoy${normal}"
+  echo
+  echo
+}
+
+#  error_exit "$LINENO: An error has occurred."
+
+_whosudo
+_askbtsync
+_complete

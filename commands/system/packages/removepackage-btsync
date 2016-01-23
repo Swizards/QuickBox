@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# [Quick Box :: Remove BTSync package]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+MASTER=$(cat /root/master.txt)
+
+function _removeBTSync() {
+  killall btsync
+  find / -name ".sync" -type d -exec rm -rf {} \;
+  find / -name "btsync" -type f -exec rm -rf {} \;
+  rm /home/${MASTER}/LICENSE.TXT
+  rm /home/${MASTER}/README
+  apt-get -y remove --purge btsync btsync-common
+  sed -i 's/BTSYNC=yes/BTSYNC=$/g' /home/${MASTER}/.startup
+  service apache2 reload
+}
+
+_removeBTSync

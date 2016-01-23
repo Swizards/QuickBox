@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "rutorrent"
+AuthUserFile  "/var/www/ruTorrent/.htpasswd"
+require valid-user

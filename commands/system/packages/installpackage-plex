@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# [Quick Box :: Install plexmediaserver package]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+OUTTO="/root/quick-box.log"
+HOSTNAME1=$(hostname -s)
+PUBLICIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+
+function _installPlex() {
+    echo -n "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
+    sudo a2enconf fqdn >>"${OUTTO}" 2>&1
+    touch /srv/rutorrent/home/.plex
+    chown www-data: /srv/rutorrent/home/.plex
+    touch /etc/apache2/sites-enabled/plex.conf
+    chown www-data: /etc/apache2/sites-enabled/plex.conf
+    echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
+    curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
+    apt-get -qq -y --force-yes update >>"${OUTTO}" 2>&1
+    apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
+
+cat >/etc/apache2/sites-enabled<<PMI 
+LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so 
+LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so
+<VirtualHost *:31400>
+ProxyRequests Off
+ProxyPreserveHost On
+<Proxy *>
+ AddDefaultCharset Off
+ Order deny,allow
+ Allow from all
+</Proxy>
+ProxyPass / http://"${PUBLICIP}":32400/
+ProxyPassReverse / http://"${PUBLICIP}":32400/
+</VirtualHost>
+<IfModule mod_proxy.c>
+        Listen 31400
+</IfModule>
+
+}
+PMI
+
+_installPlex
