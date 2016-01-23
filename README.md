@@ -6,7 +6,7 @@ For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 
 ## Script status
 
-[![Version 2.0.4-production](https://img.shields.io/badge/version-2.0.4-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 2.0.5-production](https://img.shields.io/badge/version-2.0.5-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 
 #### Ubuntu Builds
@@ -152,7 +152,7 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 **Run the following command to grab our latest release and install the goodies ...**
 ```
 apt-get -yqq update; apt-get -yqq install curl; \
-wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.4.tar.gz; \
+wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.5.tar.gz; \
 mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
