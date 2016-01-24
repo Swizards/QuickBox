@@ -9,11 +9,11 @@
 # find server hostname and repo location for quick-box configuration
 #################################################################################
 HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/QuickBox-2.0.6"
-PLUGINURL="/root/tmp/QuickBox-2.0.6/commands/rutorrent/plugins/"
-PACKAGEURL="/root/tmp/QuickBox-2.0.6/commands/system/packages/"
+REPOURL="/root/tmp/QuickBox-2.0.9"
+PLUGINURL="/root/tmp/QuickBox-2.0.9/commands/rutorrent/plugins/"
+PACKAGEURL="/root/tmp/QuickBox-2.0.9/commands/system/packages/"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="2.0.6"
+QBVERSION="2.0.9"
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
@@ -333,10 +333,10 @@ SU
   chmod +x /home/${username}/.startup >/dev/null 2>&1
 echo $OK
 echo -n "enabling $username cron script ... "
-  mkdir "/srv/rutorrent/conf/users/${username}" >>"${OUTTO}" 2>&1
-  mkdir -p /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/
+  mkdir "/srv/rutorrent/conf/users/${username}" >/dev/null 2>&1
+  mkdir -p /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/ >/dev/null 2>&1
   cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/conf.php
-  chown -R www-data: /srv/rutorrent/conf/users/"${username}"
+  chown -R www-data: /srv/rutorrent/conf/users/"${username}" >/dev/null 2>&1
   chown $username.$username /home/$username/.startup >/dev/null 2>&1
   sudo -u $username chmod +x /home/$username/.startup  >/dev/null 2>&1
   sudo -u $username chmod 750 /home/$username/ >/dev/null 2>&1
@@ -378,8 +378,8 @@ echo $OK
 
 fi
 echo -n "Setting up autodl-irssi for $username ... "
-mkdir -p /home/$username/.autodl >>"${OUTTO}" 2>&1
-touch /home/$username/.autodl/autodl.cfg
+mkdir -p /home/$username/.autodl >/dev/null 2>&1
+touch /home/$username/.autodl/autodl.cfg >/dev/null 2>&1
 cat >/home/$username/.autodl/autodl.cfg<<ADC
 [options]
 gui-server-port = $IRSSI_PORT
@@ -426,6 +426,8 @@ sed -i -e "s/console-username/${username}/g" \
        -e "s/console-password/${password}/g" \
        -e "s/ipaccess/${ip}/g" /home/${username}/.console/index.php
 
+service apache2 reload >/dev/null 2>&1
+
 }
 function deleteSeedboxUser() {
 
@@ -449,6 +451,7 @@ rm -rf /var/spool/cron/crontabs/${username} >/dev/null 2>&1
 rm -rf /home/${username} >/dev/null 2>&1
 rm -rf /var/run/screens/S-${username} >/dev/null 2>&1
 rm -rf /etc/openvpn/server-${username}.conf >/dev/null 2>&1
+service apache2 reload
 echo ${OK}
 }
 
