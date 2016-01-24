@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# [Quick Box Installation Script]
+#
+# GitHub:   https://github.com/JMSDOnline/quick-box
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+#
+
+function _setdisk() {
+echo -n "Username: "
+read username
+echo "Quota size for user: (EX: 500GB): "
+read SIZE
+case $SIZE in
+  *TB)
+    QUOTASIZE=$(echo $SIZE|cut -d'T' -f1)
+    DISKSIZE=$(($QUOTASIZE * 1024 * 1024 * 1024))
+    setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
+  ;;
+  *GB)
+    QUOTASIZE=$(echo $SIZE|cut -d'G' -f1)
+    DISKSIZE=$(($QUOTASIZE * 1024 * 1024))
+    setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
+  ;;
+  *MB)
+    QUOTASIZE=$(echo $SIZE|cut -d'M' -f1)
+                DISKSIZE=$(($QUOTASIZE * 1024))
+                setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
+  ;;
+  *)
+    echo "Disk Space MUST be in GB/TB, Example: 711GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
+  ;;
+esac
+}
+
+_setdisk

@@ -262,7 +262,7 @@ break;
   <script type="text/javascript" src="lib/flot/jquery.flot.canvas.js"></script>
   <script src="https://rawgit.com/hippich/bower-semver/master/semver.min.js"></script>
   <script>
-  var gitHubPath = 'JMSDOnline/QuickBox';  // quick-box repo
+  var gitHubPath = 'JMSDOnline/quick-box-update';  // quick-box repo
   var url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
 
   $.get(url).done(function (data) {
@@ -367,7 +367,7 @@ break;
               <ul class="dropdown-menu pull-right">
                 <li><a href="https://github.com/JMSDOnline/quick-box/issues"><i class="fa fa-warning text-warning"></i> Report an issue</a></li>
                 <div class="usermenu-div"></div>
-                <li><span style="font-size:10px;">You are running Quick Box <b>v<?php echo "$version"; ?></b></span></li>
+                <li><span style="font-size:10px;">You are running Quick Box <b><?php echo "$version"; ?></b></span></li>
                 <li><span style="font-size:10px;">Latest Quick Box Release: <b><a href="https://github.com/JMSDOnline/quick-box/releases/latest" target="_blank" rel="noindex,nofollow"><span style="color:#87D37C" id="version-result"></span></a></b></li>
               </ul>
             </div>
@@ -445,6 +445,8 @@ break;
           echo "</ul>";
           echo "<h5 class=\"sidebar-title\">Admin Commands</h5>";
           echo "<ul class=\"nav nav-pills nav-stacked nav-quirk nav-mail\">";
+            echo "<li style=\"padding: 7px\"><span style=\"font-size: 12px; color:#eee\">setdisk</span><br/>";
+            echo "<small>Type this command in ssh to allocate the amount of disk space you would like to give to a user.</small></li>";
             echo "<li style=\"padding: 7px\"><span style=\"font-size: 12px; color:#eee\">createSeedboxUser</span><br/>";
             echo "<small>Type this command in ssh to create a new seedbox user on your server.</small></li>";
             echo "<li style=\"padding: 7px\"><span style=\"font-size: 12px; color:#eee\">deleteSeedboxUser</span><br/>";

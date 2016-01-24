@@ -9,11 +9,11 @@
 # find server hostname and repo location for quick-box configuration
 #################################################################################
 HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/QuickBox-2.0.5"
-PLUGINURL="/root/tmp/QuickBox-2.0.5/commands/rutorrent/plugins/"
-PACKAGEURL="/root/tmp/QuickBox-2.0.5/commands/system/packages/"
+REPOURL="/root/tmp/QuickBox-2.0.6"
+PLUGINURL="/root/tmp/QuickBox-2.0.6/commands/rutorrent/plugins/"
+PACKAGEURL="/root/tmp/QuickBox-2.0.6/commands/system/packages/"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="2.0.5"
+QBVERSION="2.0.6"
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
@@ -36,7 +36,7 @@ fi
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
 function _quickboxv() {
-  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/v1-6/5/quickbox
+  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/quickbox
   chmod +x /usr/bin/quickbox
 }
 
