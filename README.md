@@ -4,7 +4,7 @@ For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 ## Script status
 
 [![Version 2.0.9-production](https://img.shields.io/badge/version-2.0.9-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![GNU v3.0 License](https://img.shields.io/badge/license-GNU%20v3.0%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE.md)
+[![GNU v3.0 License](https://img.shields.io/badge/license-GNU%20v3.0%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/QuickBox/blob/master/LICENSE.md)
 
 #### Ubuntu Builds
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
