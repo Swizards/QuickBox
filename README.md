@@ -17,8 +17,6 @@ For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 
 ---
 
-### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues as well as Tips and Tricks __before__ you install... make sure it's the right fit for you. If you have an error of your own and need help, please open an issue.
-
 ####Status Update - Wiki will be integrated (potentially) into the Swizards KB. Additionally, we can create an assets/wiki public repo here on GitHub in regards to the script/UI and it's use.
 
 
@@ -60,7 +58,7 @@ autotools, cpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop,
 * Autodl-IRSSI (with an updated list of trackers)
 * A modified version of Diskpace to support quota (by Notos)
 * Filemanager (modified to handle rar, zip, unzip, tar and bzip)
-* Fileshare Plugin (http://forums.rutorrent.org/index.php?topic=705.0)
+* Fileshare Plugin (http://forums.rutorrent.org/index.php?topic=705.0) _this is bugged - help anyone?_
 * Logoff 
 * Theme: QuickBox ``Dark rutorrent skin``
 * Colorful Ratios: Customized to match QuickBox Theme
@@ -127,18 +125,6 @@ autotools, cpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop,
 You need to have a Fresh "blank" server installation.
 After that access your box using a SSH client, like PuTTY.
 
-## Warnings
-
-#### If you don't know Linux ENOUGH:
-
-DO NOT attempt to install NGINX as a frontend proxy if you plan to use Transdroid (http://www.transdroid.org/). Doing so will cause the app to either not connect or crash repeatedly
-
-DO NOT use capital letters, all the usernames should be written in lowercase.
-
-DO NOT upgrade anything in the box, feel free to open an issue and ask before attempting this on a current (in production) server.
-
-DO NOT try to reconfigure packages using other tutorials - this script (AS IS) is designed to work with what's included.
-
 ---
 
 ## How to install
@@ -178,20 +164,6 @@ After installing you will have access to the following commands to be used direc
 ### INFO:
 ---
 
-
-#### Files List:
-  * jquery.browser.js - update JS file
-  * jquery.browser.min.js - Updated JS file
-  * plugins [directory] - rutorrent plugins
-  * quick-box.sh - quick-box seedbox prep installer script
-  * quickbox-ubuntu.sh - quick-box seedbox master installer script for Ubuntu 14.04, 15.04, and 15.10
-  * rutorrent - rutorrent web folder
-  * rutorrent-quickbox-dark.zip - Custom quick-box ruTorrent skin
-  * skel.tar - Default skel directory for the 'adduser' command
-  * sources [directory] - Folder containing rtorrent/libtorrent
-  * commands [directory] - Folder containing various functions for user creation etc. _if you desire them_
-  * xmlrpc-c - xmlrpc-c source
-
 #### Known Bugs/Fixes
   1. Fix the private flag when new torrent is made
    ``` 
@@ -199,6 +171,4 @@ After installing you will have access to the following commands to be used direc
    ```
   2. Currently CuteFTP can only connect to your ${username} seedbox home directory via FTP on port 5757. I am going to be looking further into allowing CuteFTP a connection on SFTP for added security. That is, if I am not completley limited by GlobalScapes software practices.
 
-#### BUILDING ERRORS
-  * If ffmpeg/rtorrent/libtorrent/xmlrpc-c fails to build.. check /etc/fstab for 'noexec' flag (_but this should be fixed_)
 
