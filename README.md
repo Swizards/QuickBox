@@ -1,12 +1,9 @@
-| ![Quick Box - A Friendly, Fresh and Modernized Seedbox Script](https://github.com/JMSDOnline/quick-box/blob/master/img/quick-box.png "Quick Box") |
-|---|
-| **Quick Box - A Friendly, Fresh and Modernized Seedbox Script** |
 
 For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 
 ## Script status
 
-[![Version 2.0.5-production](https://img.shields.io/badge/version-2.0.5-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 2.0.9-production](https://img.shields.io/badge/version-2.0.9-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
 [![MIT License](https://img.shields.io/badge/license-MIT%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/quick-box/blob/master/LICENSE)
 
 #### Ubuntu Builds
@@ -21,6 +18,8 @@ For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 ---
 
 ### Check out the [Quick Box Wiki](https://github.com/JMSDOnline/quick-box/wiki) for some reference material to common issues as well as Tips and Tricks __before__ you install... make sure it's the right fit for you. If you have an error of your own and need help, please open an issue.
+
+####Status Update - Wiki will be integrated (potentially) into the Swizards KB. Additionally, we can create an assets/wiki public repo here on GitHub in regards to the script/UI and it's use.
 
 
 ---
@@ -151,57 +150,12 @@ DO NOT try to reconfigure packages using other tutorials - this script (AS IS) i
 
 **Run the following command to grab our latest release and install the goodies ...**
 ```
-apt-get -yqq update; apt-get -yqq install curl; \
-wget -qO quickbox.tar.gz https://github.com/JMSDOnline/QuickBox/archive/v2.0.5.tar.gz; \
-mkdir -p /root/tmp; tar -xf quickbox.tar.gz -C /root/tmp; rm quickbox*; cd /root/tmp/QuickBox*; \
+apt-get -yqq update; apt-get -yqq install git; \
+git clone https://JMSDOnline:0036da90c7afd9ef8183019e7880324c7166682f@github.com/JMSDOnline/QuickBox.git /root/tmp/quick-box/; \
+cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
 ```
-
----
-
-## Update to Quick Box version 1.3
-> This script is valid for current Quick Box installs only. You may review the changelog at any time via a __changelog.md__ file in your root directory.
-
----
-
-### Update for version 1.3 on Ubuntu 14.04, 15.04, and 15.10
-
-**Run the following command to grab our prep script and setup for updating ...**
-```
-curl -LO https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/update-1-3.sh
-
-```
-**... Finally, make the script executable and run to produce the updates ...**
-```
-chmod +x update-1-3.sh
-./update-1-3.sh
-
-```
-
----
-
-## Update Inlcuded Media Packages (BTSync)
-> This script is valid for current Quick Box installs only. Running this update for BTSync on a non-Quick Box script may result in borking your current seedboxes BTSync. __Also, please be advised:__ Users on current Quick Box version 1.6 will have no need to use this script as the command '__upgradeBTSync__' is included.
-
----
-
-### Update for BTSync - grabs latest addition
-
-**Run the following command to grab our command for updating ...**
-```
-curl -LO https://raw.githubusercontent.com/JMSDOnline/quick-box/master/qb-pck-upgrades.sh
-
-```
-**... Finally, make the script executable and run to produce the updates ...**
-```
-chmod +x qb-pck-upgrades.sh
-./qb-pck-upgrades.sh
-
-```
-
-##### In the future, after downloading this script, you can simply type '__upgradeBTSync__' to upgrade.
-
 
 ---
 
