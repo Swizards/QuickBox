@@ -136,8 +136,8 @@ After that access your box using a SSH client, like PuTTY.
 
 **Run the following command to grab our latest release and install the goodies ...**
 ```
-apt-get -yqq update; apt-get -yqq install git; \
-git clone https://JMSDOnline:0036da90c7afd9ef8183019e7880324c7166682f@github.com/JMSDOnline/QuickBox.git /root/tmp/quick-box/; \
+apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
+git clone https://JMSDOnline:0036da90c7afd9ef8183019e7880324c7166682f@github.com/JMSDOnline/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
