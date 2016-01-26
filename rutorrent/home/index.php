@@ -287,7 +287,7 @@ break;
                 <li><a href="https://github.com/JMSDOnline/quick-box/issues"><i class="fa fa-warning text-warning"></i> Report an issue</a></li>
                 <div class="usermenu-div"></div>
                 <li><span style="font-size:10px;">You are running Quick Box <b><?php echo "$version"; ?></b></span></li>
-                <li><span style="font-size:10px;">courtesy of <b><a href="https://github.com/JMSDOnline/quick-box/releases/latest" target="_blank" rel="noindex,nofollow">swizards.net</a></b></li>
+                <li><span style="font-size:10px;">courtesy of <b><a href="https://swizards.net" target="_blank" rel="noindex,nofollow">swizards.net</a></b></li>
               </ul>
             </div>
           </li>
