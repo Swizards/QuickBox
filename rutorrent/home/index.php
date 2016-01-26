@@ -72,62 +72,7 @@ function readMsg() {
   }
 }
 
-function writePlex($ip) {
-  $username = getUser();
-  if (file_exists('.plex')) {
-    $myFile = "/etc/apache2/sites-enabled/plex.conf";
-    $fh = fopen($myFile, 'w') or die("can't open file");
-    $stringData = "";
-    fwrite($fh, $stringData);
-    fclose($fh);
-    unlink('.plex');
-    writeMsg("Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ipaccess:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>");
-    $message = "Hello <b>$username</b>: Im going to disable public access for <b>Plex Media Server</b>. You may still access Plex privately on port <a href=\"http://ipaccess:32400/web/index.html\" target=\"_blank\">32400</a>. Note however, you will need to open an SSH Tunnel to use your servers Plex Media Server.<br><br>If you do not know how, read about setting up an SSH Tunnel <a href=\"https://github.com/JMSDOnline/quick-box/wiki/F.A.Q#how-do-i-create-an-ssh-tunnel-and-connect-to-plex\" rel=\"noindex, nofollow\" target=\"_blank\">HERE</a> ... <br>";
-    shell_exec('sudo service apache2 reload &');
-    return 'Disabling inital setup connection for plex ... ';
-  } else {
-    $myFile = "/etc/apache2/sites-enabled/plex.conf";
-    $fh = fopen($myFile, 'w') or die("can't open file");
-    $stringData = "";
-    $stringData .= "LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so\n";
-    $stringData .= "LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so\n";
-    $stringData .= "<VirtualHost *:31400>\n";
-    $stringData .= "ProxyRequests Off\n";
-    $stringData .= "ProxyPreserveHost On\n";
-    $stringData .= "<Proxy *>\n";
-    $stringData .= " AddDefaultCharset Off\n";
-    $stringData .= " Order deny,allow\n";
-    $stringData .= " Allow from all\n";
-    $stringData .= "</Proxy>\n";
-    $stringData .= "ProxyPass / http://ipaccess:32400/\n";
-    $stringData .= "ProxyPassReverse / http://ipaccess:32400/\n";
-    $stringData .= "</VirtualHost>\n";
-    $stringData .= "<IfModule mod_proxy.c>\n";
-    $stringData .= "        Listen 31400\n";
-    $stringData .= "</IfModule>\n";
-    fwrite($fh, $stringData);
-    fclose($fh);
-    $myFile = ".plex";
-    $fh = fopen($myFile, 'w') or die("can't open file");
-    $stringData = "";
-    fwrite($fh, $stringData);
-    fclose($fh);
-    writeMsg("Hello <b>$username</b>: Im going to enable public access for your <b>Plex Media Server</b> ... </a><br>");
-    $message = "Hello <b>$username</b>: Im going to enable public access for your <b>Plex Media Server</b> ... </a><br>";
-    shell_exec('sudo service apache2 reload & ');
-    return 'Enabling inital setup connection for plex ... ';
-  }
-}
-
-function chkPlex() {
-  if (file_exists('.plex')) {
-    return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-en toggle-light primary\" onclick=\"location.href='?id=88'\"></div></div>";
-  } else {
-    return " <div class=\"toggle-wrapper pull-right\"><div class=\"toggle-dis toggle-light primary\" onclick=\"location.href='?id=88'\"></div></div>";
-  }
-}
-
-$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":31400/web/";
+$plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":32400/web/";
 $btsyncURL = "http://" . $_SERVER['HTTP_HOST'] . ":8888/gui/";
 
 $reload='';
@@ -142,10 +87,6 @@ if ($irssi == "1") { $ival = "iRSSi-Autodl <span class=\"label label-success pul
 
 if ($btsync == "1") { $bval = "BTSync <span class=\"label label-success pull-right\">Enabled</span>"; 
 } else { $bval = "BTSync <span class=\"label label-danger pull-right\">Disabled</span>";
-}
-
-if (file_exists('.plex')) { $pval = "Plex Public Access <span class=\"label label-success pull-right\">Enabled</span>"; 
-} else { $pval = "Plex Public Access <span class=\"label label-danger pull-right\">Disabled</span>";
 }
 
 if ($_GET['serviceend']) {
@@ -179,8 +120,6 @@ if (file_exists('/home/'.$username.'/.startup')) {
     $cbodyi .= "iRSSi-AutoDL ". $irssi;
   $btsync = isEnabled("BTSYNC=yes", $username);
     $cbodyb .= "BTSync ". $btsync;
-  $plexcheck = chkPlex();
-    $cbodyp .= "Plex Public Access " .$plexcheck;
   } else {
     $cbodyerr .= "error locating start up script .. feel free to open a issue at the quick box repo"; 
 }
@@ -223,14 +162,6 @@ $message = "error locating .startup .. feel free to open an issue at the quick b
   header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
 break;
 
-/* enable plex */
-case 88:
-//  $myip = getHostByName(getHostName());
-  $myip = $_SERVER['HTTP_HOST'];
-  $pbody .= writePlex($myip);
-  header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
-break;
-
 }
 
 ?>
@@ -260,18 +191,6 @@ break;
   <script type="text/javascript" src="lib/flot/jquery.flot.time.js"></script>
   <script type="text/javascript" src="lib/flot/jquery.flot.resize.js"></script>
   <script type="text/javascript" src="lib/flot/jquery.flot.canvas.js"></script>
-  <script src="https://rawgit.com/hippich/bower-semver/master/semver.min.js"></script>
-  <script>
-  var gitHubPath = 'JMSDOnline/quick-box-update';  // quick-box repo
-  var url = 'https://api.github.com/repos/' + gitHubPath + '/tags';
-
-  $.get(url).done(function (data) {
-    var versions = data.sort(function (v1, v2) {
-      return semver.compare(v2.name, v1.name)
-    });
-    $('#version-result').html(versions[0].name);
-  });
-  </script>
   <script id="source" language="javascript" type="text/javascript"> 
   $(document).ready(function() { 
       var options = { 
@@ -368,7 +287,7 @@ break;
                 <li><a href="https://github.com/JMSDOnline/quick-box/issues"><i class="fa fa-warning text-warning"></i> Report an issue</a></li>
                 <div class="usermenu-div"></div>
                 <li><span style="font-size:10px;">You are running Quick Box <b><?php echo "$version"; ?></b></span></li>
-                <li><span style="font-size:10px;">Latest Quick Box Release: <b><a href="https://github.com/JMSDOnline/quick-box/releases/latest" target="_blank" rel="noindex,nofollow"><span style="color:#87D37C" id="version-result"></span></a></b></li>
+                <li><span style="font-size:10px;">courtesy of <b><a href="https://github.com/JMSDOnline/quick-box/releases/latest" target="_blank" rel="noindex,nofollow">swizards.net</a></b></li>
               </ul>
             </div>
           </li>
@@ -413,7 +332,7 @@ break;
                 echo "<li class=\"info-quote\"><p class=\"info-quote\">Easily install and uninstall any software package simply by clicking on the software package name</p></li>";
                 echo "<li class=\"warning-quote\"><p class=\"warning-quote\">Please be advised that these options are not the same as enabling and disabling a software package. These options are designed to either install or uninstall.</p></li>";
                 echo "<li>";
-                if (file_exists('/etc/apache2/sites-enabled/plex.conf')) {
+                if (file_exists('/srv/rutorrent/home/.plex')) {
                   echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#plexRemovalConfirm\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-plex=true\" id=\"plexInstall\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
@@ -912,9 +831,6 @@ break;
                   echo "<li>";
                     echo "$bval";
                   echo "</li>";
-                  echo "<li>";
-                    echo "$pval";
-                  echo "</li>";
                   } ?>
                 </ul>
               </div>
@@ -938,9 +854,6 @@ break;
                   if ($username == "$master"){
                   echo "<li>";
                     echo "$cbodyb";
-                  echo "</li>";
-                  echo "<li>";
-                    echo "$cbodyp";
                   echo "</li>";
                   } ?>
                 </ul>
