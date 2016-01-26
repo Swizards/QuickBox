@@ -70,10 +70,19 @@ After that access your box using a SSH client, like PuTTY.
 
 ### Ubuntu 14.04, 15.04, and 15.10 || Debian 7 & 8
 
-**Run the following command to grab our latest release and install the goodies ...**
+**Run the following command to grab our latest stable release ...**
 ```
 apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
 git clone https://JMSDOnline:0036da90c7afd9ef8183019e7880324c7166682f@github.com/JMSDOnline/QuickBox.git /root/tmp/QuickBox/; \
+cd /root/tmp/QuickBox*; \
+bash quickbox.sh
+
+```
+
+**Run the following command to grab our development release _TESTING BRANCH_ ...**
+```
+apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
+git clone https://JMSDOnline:0036da90c7afd9ef8183019e7880324c7166682f@github.com/JMSDOnline/QuickBox/tree/development/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
