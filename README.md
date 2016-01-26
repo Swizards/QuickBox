@@ -63,6 +63,8 @@ After that access your box using a SSH client, like PuTTY.
 
 ---
 
+
+
 ## How to install
 > This script is valid for both VPS & Dedicated Environments.
 
