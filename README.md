@@ -104,17 +104,18 @@ After installing you will have access to the following commands to be used direc
 * reload - restarts your seedbox services, i.e; rtorrent & irssi
 * upgradeBTSync -- upgrades btsync when new version is available
 
-
+---
 ###Licensed under GNU General Public License version 3 (__GPL-3__)
 ---
- GitHub:   https://github.com/JMSDOnline/QuickBox
- Author:   Swizards.net
- URL:      https://swizards.net
 
- QuickBox Copyright (C) 2016 Swizards.net
- Licensed under GNU General Public License v3.0 GPL-3 (in short)
+GitHub:   https://github.com/JMSDOnline/QuickBox
+Author:   Swizards.net
+URL:      https://swizards.net
+
+QuickBox Copyright (C) 2016 Swizards.net
+Licensed under GNU General Public License v3.0 GPL-3 (in short)
  
-   You may copy, distribute and modify the software as long as you track
-   changes/dates in source files. Any modifications to our software 
-   including (via compiler) GPL-licensed code must also be made available 
-   under the GPL along with build & install instructions.
+You may copy, distribute and modify the software as long as you track
+changes/dates in source files. Any modifications to our software 
+including (via compiler) GPL-licensed code must also be made available 
+under the GPL along with build & install instructions.
