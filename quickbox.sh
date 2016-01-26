@@ -3,15 +3,23 @@
 # [Quick Box Installation Script]
 #
 # GitHub:   https://github.com/JMSDOnline/QuickBox
-# Author:   Jason Matthews
-# URL:      https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer
+# Author:   Swizards.net
+# URL:      https://swizards.net
+#
+# QuickBox Copyright (C) 2016 Swizards.net
+# Licensed under GNU General Public License v3.0 GPL-3 (in short)
+# 
+#   You may copy, distribute and modify the software as long as you track
+#   changes/dates in source files. Any modifications to our software 
+#   including (via compiler) GPL-licensed code must also be made available 
+#   under the GPL along with build & install instructions.
 #
 # find server hostname and repo location for quick-box configuration
 #################################################################################
 HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/QuickBox-2.0.9"
-PLUGINURL="/root/tmp/QuickBox-2.0.9/commands/rutorrent/plugins/"
-PACKAGEURL="/root/tmp/QuickBox-2.0.9/commands/system/packages/"
+REPOURL="/root/tmp/QuickBox"
+PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
+PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
 QBVERSION="2.0.9"
 #################################################################################
