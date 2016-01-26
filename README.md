@@ -108,9 +108,9 @@ After installing you will have access to the following commands to be used direc
 ###Licensed under GNU General Public License version 3 (__GPL-3__)
 ---
 
-GitHub:   https://github.com/JMSDOnline/QuickBox
-Author:   Swizards.net
-URL:      https://swizards.net
+GitHub: https://github.com/JMSDOnline/QuickBox
+Author: Swizards.net
+URL: https://swizards.net
 
 QuickBox Copyright (C) 2016 Swizards.net
 Licensed under GNU General Public License v3.0 GPL-3 (in short)
