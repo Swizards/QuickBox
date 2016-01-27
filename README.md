@@ -24,6 +24,9 @@
 > This is being released as a public sandbox... meaning that it is user-contribution driven. Swizards take a great deal of pride in providing quality UI. Enhancement requests and more for the QuickBox Project will not be included in the future unless users feel kind enough to contribute to the repo by pushing requests for their included modifications... basically... it's community driven... simple
 
 
+### A Preview of Quick Box
+[![Quick Box v2.0.5 Dashboard](https://raw.githubusercontent.com/JMSDOnline/quick-box-assets/master/assets/quickbox-dasboard-youtube-preview.png)](http://www.youtube.com/watch?v=F1344A6YPks)
+
 ---
 
 This script has the following features
