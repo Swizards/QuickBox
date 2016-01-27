@@ -1,5 +1,4 @@
 
-For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 
 ## Script status
 
@@ -17,8 +16,20 @@ For Ubuntu == 14.04, 15.04 & 15.10 || Debian == 7 & 8 installs.
 
 ---
 
-####Status Update - Wiki will be integrated (potentially) into the Swizards KB. Additionally, we can create an assets/wiki public repo here on GitHub in regards to the script/UI and it's use.
+###Quick Advisory Notice on QuickBox
+---
+> Please understand that we [(Swizards)](https://swizards.net) do not want to push this project as a means to supply a commercially used product, ie; seedbox provider - so keep this in mind - only if you wish to sale slots on your server. Though it is very multi-user friendly... it is also not free of it's faults due to it's high amount of capabilities and being publicly available. This is a community based project that is a measure of goodwill to be given to such an outspoken and freethinking community. If you are a provider and are in need of a high-quality, white-labled solution - please feel free to get in touch with our team and we will certainly negotiate a solution that best fits your needs and is free of any possible bugs.
 
+####Again, Please note:
+> This is being released as a public sandbox... meaning that it is user-contribution driven. Swizards take a great deal of pride in providing quality UI. Enhancement requests and more for the QuickBox Project will not be included in the future unless users feel kind enough to contribute to the repo by pushing requests for their included modifications... basically... it's community driven... simple
+
+
+###Using a _/home_ primary partition setup? Please read this first:
+It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process. Again, this will be resolved in the next couple of days (notice revised: January 27, 2016 at 4:23PM (CST))
+
+
+### A Preview of Quick Box
+[![Quick Box v2.0.5 Dashboard](https://raw.githubusercontent.com/JMSDOnline/quick-box-assets/master/assets/quickbox-dasboard-youtube-preview.png)](http://www.youtube.com/watch?v=F1344A6YPks)
 
 ---
 
@@ -63,6 +74,8 @@ After that access your box using a SSH client, like PuTTY.
 
 ---
 
+
+
 ## How to install
 > This script is valid for both VPS & Dedicated Environments.
 
@@ -73,7 +86,7 @@ After that access your box using a SSH client, like PuTTY.
 **Run the following command to grab our latest stable release ...**
 ```
 apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
-git clone https://JMSDOnline:0036da90c7afd9ef8183019e7880324c7166682f@github.com/JMSDOnline/QuickBox.git /root/tmp/QuickBox/; \
+git clone https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
@@ -82,7 +95,7 @@ bash quickbox.sh
 **Run the following command to grab our development release _TESTING BRANCH_ ...**
 ```
 apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
-git clone -b development https://JMSDOnline:0036da90c7afd9ef8183019e7880324c7166682f@github.com/JMSDOnline/QuickBox.git /root/tmp/QuickBox/; \
+git clone https://github.com/Swizards/QuickBox/tree/development/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
@@ -103,25 +116,3 @@ After installing you will have access to the following commands to be used direc
 * setdisk - set your user disk quota
 * reload - restarts your seedbox services, i.e; rtorrent & irssi
 * upgradeBTSync -- upgrades btsync when new version is available
-
-
-
-
----
-
-###Licensed under GNU General Public License version 3 (__GPL-3__)
-
-
-GitHub: https://github.com/JMSDOnline/QuickBox
-Author: Swizards.net
-URL: https://swizards.net
-
-
-QuickBox Copyright (C) 2016 Swizards.net
-Licensed under GNU General Public License v3.0 GPL-3 (in short)
-
-
-You may copy, distribute and modify the software as long as you track
-changes/dates in source files. Any modifications to our software 
-including (via compiler) GPL-licensed code must also be made available 
-under the GPL along with build & install instructions.
