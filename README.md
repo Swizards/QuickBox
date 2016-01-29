@@ -95,7 +95,7 @@ bash quickbox.sh
 **Run the following command to grab our development release _TESTING BRANCH_ ...**
 ```
 apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
-git clone https://github.com/Swizards/QuickBox/tree/development/QuickBox.git /root/tmp/QuickBox/; \
+git clone -b development https://github.com/Swizards/QuickBox/tree/development/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
