@@ -694,7 +694,7 @@ for fn in $L; do
 done
 EOF
 chmod +x /etc/cron.daily/denypublic
-curl -s -LO https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/hostsTrackers
+curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
 cat hostsTrackers >> /etc/hosts
   echo "${OK}"
   ;;
