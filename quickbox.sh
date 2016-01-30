@@ -479,7 +479,7 @@ function upgradeBTSync() {
     [yY] | [yY][Ee][Ss] | "")
     echo -n "Installing and Upgrading BTSync ... "
       killall btsync
-      wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
+      wget -qq https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
       tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
       sudo -u "${username}" /home/"${username}"/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
       rm -rf btsync.latest.tar.gz >>"${OUTTO}" 2>&1
@@ -680,7 +680,7 @@ echo -ne "Block Public Trackers?: (Default: ${green}Y${normal})"; read responce
 case $responce in
   [yY] | [yY][Ee][Ss] | "")
 echo -n "Blocking public trackers ... "
-wget -q -O/etc/trackers https://raw.githubusercontent.com/JMSDOnline/quick-box/master/commands/trackers
+wget -q -O/etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
 cat >/etc/cron.daily/denypublic<<'EOF'
 IFS=$'\n'
 L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
@@ -1384,7 +1384,7 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.latest.tar.gz .
+    wget -qq https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/btsync.latest.tar.gz .
     tar xf btsync.latest.tar.gz -C /home/${username}/
     sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
     rm -rf btsync.latest.tar.gz
