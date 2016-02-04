@@ -8,10 +8,10 @@
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-# 
+#
 #   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software 
-#   including (via compiler) GPL-licensed code must also be made available 
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
 # find server hostname and repo location for quick-box configuration
@@ -24,12 +24,12 @@ INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk 
 QBVERSION="2.0.9"
 #################################################################################
 #Script Console Colors
-black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
-blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7); 
-on_red=$(tput setab 1); on_green=$(tput setab 2); on_yellow=$(tput setab 3); on_blue=$(tput setab 4); 
-on_magenta=$(tput setab 5); on_cyan=$(tput setab 6); on_white=$(tput setab 7); bold=$(tput bold); 
-dim=$(tput dim); underline=$(tput smul); reset_underline=$(tput rmul); standout=$(tput smso); 
-reset_standout=$(tput rmso); normal=$(tput sgr0); alert=${white}${on_red}; title=${standout}; 
+black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
+blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7);
+on_red=$(tput setab 1); on_green=$(tput setab 2); on_yellow=$(tput setab 3); on_blue=$(tput setab 4);
+on_magenta=$(tput setab 5); on_cyan=$(tput setab 6); on_white=$(tput setab 7); bold=$(tput bold);
+dim=$(tput dim); underline=$(tput smul); reset_underline=$(tput rmul); standout=$(tput smso);
+reset_standout=$(tput rmso); normal=$(tput sgr0); alert=${white}${on_red}; title=${standout};
 sub_title=${bold}${yellow}; repo_title=${black}${on_green};
 #################################################################################
 if [[ -f /usr/bin/lsb_release ]]; then
@@ -43,10 +43,10 @@ fi
 
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
-function _quickboxv() {
-  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/JMSDOnline/quick-box-update/master/quickbox
-  chmod +x /usr/bin/quickbox
-}
+#function _quickboxv() {
+#  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/quickbox
+#  chmod +x /usr/bin/quickbox
+#}
 
 function _bashrc() {
 cat >/root/.bashrc<<'EOF'
@@ -83,10 +83,10 @@ if [ ${SYSLOAD} -gt ${XLOAD} ]; then echo -en ${ALERT}
 elif [ ${SYSLOAD} -gt ${MLOAD} ]; then echo -en ${RED}
 elif [ ${SYSLOAD} -gt ${SLOAD} ]; then echo -en ${YELLOW}
 else echo -en ${GREEN} ;fi
-let TotalBytes=0 
-for Bytes in $(ls -l | grep "^-" | awk '{ print $5 }') 
-do 
-   let TotalBytes=$TotalBytes+$Bytes 
+let TotalBytes=0
+for Bytes in $(ls -l | grep "^-" | awk '{ print $5 }')
+do
+   let TotalBytes=$TotalBytes+$Bytes
 done
 if [ $TotalBytes -lt 1024 ]; then
      TotalSize=$(echo -e "scale=1 \n$TotalBytes \nquit" | bc)
@@ -118,7 +118,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-function normal { 
+function normal {
 if [ `id -u` == 0 ] ; then
   DG="$(tput bold ; tput setaf 7)";LG="$(tput bold;tput setaf 7)";NC="$(tput sgr0)"
   export PS1='[\[$LG\]\u\[$NC\]@\[$LG\]\h\[$NC\]]:(\[$LG\]\[$BN\]$($DFSCRIPT)\[$NC\])\w\$ '
@@ -148,23 +148,23 @@ function disktest() { dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync;rm
 function newpass() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 function fixhome() { chmod -R u=rwX,g=rX,o= "$HOME" ;}
 
-transfer() { 
-  if [ $# -eq 0 ]; then 
+transfer() {
+  if [ $# -eq 0 ]; then
     echo "No arguments specified. Usage: transfer /tmp/test.md OR: cat /tmp/test.md | transfer test.md"
     return 1
-  fi 
+  fi
 tmpfile=$(mktemp -t transferXXX )
 if tty -s
-  then 
+  then
     basefile=$(basename "$1" | sed -e 's/[^a-zA-Z0-9._-]/-/g'); curl --progress-bar --upload-file "$1" "https://transfer.sh/$basefile" >> $tmpfile
-  else 
-    curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile 
+  else
+    curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile
 fi
 cat $tmpfile
 rm -f $tmpfile
 }
 
-function swap() { 
+function swap() {
 local TMPFILE=tmp.$$
     [ $# -ne 2 ] && echo "swap: 2 arguments needed" && return 1
     [ ! -e $1 ] && echo "swap: $1 does not exist" && return 1
@@ -180,7 +180,7 @@ REALM=rutorrent
 HTPASSWD=/etc/htpasswd
 echo -n "Username: "; read user
         username=$(echo "$user"|sed 's/.*/\L&/')
-        if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then 
+        if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then
     echo "Username ${username} wasnt found in ${HTPASSWD} .. please try again"
     exit
   fi
@@ -329,11 +329,11 @@ ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; ech
 # NO NEED TO EDIT PAST HERE!
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
 
-if [ "\$IRSSI_CLIENT" == "yes" ]; then 
+if [ "\$IRSSI_CLIENT" == "yes" ]; then
   (screen -ls|grep irssi > /dev/null || (screen -fa -dmS irssi irssi && false))
 fi
 
-if [ "\$RTORRENT_CLIENT" == "yes" ]; then 
+if [ "\$RTORRENT_CLIENT" == "yes" ]; then
   (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
 fi
 SU
@@ -469,7 +469,7 @@ function upgradeBTSync() {
   echo "(This is the username you created on install)"
   echo
   read -p "${bold}Master Account Username ${normal} : " username
-  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then 
+  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then
     echo "Username ${username} wasnt found ... please check your username and try again"
     exit 1
   fi
@@ -605,16 +605,16 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Ubuntu Main Repos
-deb http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver} main restricted universe multiverse
 
 ###### Ubuntu Update Repos
-deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse 
-deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse 
-deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse 
-deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse 
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse
+deb http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-security main restricted universe multiverse
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-updates main restricted universe multiverse
+deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted universe multiverse
 
 ###### Ubuntu Partner Repo
 deb http://archive.canonical.com/ubuntu ${ver} partner
@@ -722,7 +722,7 @@ apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zi
 fi
   cd
   rm -rf /etc/skel
-  if [[ -e skel.tar ]]; then rm -rf skel.tar;fi 
+  if [[ -e skel.tar ]]; then rm -rf skel.tar;fi
   mkdir /etc/skel
   tar xf $REPOURL/sources/skel.tar -C /etc/skel
   tar xzf $REPOURL/sources/rarlinux-x64-5.2.1.tar.gz -C ./
@@ -807,7 +807,7 @@ function _askrtorrent() {
     3) RTVERSION=0.9.3;LTORRENT=0.13.3 ;;
     *) RTVERSION=0.9.6;LTORRENT=0.13.6 ;;
   esac
-  echo "Using rtorrent-$RTVERSION/libtorrent-$LTORRENT" 
+  echo "Using rtorrent-$RTVERSION/libtorrent-$LTORRENT"
 }
 
 # xmlrpc-c function (11)
@@ -821,7 +821,7 @@ function _xmlrpc() {
   ./configure --prefix=/usr --disable-cplusplus >>"${OUTTO}" 2>&1
   make >>"${OUTTO}" 2>&1
   chmod +x install-sh
-  make install >>"${OUTTO}" 2>&1 
+  make install >>"${OUTTO}" 2>&1
   echo "${OK}"
 }
 
@@ -855,9 +855,9 @@ function _rtorrent() {
   ./autogen.sh >>"${OUTTO}" 2>&1
   ./configure --prefix=/usr --with-xmlrpc-c >>"${OUTTO}" 2>&1
   make -j${MAXCPUS} >>"${OUTTO}" 2>&1
-  make install >>"${OUTTO}" 2>&1 
+  make install >>"${OUTTO}" 2>&1
   cd /root/tmp
-  ldconfig >>"${OUTTO}" 2>&1 
+  ldconfig >>"${OUTTO}" 2>&1
   rm -rf /root/tmp/rtorrent-${RTVERSION}* >>"${OUTTO}" 2>&1
   echo "${OK}"
 }
@@ -1105,7 +1105,7 @@ EOF
   sed -i 's/showhidden: true,/showhidden: false,/g' "${rutorrent}plugins/filemanager/init.js"
   chown -R www-data.www-data "${rutorrent}"
   cd /srv/rutorrent/plugins/theme/themes/
-  
+
   cp /etc/quickbox/rutorrent/plugins/rutorrent-quickbox-dark.zip .
   unzip rutorrent-quickbox-dark.zip >>"${OUTTO}" 2>&1
   rm -rf rutorrent-quickbox-dark.zip
@@ -1180,7 +1180,7 @@ function _makedirs() {
 }
 
 # function to make crontab .statup file (22)
-function _cronfile() { 
+function _cronfile() {
 cat >"/home/${username}/.startup"<<'EOF'
 #!/bin/bash
 export USER=`id -un`
@@ -1263,7 +1263,7 @@ EOF
   echo "${OK}"
 }
 
-# create reload script (25) 
+# create reload script (25)
 function _reloadscript() {
 cat >/usr/bin/reload<<'EOF'
 #!/bin/bash
@@ -1414,7 +1414,7 @@ function _pureftpcert() {
   /bin/true
 }
 
-# The following function makes necessary changes to Network and TZ settings needed for 
+# The following function makes necessary changes to Network and TZ settings needed for
 # the proper functionality of the Quick Box Dashboard.
 function _quickstats() {
   # Dynamically adjust to use the servers active network adapter
