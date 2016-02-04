@@ -1499,7 +1499,7 @@ export DEBIAN_FRONTEND=noninteractive
 cd
 
 # QUICK BOX STRUCTURE
-_quickboxv
+#_quickboxv
 _bashrc
 _intro
 _checkroot
