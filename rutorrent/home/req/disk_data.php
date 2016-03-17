@@ -14,7 +14,8 @@ function processExists($processName, $username) {
 $rtorrent = processExists("\"main|rtorrent\"",$username);
 
 $location = "/home";
-$si_prefix = array( 'B', 'KB', 'MB', 'GB', 'TB', 'EB', 'ZB', 'YB' );
+$base = 1024;
+$si_prefix = array( 'b', 'k', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' );
 $torrents = shell_exec("ls /home/".$username."/.sessions/*.torrent|wc -l");
 $php_self = $_SERVER['PHP_SELF'];
 $web_path = substr($php_self, 0, strrpos($php_self, '/')+1);
@@ -30,8 +31,11 @@ if (file_exists('/usr/sbin/repquota')) {
   } else {
 
       $bytesfree = disk_free_space('/home');
-      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytestotal = disk_total_space($location);
-      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytesused = $bytestotal - $bytesfree;
+      $bytestotal = disk_total_space($location);
+      $bytesused = $bytestotal - $bytesfree;
+      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1);
+      $class_used = min((int)log($bytesused,$base),count($si_prefix) - 1);
+      $class_total = min((int)log($bytestotal,$base),count($si_prefix) - 1);
         try {
           $diskStatus = new DiskStatus('/home');
           $freeSpace = $diskStatus->freeSpace();
