@@ -2,29 +2,29 @@
 #
 # [Quick Box :: Remove BTSync package]
 #
-# GitHub:   https://github.com/JMSDOnline/QuickBox
+# GitHub:   https://github.com/Swizards/QuickBox
 # Author:   Swizards.net
 # URL:      https://swizards.net
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-# 
+#
 #   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software 
-#   including (via compiler) GPL-licensed code must also be made available 
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
 MASTER=$(cat /root/master.txt)
 
 function _removeBTSync() {
-  killall btsync
-  find / -name ".sync" -type d -exec rm -rf {} \;
-  find / -name "btsync" -type f -exec rm -rf {} \;
-  rm /home/${MASTER}/LICENSE.TXT
-  rm /home/${MASTER}/README
-  apt-get -y remove --purge btsync btsync-common
-  sed -i 's/BTSYNC=yes/BTSYNC=$/g' /home/${MASTER}/.startup
-  service apache2 reload
+  sudo killall btsync
+  sudo find / -name ".sync" -type d -exec rm -rf {} \;
+  sudo find / -name "btsync" -type f -exec rm -rf {} \;
+  sudo rm /home/${MASTER}/LICENSE.TXT
+  sudo rm /home/${MASTER}/README
+  sudo apt-get -y remove --purge btsync btsync-common
+  sudo sed -i 's/BTSYNC=yes/BTSYNC=/g' /home/${MASTER}/.startup
+  sudo service apache2 reload
 }
 
 _removeBTSync
