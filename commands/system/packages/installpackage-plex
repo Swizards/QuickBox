@@ -2,16 +2,16 @@
 #
 # [Quick Box :: Install plexmediaserver package]
 #
-# GitHub:   https://github.com/JMSDOnline/QuickBox
+# GitHub:   https://github.com/Swizards/QuickBox
 # Author:   Swizards.net
 # URL:      https://swizards.net
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-# 
+#
 #   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software 
-#   including (via compiler) GPL-licensed code must also be made available 
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
 OUTTO="/root/quick-box.log"
@@ -29,26 +29,7 @@ function _installPlex() {
     curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
     apt-get -qq -y --force-yes update >>"${OUTTO}" 2>&1
     apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
-
-cat >/etc/apache2/sites-enabled<<PMI 
-LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so 
-LoadModule proxy_http_module /usr/lib/apache2/modules/mod_proxy_http.so
-<VirtualHost *:31400>
-ProxyRequests Off
-ProxyPreserveHost On
-<Proxy *>
- AddDefaultCharset Off
- Order deny,allow
- Allow from all
-</Proxy>
-ProxyPass / http://"${PUBLICIP}":32400/
-ProxyPassReverse / http://"${PUBLICIP}":32400/
-</VirtualHost>
-<IfModule mod_proxy.c>
-        Listen 31400
-</IfModule>
-PMI
-
+    /etc/init.d/apache2 restart
 }
 
 
