@@ -2,26 +2,26 @@
 #
 # [Quick Box BTSync Update Script]
 #
-# GitHub:   https://github.com/JMSDOnline/QuickBox
+# GitHub:   https://github.com/Swizards/QuickBox
 # Author:   Swizards.net
 # URL:      https://swizards.net
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-# 
+#
 #   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software 
-#   including (via compiler) GPL-licensed code must also be made available 
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
 #################################################################################
 #Script Console Colors
-black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); 
-blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7); 
-on_red=$(tput setab 1); on_green=$(tput setab 2); on_yellow=$(tput setab 3); on_blue=$(tput setab 4); 
-on_magenta=$(tput setab 5); on_cyan=$(tput setab 6); on_white=$(tput setab 7); bold=$(tput bold); 
-dim=$(tput dim); underline=$(tput smul); reset_underline=$(tput rmul); standout=$(tput smso); 
-reset_standout=$(tput rmso); normal=$(tput sgr0); alert=${white}${on_red}; title=${standout}; 
+black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
+blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7);
+on_red=$(tput setab 1); on_green=$(tput setab 2); on_yellow=$(tput setab 3); on_blue=$(tput setab 4);
+on_magenta=$(tput setab 5); on_cyan=$(tput setab 6); on_white=$(tput setab 7); bold=$(tput bold);
+dim=$(tput dim); underline=$(tput smul); reset_underline=$(tput rmul); standout=$(tput smso);
+reset_standout=$(tput rmso); normal=$(tput sgr0); alert=${white}${on_red}; title=${standout};
 sub_title=${bold}${yellow}; repo_title=${black}${on_green};
 #################################################################################
 
@@ -41,7 +41,7 @@ function _whosudo() {
   echo "(This is the username you created on install)"
   echo
   read -p "${bold}Master Account Username ${normal} : " username
-  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then 
+  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then
     echo "Username ${username} wasnt found ... please check your username and try again"
     exit 1
   fi
@@ -54,10 +54,11 @@ function _askbtsync() {
     [yY] | [yY][Ee][Ss] | "")
     echo -n "Installing and Upgrading BTSync ... "
       killall btsync
-      wget -qq https://github.com/JMSDOnline/quick-box/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
+      wget -qq https://github.com/Swizards/QuickBox/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
       tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
+      chmod +x /home/"${username}"/btsync
       sudo -u "${username}" /home/"${username}"/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
-      rm -rf btsync_x64-2.2.7.tar.gz >>"${OUTTO}" 2>&1
+      rm -rf btsync.latest.tar.gz >>"${OUTTO}" 2>&1
     echo "${OK}"
     ;;
     [nN] | [nN][Oo] ) echo "Skipping ... " ;;
