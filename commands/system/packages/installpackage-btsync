@@ -2,29 +2,30 @@
 #
 # [Quick Box :: Install BTSync package]
 #
-# GitHub:   https://github.com/JMSDOnline/QuickBox
+# GitHub:   https://github.com/Swizards/QuickBox
 # Author:   Swizards.net
 # URL:      https://swizards.net
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-# 
+#
 #   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software 
-#   including (via compiler) GPL-licensed code must also be made available 
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
-REPOURL="https://github.com/JMSDOnline/quick-box/raw/master/sources/"
+REPOURL="https://github.com/Swizards/QuickBox/raw/master/sources/"
 MASTER=$(cat /root/master.txt)
 BTSYNCIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 OUTTO="/root/quick-box.log"
 
 function _installBTSync() {
-  wget -qq "${REPOURL}"btsync.latest.tar.gz .
-  tar xf btsync.latest.tar.gz -C /home/${MASTER}/
+  sudo wget -qq "${REPOURL}"btsync.latest.tar.gz .
+  sudo tar xf btsync.latest.tar.gz -C /home/${MASTER}/
+  sudo chmod +x /home/${MASTER}/btsync
   sudo -u ${MASTER} /home/${MASTER}/btsync --webui.listen ${BTSYNCIP}:8888 >>"${OUTTO}" 2>&1
-  rm -rf btsync.latest.tar.gz
-  sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${MASTER}/.startup
+  sudo rm -rf btsync.latest.tar.gz
+  sudo sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${MASTER}/.startup
 }
 
 _installBTSync
