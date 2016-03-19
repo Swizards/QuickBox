@@ -25,7 +25,7 @@
 
 
 ###Using a _/home_ primary partition setup? Please read this first:
-It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process. Again, this will be resolved in the next couple of days (notice revised: January 27, 2016 at 4:23PM (CST))
+It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process. Again, this will be resolved in the next couple of days (notice revised: March 19, 2016 at 5:00PM (CST))
 
 
 ### A Preview of Quick Box
