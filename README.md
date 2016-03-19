@@ -2,8 +2,8 @@
 
 ## Script status
 
-[![Version 2.0.9-production](https://img.shields.io/badge/version-2.0.9-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![GNU v3.0 License](https://img.shields.io/badge/license-GNU%20v3.0%20License-blue.svg?style=flat-square)](https://github.com/JMSDOnline/QuickBox/blob/master/LICENSE.md)
+[![Version 2.1.0-production](https://img.shields.io/badge/version-2.1.0-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![GNU v3.0 License](https://img.shields.io/badge/license-GNU%20v3.0%20License-blue.svg?style=flat-square)](https://github.com/Swizards/QuickBox/blob/master/LICENSE.md)
 
 #### Ubuntu Builds
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
@@ -63,7 +63,7 @@ autotools, cpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop,
 * A modified version of Diskpace to support quota (by Notos)
 * Filemanager (modified to handle rar, zip, unzip, tar and bzip)
 * Fileshare Plugin (http://forums.rutorrent.org/index.php?topic=705.0) _this is bugged - help anyone?_
-* Logoff 
+* Logoff
 * Theme: QuickBox ``Dark rutorrent skin``
 * Colorful Ratios: Customized to match QuickBox Theme
 * __rutorrentMobile__: Mobile version of ruTorrent - seriously - toss TransDroid and the pain that it is... this is a new essential plugin (IMO) _Helps usher in a future version of the Quick Box script per Nginx - **as nginx via fastcgi sockets can break Transdroid funtionality**_
