@@ -282,6 +282,7 @@ if ($_GET['reload']) {
 }
 include 'widgets/plugin_data.php';
 include 'widgets/package_data.php';
+include 'widgets/sys_data.php';
 $base = 1024;
 $location = "/home";
 
