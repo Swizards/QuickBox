@@ -7,7 +7,7 @@
     * ``RAM Widget`` : You can now view how much ram your server is using. Viewing comes in 4 flavors. Physical Memory usage, Cached Memory usage, Real Memory usage, and Swap usage
 
     * ``CPU Widget`` : You can now view your servers CPU Architecture, threads/cores, as well as your current (in live time) CPU status - i.e; idle vs. Used
-    
+
     * ``Mem Cache Cleaner`` : Your systems RAM is displayed in live time, if you see your physical and/or cached memory filling up and over into swap; click a handy button and ... Make it go away! Yay!
 
   * __Improved Load Widget__ - Honestly, there was nothing wrong with the Server Load Widget to begin with; however, we did feel like making the data more thorough, thus, geek level 1,000. Enjoy!
@@ -27,6 +27,10 @@
   * __Blank IP__ - IP after install is now displaying your servers phyical ipaddress, thnka sto those whom pointed this out.
 
   * __Human Readable Disk Data__ - An issue where the disk data was showing non-human readable units has now been fixed. Thanks to @wjbeckett for supplying that fix! ::smile::
+
+
+
+---
 
 
 ###Changelog for version 1.4 of QuickBox
