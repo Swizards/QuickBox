@@ -3,9 +3,12 @@
 ####ENHANCEMENTS
 
   * __Numerous Nifty Widgets Added!__ - With 2.1.0 we've ushered in some exciting new widgets to view your servers stats directly from your QuickBox dashboard
-    ** ``RAM Widget`` : You can now view how much ram your server is using. Viewing comes in 4 flavors. Physical Memory usage, Cached Memory usage, Real Memory usage, and Swap usage
-    ** ``CPU Widget`` : You can now view your servers CPU Architecture, threads/cores, as well as your current (in live time) CPU status - i.e; idle vs. Used
-    ** ``Mem Cache Cleaner`` : Your systems RAM is displayed in live time, if you see your physical and/or cached memory filling up and over into swap; click a handy button and ... Make it go away! Yay!
+
+    * ``RAM Widget`` : You can now view how much ram your server is using. Viewing comes in 4 flavors. Physical Memory usage, Cached Memory usage, Real Memory usage, and Swap usage
+
+    * ``CPU Widget`` : You can now view your servers CPU Architecture, threads/cores, as well as your current (in live time) CPU status - i.e; idle vs. Used
+    
+    * ``Mem Cache Cleaner`` : Your systems RAM is displayed in live time, if you see your physical and/or cached memory filling up and over into swap; click a handy button and ... Make it go away! Yay!
 
   * __Improved Load Widget__ - Honestly, there was nothing wrong with the Server Load Widget to begin with; however, we did feel like making the data more thorough, thus, geek level 1,000. Enjoy!
 
