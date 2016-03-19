@@ -104,18 +104,13 @@ write_data_table_t(T('Top 10 days'), $top);
 }
 
 function write_data_table_s($caption, $tab) {
-  //print "<div class=\"panel panel-inverse\">";
-  //print "<div class=\"panel-heading\">";
-  //print "<h4 class=\"panel-title\">$caption</h4>";
-  //print "</div>";
-  print "<div class=\"panel-body text-center\"  style=\"padding: 0px 0px 2px;\">";
-  print "<table class=\"table table-bordered table-hover table-striped table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
+  print "<table class=\"table table-hover table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
   print "<thead>";
   print "<tr>";
-  print "<th class=\"text-right\" style=\"width:auto;\">$caption</th>";
-  print "<th class=\"text-right\">".T('In')."</th>";
-  print "<th class=\"text-right\">".T('Out')."</th>";
-  print "<th class=\"text-right\">".T('Total')."</th>";
+  print "<th class=\"text-right\" style=\"width:25%;\">$caption</th>";
+  print "<th class=\"text-right\" style=\"width:24.5%;\">".T('In')."</th>";
+  print "<th class=\"text-right\" style=\"width:24.5%;\">".T('Out')."</th>";
+  print "<th class=\"text-right\" style=\"width:24.5%;\">".T('Total')."</th>";
   print "</tr>";
   print "</thead>";
   print "<tbody>\n";
@@ -128,10 +123,10 @@ function write_data_table_s($caption, $tab) {
       $total = kbytes_to_string($tab[$i]['rx']+$tab[$i]['tx']);
       $id = ($i & 1) ? 'odd' : 'even';
       print "<tr>";
-      print "<td class=\"label_$id\" style=\"font-size:12px;\"><b>$t</b></td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$rx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$tx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$total</td>";
+      print "<td class=\"label_$id\" style=\"font-size:12px;;text-align:right\"><b>$t</b></td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;;text-align:right\">$rx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;;text-align:right\">$tx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;;text-align:right\">$total</td>";
       print "</tr>\n";
     }
   }
@@ -139,24 +134,20 @@ function write_data_table_s($caption, $tab) {
   print "</tbody>";
   print "</table>";
   //print "</div>";
-  print "</div>\n";
+  //print "</div>\n";
 }
 
 function write_data_table_t($caption, $tab) {
-  //print "<div class=\"panel panel-inverse\">";
-  //print "<div class=\"panel-heading\">";
-  //print "<h4 class=\"panel-title\">$caption</h4>";
-  //print "</div>";
-  print "<div class=\"panel-body text-center\" style=\"padding: 0px 0px 2px;\">";
-  print "<table class=\"table table-bordered table-inverse table-hover table-striped-col table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
+  print "<table class=\"table table-hover table-default nomargin\" width=\"100%\" cellspacing=\"0\">";
   print "<thead>";
   print "<tr>";
-  print "<th class=\"text-right\" style=\"width:auto;\">$caption</th>";
-  print "<th class=\"text-right\">".T('In')."</th>";
-  print "<th class=\"text-right\">".T('Out')."</th>";
-  print "<th class=\"text-right\">".T('Total')."</th>";
+  print "<th class=\"text-right\" style=\"width:25%;\">$caption</th>";
+  print "<th class=\"text-right\" style=\"width:24.5%;\">".T('In')."</th>";
+  print "<th class=\"text-right\" style=\"width:24.5%;\">".T('Out')."</th>";
+  print "<th class=\"text-right\" style=\"width:24.5%;\">".T('Total')."</th>";
   print "</tr>";
   print "</thead>";
+
   print "<tbody>\n";
 
   for ($i=0; $i<count($tab); $i++) {
@@ -167,18 +158,16 @@ function write_data_table_t($caption, $tab) {
       $total = kbytes_to_string($tab[$i]['rx']+$tab[$i]['tx']);
       $id = ($i & 1) ? 'odd' : 'even';
       print "<tr>";
-      print "<td class=\"label_$id\" style=\"font-size:12px;\"><b>$t</b></td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\" style=\"font-size:12px;\" style=\"font-size:12px;\">$rx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\" style=\"font-size:12px;\">$tx</td>";
-      print "<td class=\"numeric_$id\" style=\"font-size:12px;\">$total</td>";
+      print "<td class=\"label_$id\" style=\"font-size:12px;;text-align:right\"><b>$t</b></td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;text-align:right\">$rx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;;text-align:right\">$tx</td>";
+      print "<td class=\"numeric_$id\" style=\"font-size:12px;;text-align:right\">$total</td>";
       print "</tr>\n";
     }
   }
 
   print "</tbody>";
   print "</table>";
-  //print "</div>";
-  print "</div>\n";
 }
 
 get_vnstat_data();

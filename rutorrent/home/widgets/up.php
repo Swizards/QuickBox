@@ -2,7 +2,7 @@
   header('Refresh: 1');
   header('Content-Type: text/event-stream');
   header('Cache-Control: no-cache');
-  $uptime = shell_exec("sudo cut -d. -f1 /proc/uptime");
+  $uptime = shell_exec("cut -d. -f1 /proc/uptime");
   $days = floor($uptime/60/60/24);
   $hours = $uptime/60/60%24;
   $mins = $uptime/60%60;

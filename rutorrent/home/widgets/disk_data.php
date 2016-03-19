@@ -13,6 +13,25 @@ function processExists($processName, $username) {
 }
 $rtorrent = processExists("\"main|rtorrent\"",$username);
 
+//Unit Conversion
+function formatsize($size) {
+  $danwei=array(' B ',' KB ',' MB ',' GB ',' TB ');
+  $allsize=array();
+  $i=0;
+  for($i = 0; $i <5; $i++) {
+    if(floor($size/pow(1024,$i))==0){break;}
+  }
+  for($l = $i-1; $l >=0; $l--) {
+    $allsize1[$l]=floor($size/pow(1024,$l));
+    $allsize[$l]=$allsize1[$l]-$allsize1[$l+1]*1024;
+  }
+  $len=count($allsize);
+  for($j = $len-1; $j >=0; $j--) {
+    $fsize=$fsize.$allsize[$j].$danwei[$j];
+  }
+  return $fsize;
+}
+
 $location = "/home";
 $base = 1024;
 $si_prefix = array( 'b', 'k', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' );
@@ -31,11 +50,8 @@ if (file_exists('/usr/sbin/repquota')) {
   } else {
 
       $bytesfree = disk_free_space('/home');
-      $bytestotal = disk_total_space($location);
-      $bytesused = $bytestotal - $bytesfree;
-      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1);
-      $class_used = min((int)log($bytesused,$base),count($si_prefix) - 1);
-      $class_total = min((int)log($bytestotal,$base),count($si_prefix) - 1);
+      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytestotal = disk_total_space($location);
+      $class = min((int)log($bytesfree,$base),count($si_prefix) - 1); $bytesused = $bytestotal - $bytesfree;
         try {
           $diskStatus = new DiskStatus('/home');
           $freeSpace = $diskStatus->freeSpace();
@@ -45,13 +61,12 @@ if (file_exists('/usr/sbin/repquota')) {
           $spacebodyerr .= 'Error ('.$e-getMessage().')';
         exit();
           }
-      $dffree .= ''.sprintf('%1.2f',$bytesfree / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Free<br/>'
-      ;
-      $dfused .= ''.sprintf('%1.2f',$bytesused / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Used<br/>'
-      ;
-      $dftotal .= ''.sprintf('%1.2f',$bytestotal / pow($base,$class)) //.'<b>'.$si_prefix[$class].'</b> Total<br/>'
-      ;
-      $perused = sprintf('%1.0f', $bytesused / $bytestotal * 100);
+          //hard disk
+          $dftotal = round(@disk_total_space(".")/(1024*1024*1024),3); //Total
+          $dffree = round(@disk_free_space(".")/(1024*1024*1024),3); //Available
+          $dfused = $dftotal-$dffree; //used
+          $perused = (floatval($dftotal)!=0)?round($dfused/$dftotal*100,2):0;
+          //$perused = sprintf('%1.0f', $bytesused / $bytestotal * 100);
 }
 
 if (file_exists('/home/'.$username.'/.sessions/rtorrent.lock')) {
@@ -60,12 +75,6 @@ if (file_exists('/home/'.$username.'/.sessions/rtorrent.lock')) {
 
 ?>
 
-            <div class="col-sm-12">
-              <div class="panel panel-inverse">
-                <div class="panel-heading">
-                  <h4 class="panel-title">Your Disk Status</h4>
-                </div>
-                <div class="panel-body">
                   <p class="nomargin">Free: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dffree"; ?> <b>GB</b></span></p>
                   <p class="nomargin">Used: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dfused"; ?> <b>GB</b></span></p>
                   <p class="nomargin">Size: <span style="font-weight: 700; position: absolute; left: 70px;"><?php echo "$dftotal"; ?> <b>GB</b></span></p>
@@ -86,20 +95,13 @@ if (file_exists('/home/'.$username.'/.sessions/rtorrent.lock')) {
                       <p style="font-size:10px">You have used <?php echo "$perused"; ?>% of your total disk space</p>
                     </div>
                     <div class="col-sm-4 text-right">
-                      <?php
-                        if ($perused < "70") { $dialcolor="dial-success"; }
-                        if ($perused > "70") { $dialcolor="dial-warning"; }
-                        if ($perused > "90") { $dialcolor="dial-danger"; }
-                      ?>
-                      <input type="text" value="<?php echo "$perused"; ?>%" class="<?php echo $dialcolor ?>">
+                      <i class="fa fa-hdd-o" style="font-size: 90px; color: #e7e9ee"></i>
                     </div>
                   </div>
                   <hr />
                   <h4>Torrents in rtorrent</h4>
                   <p class="nomargin">There are <b><?php echo "$rtorrents"; ?></b> torrents loaded.</p>
-                </div>
-              </div><!-- col-md-4/12 -->
-            </div><!-- row -->
+
 
 <script type="text/javascript">
 $(function() {
