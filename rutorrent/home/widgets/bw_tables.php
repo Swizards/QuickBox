@@ -133,8 +133,6 @@ function write_data_table_s($caption, $tab) {
 
   print "</tbody>";
   print "</table>";
-  //print "</div>";
-  //print "</div>\n";
 }
 
 function write_data_table_t($caption, $tab) {
