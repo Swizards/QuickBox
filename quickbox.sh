@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# [Quick Box Installation Script]
+# [QuickBox Installation Script]
 #
-# GitHub:   https://github.com/JMSDOnline/QuickBox
+# GitHub:   https://github.com/Swizards/QuickBox
 # Author:   Swizards.net
 # URL:      https://swizards.net
 #
@@ -14,14 +14,14 @@
 #   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
-# find server hostname and repo location for quick-box configuration
+# find server hostname and repo location for quickbox configuration
 #################################################################################
 HOSTNAME1=$(hostname -s);
 REPOURL="/root/tmp/QuickBox"
 PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
 PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="2.0.9"
+QBVERSION="2.1.0"
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
@@ -64,7 +64,7 @@ IDUSER=`id -u`
 PROMPT_COMMAND='echo -ne "\033]0;${USER}(${IDUSER})@${HOSTNAME}: ${PWD}\007"'
 export LS_COLORS='rs=0:di=01;33:ln=00;36:mh=00:pi=40;33:so=00;35:do=00;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;05;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.log=02;34:*.torrent=02;37:*.conf=02;34:*.sh=00;32:*.tar=00;31:*.tgz=00;31:*.arj=00;31:*.taz=00;31:*.lzh=00;31:*.lzma=00;31:*.tlz=00;31:*.txz=00;31:*.zip=00;31:*.z=00;31:*.Z=00;31:*.dz=00;31:*.gz=00;31:*.lz=00;31:*.xz=00;31:*.bz2=00;31:*.tbz=00;31:*.tbz2=00;31:*.bz=00;31:*.tz=00;31:*.tcl=00;31:*.deb=00;31:*.rpm=00;31:*.jar=00;31:*.rar=00;31:*.ace=00;31:*.zoo=00;31:*.cpio=00;31:*.7z=00;31:*.rz=00;31:*.jpg=00;35:*.jpeg=00;35:*.gif=00;35:*.bmp=00;35:*.pbm=00;35:*.pgm=00;35:*.ppm=00;35:*.tga=00;35:*.xbm=00;35:*.xpm=00;35:*.tif=00;35:*.tiff=00;35:*.png=00;35:*.svg=00;35:*.svgz=00;35:*.mng=00;35:*.pcx=00;35:*.mov=00;35:*.mpg=00;35:*.mpeg=00;35:*.m2v=00;35:*.mkv=00;35:*.ogm=00;35:*.mp4=00;35:*.m4v=00;35:*.mp4v=00;35:*.vob=00;35:*.qt=00;35:*.nuv=00;35:*.wmv=00;35:*.asf=00;35:*.rm=00;35:*.rmvb=00;35:*.flc=00;35:*.avi=00;35:*.fli=00;35:*.flv=00;35:*.gl=00;35:*.dl=00;35:*.xcf=00;35:*.xwd=00;35:*.yuv=00;35:*.cgm=00;35:*.emf=00;35:*.axv=00;35:*.anx=00;35:*.ogv=00;35:*.ogx=00;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:'
 export TERM=xterm;TERM=xterm
-export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/quick-box/.bin/
+export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/quickbox/.bin/
 TPUT=`which tput`
 BC=`which bc`
 if [ ! -e $TPUT ]; then echo "tput is missing, please install it (yum install tput/apt-get install tput)";fi
@@ -479,9 +479,10 @@ function upgradeBTSync() {
     [yY] | [yY][Ee][Ss] | "")
     echo -n "Installing and Upgrading BTSync ... "
       killall btsync
-      wget -qq https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
+      wget -qq https://github.com/Swizards/QuickBox/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
       tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
-      sudo -u "${username}" /home/"${username}"/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
+      chmod +x /home/"${username}"/btsync
+      sudo -u "${username}" /home/"${username}"/btsync --webui.listen ${ip}:8888 >>"${OUTTO}" 2>&1
       rm -rf btsync.latest.tar.gz >>"${OUTTO}" 2>&1
     echo "${OK}"
     ;;
@@ -506,13 +507,13 @@ EOF
 function _intro() {
   echo
   echo
-  echo "  [${repo_title}quick-box${normal}] ${title} Quick Box Seedbox Installation ${normal}  "
+  echo "  [${repo_title}QuickBox${normal}] ${title} QuickBox Seedbox Installation ${normal}  "
   echo
   echo
 
   echo "${green}Checking distribution ...${normal}"
   if [ ! -x  /usr/bin/lsb_release ]; then
-    echo 'It looks like you are running $DISTRO, which is not supported by Quick Box.'
+    echo 'It looks like you are running $DISTRO, which is not supported by QuickBox.'
     echo 'Exiting...'
     exit 1
   fi
@@ -521,7 +522,7 @@ function _intro() {
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
   if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
-    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by Quick Box ${normal} "
+    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by QuickBox ${normal} "
     echo 'Exiting...'
     exit 1
   elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"7"|"8") ]]; then
@@ -546,9 +547,9 @@ function _checkroot() {
 function _logcheck() {
   echo -ne "${bold}${yellow}Do you wish to write to a log file?${normal} (Default: ${green}${bold}Y${normal}) "; read input
     case $input in
-      [yY] | [yY][Ee][Ss] | "" ) OUTTO="/root/quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
+      [yY] | [yY][Ee][Ss] | "" ) OUTTO="/root/quickbox.log";echo "${bold}Output is being sent to /root/quickbox.log${normal}" ;;
       [nN] | [nN][Oo] ) OUTTO="/dev/null 2>&1";echo "${cyan}NO output will be logged${normal}" ;;
-    *) OUTTO="/root/quick-box.log";echo "${bold}Output is being sent to /root/quick-box.log${normal}" ;;
+    *) OUTTO="/root/quickbox.log";echo "${bold}Output is being sent to /root/quickbox.log${normal}" ;;
     esac
   if [[ ! -d /root/tmp ]]; then
     sed -i 's/noexec,//g' /etc/fstab
@@ -706,14 +707,14 @@ cat hostsTrackers >> /etc/hosts
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
 if [[ $DISTRO == Debian ]]; then
-yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git dos2unix subversion \
+yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
   dstat automake make mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
 elif [[ $DISTRO == Ubuntu ]]; then
-apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop git dos2unix subversion \
+apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
   dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
@@ -752,7 +753,7 @@ allowed         : ['cd','cp','-d','-dmS','git','irssi','ll','ls','-m','mkdir','m
 forbidden       : [';', '&', '|','`','>','<', '$(', '${','sudo','vi','vim','./']
 warning_counter : 2
 aliases         : {'ls':'ls --color=auto','ll':'ls -l'}
-intro           : "== Seedbox Shell ==\nWelcome To Your Quick Box Seedbox Shell\nType '?' to get the list of allowed commands"
+intro           : "== Seedbox Shell ==\nWelcome To Your QuickBox Seedbox Shell\nType '?' to get the list of allowed commands"
 home_path       : '/home/%u'
 env_path        : ':/usr/local/bin:/usr/sbin'
 allowed_cmd_path: ['/home/']
@@ -889,6 +890,8 @@ EOF
 }
 
 # ask for bash or lshell function (14)
+# Heads Up: lshell is disabled for the initial user on install as your first user should not be limited in shell.
+# Additional created users are automagically added to a limited shell environment.
 function _askshell() {
   #echo -ne "${yellow}Set user shell to lshell?${normal} (Default: ${red}N${normal}): "; read responce
   #case $responce in
@@ -924,14 +927,14 @@ function _adduser() {
   fi
   if [[ $sudoers == "yes" ]]; then
   awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-  echo -n "${username}" > /root/master.txt
+  echo -n "${username}" > /etc/apache2/master.txt
   fi
 }
 
 # function to enable sudo for www-data function (16)
 function _apachesudo() {
-awk '/^root/ && !x {print "www-data     ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-awk '/^%sudo/ && !x {print "%www-data     ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/bin/clean_mem, /usr/bin/installpackage-*, /usr/bin/removepackage-*, /usr/bin/installplugin-*, /usr/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/bin/clean_mem, /usr/bin/installpackage-*, /usr/bin/removepackage-*, /usr/bin/installplugin-*, /usr/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 }
 
 # function to configure apache (17)
@@ -1033,7 +1036,7 @@ cat >/etc/apache2/sites-enabled/fileshare.conf<<DOE
 </Directory>
 DOE
 
-  sed -i 's/memory_limit = 128M/memory_limit = 512M/g' /etc/php5/apache2/php.ini
+  sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php5/apache2/php.ini
 
   echo "${OK}"
 }
@@ -1106,11 +1109,13 @@ EOF
   chown -R www-data.www-data "${rutorrent}"
   cd /srv/rutorrent/plugins/theme/themes/
 
-  cp /etc/quickbox/rutorrent/plugins/rutorrent-quickbox-dark.zip .
-  unzip rutorrent-quickbox-dark.zip >>"${OUTTO}" 2>&1
-  rm -rf rutorrent-quickbox-dark.zip
+  git clone https://github.com/Swizards/club-Swizards.git club-Swizards
+  chown -R www-data: club-Swizards
+  #cp /etc/quickbox/rutorrent/plugins/rutorrent-quickbox-dark.zip .
+  #unzip rutorrent-quickbox-dark.zip >>"${OUTTO}" 2>&1
+  #rm -rf rutorrent-quickbox-dark.zip
   cd /srv/rutorrent/plugins
-  perl -pi -e "s/\$defaultTheme \= \"\"\;/\$defaultTheme \= \"QuickBox-Dark\"\;/g" /srv/rutorrent/plugins/theme/conf.php
+  perl -pi -e "s/\$defaultTheme \= \"\"\;/\$defaultTheme \= \"club-Swizards\"\;/g" /srv/rutorrent/plugins/theme/conf.php
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
@@ -1137,7 +1142,7 @@ EOF
 function _autodl() {
   mkdir -p "/home/${username}/.irssi/scripts/autorun/" >>"${OUTTO}" 2>&1
   cd "/home/${username}/.irssi/scripts/"
-  wget -qO autodl-irssi.zip https://github.com/autodl-community/autodl-irssi/releases/download/community-v1.60/autodl-irssi-community-v1.60.zip
+  wget -qO autodl-irssi.zip https://github.com/autodl-community/autodl-irssi/releases/download/community-v1.62/autodl-irssi-community-v1.62.zip
   unzip -o autodl-irssi.zip >>"${OUTTO}" 2>&1
   rm autodl-irssi.zip
   cp autodl-irssi.pl autorun/
@@ -1169,6 +1174,14 @@ function _plugincommands() {
   done
 }
 
+function _additionalsyscommands() {
+    cd /usr/bin
+    wget -q -O/usr/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
+    dos2unix clean_mem >>"${OUTTO}" 2>&1;
+    chmod +x clean_mem >>"${OUTTO}" 2>&1;
+    cd
+done
+}
 
 # function to make dirs for first user (21)
 function _makedirs() {
@@ -1268,10 +1281,10 @@ function _reloadscript() {
 cat >/usr/bin/reload<<'EOF'
 #!/bin/bash
 export USER=$(id -un)
-killall -u $USER irssi >/dev/null 2>&1
-killall -u $USER rtorrent >/dev/null 2>&1
-killall -u $USER main >/dev/null 2>&1
-rm -rf ~/.sessions/rtorrent.lock
+sudo killall -u $USER irssi >/dev/null 2>&1
+sudo killall -u $USER rtorrent >/dev/null 2>&1
+sudo killall -u $USER main >/dev/null 2>&1
+sudo rm -rf ~/.sessions/rtorrent.lock
 EOF
 chmod +x /usr/bin/reload
 
@@ -1384,9 +1397,10 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    wget -qq https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/btsync.latest.tar.gz .
+    wget -qq https://github.com/Swizards/QuickBox/raw/master/sources/btsync.latest.tar.gz .
     tar xf btsync.latest.tar.gz -C /home/${username}/
-    sudo -u ${username} /home/${username}/btsync --webui.listen $ip:8888 >>"${OUTTO}" 2>&1
+    chmod +x /home/${username}/btsync
+    sudo -u ${username} /home/${username}/btsync --webui.listen ${ip}:8888 >>"${OUTTO}" 2>&1
     rm -rf btsync.latest.tar.gz
     echo "${OK}"
     ;;
@@ -1415,12 +1429,12 @@ function _pureftpcert() {
 }
 
 # The following function makes necessary changes to Network and TZ settings needed for
-# the proper functionality of the Quick Box Dashboard.
+# the proper functionality of the QuickBox Dashboard.
 function _quickstats() {
   # Dynamically adjust to use the servers active network adapter
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/req/stat.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/req/data.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/req/config.php
+  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/stat.php
+  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/data.php
+  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/config.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/index.php
   sed -i "s/qb-version/${QBVERSION}/g" /srv/rutorrent/home/index.php
   sed -i "s/ipaccess/${ip}/g" /srv/rutorrent/home/index.php
@@ -1444,22 +1458,21 @@ function _finished() {
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
   echo "Valid Commands: "
   echo;echo;echo
-  echo -e "\033[1mquickbox\033[0m (shows current Quick Box version and additional commands)"
   echo -e "\033[1mreload\033[0m (restarts seedbox)"
   echo -e "\033[1mcreateSeedboxUser\033[0m (add seedboxuser)"
   echo -e "\033[1mchangeUserpass\033[0m (change users SSH/FTP/ruTorrent password)"
   echo -e "\033[1mdeleteSeedboxUser\033[0m (really?)"
   echo -e "\033[1msetdisk\033[0m (change the quota mount of a user) ... "
   echo;echo;echo
-  echo "Seedbox can be found at http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)"
+  echo "Seedbox can be found at http://${username}:${passwd}@${ip} (Also works for FTP:5757/SSH:4747)"
   echo "If you need to restart rtorrent/irssi, you can type 'reload'"
-  echo "http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)" > ${username}.info
+  echo "http://${username}:${passwd}@${ip} (Also works for FTP:5757/SSH:4747)" > ${username}.info
   echo "Reloading: sshd, apache, vsftpd, fail2ban and quota"
 
 cat >/root/information.info<<EOF
-  Seedbox can be found at http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)
+  Seedbox can be found at http://${username}:${passwd}@${ip} (Also works for FTP:5757/SSH:4747)
   If you need to restart rtorrent/irssi, you can type 'reload'
-  http://${username}:${passwd}@$ip (Also works for FTP:5757/SSH:4747)
+  http://${username}:${passwd}@${ip} (Also works for FTP:5757/SSH:4747)
 EOF
 
   rm -rf "$0" >>"${OUTTO}" 2>&1
@@ -1498,7 +1511,7 @@ ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 export DEBIAN_FRONTEND=noninteractive
 cd
 
-# QUICK BOX STRUCTURE
+# QuickBox STRUCTURE
 #_quickboxv
 _bashrc
 _intro
@@ -1515,7 +1528,7 @@ echo -n "Installing rutorrent into /srv ... ";_rutorrent;_askshell;_adduser;_apa
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf
 echo "Installing rutorrent plugins ... ";_plugins
-echo -n "Installing autodl-irssi ... ";_autodl;_plugincommands
+echo -n "Installing autodl-irssi ... ";_autodl;_plugincommands;_additionalsyscommands
 echo -n "Making ${username} directory structure ... ";_makedirs
 echo -n "Writing ${username} system crontab script ... ";_cronfile
 echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf;
