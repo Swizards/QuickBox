@@ -1180,7 +1180,6 @@ function _additionalsyscommands() {
     dos2unix clean_mem >>"${OUTTO}" 2>&1;
     chmod +x clean_mem >>"${OUTTO}" 2>&1;
     cd
-done
 }
 
 # function to make dirs for first user (21)
