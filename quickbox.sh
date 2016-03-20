@@ -1432,6 +1432,8 @@ function _pureftpcert() {
 # the proper functionality of the QuickBox Dashboard.
 function _quickstats() {
   # Dynamically adjust to use the servers active network adapter
+  QBVERSION="2.1.0"
+  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/stat.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/data.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/config.php
@@ -1448,6 +1450,7 @@ function _quickstats() {
 }
 
 function _quickconsole() {
+  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" \
          -e "s/ipaccess/${ip}/g" /home/${username}/.console/index.php
@@ -1455,6 +1458,7 @@ function _quickconsole() {
 
 # function to show finished data (32)
 function _finished() {
+  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
   echo "Valid Commands: "
   echo;echo;echo
