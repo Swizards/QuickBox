@@ -22,6 +22,7 @@ PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
 PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
 INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
 QBVERSION="2.1.0"
+ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
@@ -1441,9 +1442,9 @@ function _quickstats() {
   cd /usr/share/zoneinfo
   find * -type f -exec sh -c "diff -q /etc/localtime '{}' > /dev/null && echo {}" \; > ~/tz.txt
   cd ~
-  echo "    date_default_timezone_set('$(cat tz.txt)');" >> /srv/rutorrent/home/req/config.php
-  echo "" >> /srv/rutorrent/home/req/config.php
-  echo "?>" >> /srv/rutorrent/home/req/config.php
+  echo "    date_default_timezone_set('$(cat tz.txt)');" >> /srv/rutorrent/home/widgets/config.php
+  echo "" >> /srv/rutorrent/home/widgets/config.php
+  echo "?>" >> /srv/rutorrent/home/widgets/config.php
 }
 
 function _quickconsole() {
