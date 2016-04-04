@@ -572,7 +572,6 @@ function _updates() {
   fi
 
 if [[ $DISTRO == Debian ]]; then
-  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL DEBIAN REPOS                             #
@@ -584,20 +583,36 @@ cat >/etc/apt/sources.list<<EOF
 #deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
 
 ###### Debian Update Repos
+deb http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
+deb-src http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
+deb http://security.debian.org/ ${ver}/updates main contrib non-free
+deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
+deb http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
+deb-src http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
+deb http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
+deb-src http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
+
 deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
 deb-src http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
 deb http://security.debian.org/ ${ver}/updates main contrib non-free
 deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
 
-#Third Parties Repos
+#Third Parties Repos -- retired
 #Debian Multimedia
-deb http://www.deb-multimedia.org squeeze main non-free
-deb http://www.deb-multimedia.org squeeze-backports main
+#deb http://www.deb-multimedia.org squeeze main non-free
+#deb http://www.deb-multimedia.org squeeze-backports main
+
+#Third Parties Repos -- updated
+# Deb Multimedia
+deb http://www.deb-multimedia.org ${ver} main non-free
+deb-src http://www.deb-multimedia.org ${ver} main non-free
 
 #Debian Backports Repos
 #http://backports.debian.org/debian-backports squeeze-backports main
 EOF
+  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
   apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
+  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
 
 else
 cat >/etc/apt/sources.list<<EOF
