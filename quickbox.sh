@@ -580,8 +580,8 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Debian Main Repos
-deb http://ftp.nl.debian.org/debian testing main contrib non-free
-deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
+#deb http://ftp.nl.debian.org/debian testing main contrib non-free
+#deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
 
 ###### Debian Update Repos
 deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
