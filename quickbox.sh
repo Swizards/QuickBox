@@ -572,7 +572,6 @@ function _updates() {
   fi
 
 if [[ $DISTRO == Debian ]]; then
-  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL DEBIAN REPOS                             #
@@ -580,24 +579,40 @@ cat >/etc/apt/sources.list<<EOF
 
 
 ###### Debian Main Repos
-deb http://ftp.nl.debian.org/debian testing main contrib non-free
-deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
+#deb http://ftp.nl.debian.org/debian testing main contrib non-free
+#deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
 
 ###### Debian Update Repos
+deb http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
+deb-src http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
+deb http://security.debian.org/ ${ver}/updates main contrib non-free
+deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
+deb http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
+deb-src http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
+deb http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
+deb-src http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
+
 deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
 deb-src http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
 deb http://security.debian.org/ ${ver}/updates main contrib non-free
 deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
 
-#Third Parties Repos
+#Third Parties Repos -- retired
 #Debian Multimedia
-deb http://www.deb-multimedia.org squeeze main non-free
-deb http://www.deb-multimedia.org squeeze-backports main
+#deb http://www.deb-multimedia.org squeeze main non-free
+#deb http://www.deb-multimedia.org squeeze-backports main
+
+#Third Parties Repos -- updated
+# Deb Multimedia
+deb http://www.deb-multimedia.org ${ver} main non-free
+deb-src http://www.deb-multimedia.org ${ver} main non-free
 
 #Debian Backports Repos
 #http://backports.debian.org/debian-backports squeeze-backports main
 EOF
+  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
   apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
+  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
 
 else
 cat >/etc/apt/sources.list<<EOF
@@ -709,7 +724,7 @@ cat hostsTrackers >> /etc/hosts
 function _depends() {
 if [[ $DISTRO == Debian ]]; then
 yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
-  dstat automake make mktorrent libtool libsigc++-2.0-0v5 libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
+  dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
