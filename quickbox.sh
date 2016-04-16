@@ -1453,7 +1453,7 @@ function _quickstats() {
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/data.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/config.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/index.php
-  sed -i "s/qb-version/${QBVERSION}/g" /srv/rutorrent/home/index.php
+  sed -i "s/qb-version/$QBVERSION/g" /srv/rutorrent/home/index.php
   sed -i "s/ipaccess/${ip}/g" /srv/rutorrent/home/index.php
   # Use server timezone
   cd /usr/share/zoneinfo
