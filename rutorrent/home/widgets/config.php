@@ -35,6 +35,3 @@
     $byte_notation = null;
 
     // Set local timezone
-    date_default_timezone_set('America/Chicago');
-
-?>
