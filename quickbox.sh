@@ -284,6 +284,10 @@ echo -n "Username: "; read username
     ;;
   esac
 
+echo -n "writing $username to vsftpd.chroot_list..."
+echo "$username" >> /etc/vsftpd.chroot_list
+echo $OK
+
 echo -n "writing $username .rtorrent.rc using port-range (${PORT}-${PORTEND})..."
 cat >/home/$username/.rtorrent.rc<<RC
 # -- START HERE --
@@ -1377,6 +1381,8 @@ pasv_promiscuous=YES
 port_promiscuous=YES
 seccomp_sandbox=no
 VSD
+
+  echo "" > /etc/vsftpd.chroot_list
 
   echo "${OK}"
 }
