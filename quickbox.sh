@@ -1453,13 +1453,11 @@ function _pureftpcert() {
 # the proper functionality of the QuickBox Dashboard.
 function _quickstats() {
   # Dynamically adjust to use the servers active network adapter
-  QBVERSION="2.1.0"
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/stat.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/data.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/config.php
   sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/inc/config.php
-  sed -i "s/qb-version/${QBVERSION}/g" /srv/rutorrent/home/inc/config.php
-  #sed -i "s/ipaccess/${ip}/g" /srv/rutorrent/home/index.php
+  sed -i "s/qb-version/$QBVERSION/g" /srv/rutorrent/home/inc/config.php
   # Use server timezone
   cd /usr/share/zoneinfo
   find * -type f -exec sh -c "diff -q /etc/localtime '{}' > /dev/null && echo {}" \; > ~/tz.txt
