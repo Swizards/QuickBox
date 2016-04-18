@@ -8,13 +8,13 @@
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-# 
+#
 #   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software 
-#   including (via compiler) GPL-licensed code must also be made available 
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
 #   under the GPL along with build & install instructions.
 #
-MASTER=$(cat /root/master.txt)
+MASTER=$(cat /etc/apache2/master.txt)
 IRSSIIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 IRSSI_PASS=$(_string)
 IRSSI_PORT=$(shuf -i 2000-61000 -n 1)
