@@ -25,7 +25,7 @@
 
 
 ###Using a _/home_ primary partition setup? Please read this first:
-It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process. Again, this will be resolved in the next couple of days (notice revised: March 19, 2016 at 5:00PM (CST))
+It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process.
 
 
 ### A Preview of Quick Box
@@ -110,9 +110,9 @@ bash quickbox.sh
 ## Commands
 After installing you will have access to the following commands to be used directly in terminal
 
-* quickbox - tells you which version Quick Box you are running and shows commands list
-* createSeedboxUser - yup
-* deleteSeedboxUser - yup
-* setdisk - set your user disk quota
+* ~~quickbox - tells you which version Quick Box you are running and shows commands list~~ Deprecated due to ``panel now shows versioning``
+* createSeedboxUser - creates a shelled seedbox user
+* deleteSeedboxUser - deletes a created seedbox user and their directories **This is permanent, current data will be deleted - you can create them again at any time**
+* setdisk - set your user disk quota for any given user
 * reload - restarts your seedbox services, i.e; rtorrent & irssi
 * upgradeBTSync -- upgrades btsync when new version is available
