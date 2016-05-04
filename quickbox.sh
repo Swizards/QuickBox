@@ -530,7 +530,7 @@ function _intro() {
     echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by QuickBox ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"7"|"8") ]]; then
+  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"16.04"|"7"|"8") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported $DISTRO release."
     echo 'Exiting...'
     exit 1
@@ -734,7 +734,7 @@ yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip
   ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
 elif [[ $DISTRO == Ubuntu ]]; then
-apt-get install -qq --yes --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
+apt-get install -q -f -y build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
   dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
   apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
   fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
