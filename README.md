@@ -1,7 +1,7 @@
 
 
 ### For a full README and CHANGELOG
-For a full README and CHANGELOG on QuickBox as well as how to install, please visit the [QuickBox Plaza](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+> For a full README and CHANGELOG on QuickBox as well as how to install, please visit the [QuickBox Plaza](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 
 ## Script status
 
@@ -9,7 +9,7 @@ For a full README and CHANGELOG on QuickBox as well as how to install, please vi
 [![GNU v3.0 License](https://img.shields.io/badge/license-GNU%20v3.0%20License-blue.svg?style=flat-square)](https://github.com/Swizards/QuickBox/blob/master/LICENSE.md)
 
 #### Ubuntu Builds
-[![Ubuntu 16.04 Passing](https://img.shields.io/badge/Ubuntu%2016.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Ubuntu 16.04 Passing](https://img.shields.io/badge/Ubuntu%2016.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/clicks/track?url=https%3A%2F%2Fgithub.com%2FSwizards%2FQuickBox%2Ftree%2Fqb_u_1604&post_id=74&topic_id=31)
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 [![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
@@ -22,7 +22,7 @@ For a full README and CHANGELOG on QuickBox as well as how to install, please vi
 
 ###Quick Advisory Notice on QuickBox
 ---
-> Please understand that we [(Swizards)](https://swizards.net) do not want to push this project as a means to supply a commercially used product, ie; seedbox provider - so keep this in mind - only if you wish to sale slots on your server. Though it is very multi-user friendly... it is also not free of it's faults due to it's high amount of capabilities and being publicly available. This is a community based project that is a measure of goodwill to be given to such an outspoken and freethinking community. If you are a provider and are in need of a high-quality, white-labled solution - please feel free to get in touch with our team and we will certainly negotiate a solution that best fits your needs and is free of any possible bugs.
+> Please understand that we [(Swizards)](https://swizards.net), do not want to push this project as a means to supply a commercially used product, ie; seedbox provider - so keep this in mind - only if you wish to sale slots on your server. Though it is very multi-user friendly... it is also not free of it's faults due to it's high amount of capabilities and being publicly available. This is a community based project that is a measure of goodwill to be given to such an outspoken and freethinking community. If you are a provider and are in need of a high-quality, white-labled solution - please feel free to get in touch with our team and we will certainly negotiate a solution that best fits your needs and is free of any possible bugs.
 
 ####Again, Please note:
 > This is being released as a public sandbox... meaning that it is user-contribution driven. Swizards take a great deal of pride in providing quality UI. Enhancement requests and more for the QuickBox Project will not be included in the future unless users feel kind enough to contribute to the repo by pushing requests for their included modifications... basically... it's community driven... simple
@@ -45,20 +45,6 @@ After that access your box using a SSH client, like PuTTY.
 > This script is valid for both VPS & Dedicated Environments.
 
 ####You must be logged in as root to run this installation.
-
----
-
-### Ubuntu 16.04
-
-**Run the following command to grab the latest stable release [Ubunut 16.04 w/ PHP 7 - standalone] ...**
-```
-apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
-git clone https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
-cd /root/tmp/QuickBox*; \
-bash qb_u_1604.sh
-
-```
->>>>>>> master
 
 ---
 ### Ubuntu 16.04
