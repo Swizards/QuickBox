@@ -80,7 +80,8 @@ After installing you will have access to the following commands to be used direc
 
 * ~~quickbox~~ - tells you which version Quick Box you are running and shows commands list ``deprecated due to versioning now shows on the dashboard under username dropdown``
 * __createSeedboxUser__ - creates a shelled seedbox user
-* __deleteSeedboxUser__ - deletes a created seedbox user and their directories **This is permanent, current data will be deleted - you can create them again at any time**
+* __deleteSeedboxUser__ - deletes a created seedbox user and their directories
+<sup>**This is permanent, current data will be deleted - you can create them again at any time**</sup>
 * __changeUserpass__ - change users SSH/FTP/ruTorrent password
 * __setdisk__ - set your disk quota for any given user
 * __reload__ - restarts your seedbox services, i.e; rtorrent & irssi
