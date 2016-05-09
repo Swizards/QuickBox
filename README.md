@@ -44,10 +44,10 @@ After that access your box using a SSH client, like PuTTY.
 ## How to install
 > This script is valid for both VPS & Dedicated Environments.
 
-<<<<<<< HEAD
 ####You must be logged in as root to run this installation.
-=======
+
 ---
+
 ### Ubuntu 16.04
 
 **Run the following command to grab the latest stable release [Ubunut 16.04 w/ PHP 7 - standalone] ...**
