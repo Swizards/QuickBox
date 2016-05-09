@@ -3,8 +3,8 @@
 # [QuickBox Installation Script]
 #
 # GitHub:   https://github.com/Swizards/QuickBox
-# Author:   Swizards.net
-# URL:      https://swizards.net
+# Author:   Swizards.net https://swizards.net
+# URL:      https://plaza.quickbox.io
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -16,13 +16,6 @@
 #
 # find server hostname and repo location for quickbox configuration
 #################################################################################
-HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/QuickBox"
-PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
-PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
-INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="2.1.0"
-ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
@@ -526,11 +519,11 @@ function _intro() {
   echo
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
-  if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
-    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by QuickBox ${normal} "
+  if [[ ! "${dis}" =~ ("Ubuntu") ]]; then
+    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by this version of QuickBox ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"16.04"|"7"|"8") ]]; then
+  elif [[ ! "${rel}" =~ ("16.04") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported $DISTRO release."
     echo 'Exiting...'
     exit 1
@@ -575,50 +568,6 @@ function _updates() {
     fi
   fi
 
-if [[ $DISTRO == Debian ]]; then
-cat >/etc/apt/sources.list<<EOF
-#------------------------------------------------------------------------------#
-#                            OFFICIAL DEBIAN REPOS                             #
-#------------------------------------------------------------------------------#
-
-
-###### Debian Main Repos
-#deb http://ftp.nl.debian.org/debian testing main contrib non-free
-#deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
-
-###### Debian Update Repos
-deb http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
-deb-src http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
-deb http://security.debian.org/ ${ver}/updates main contrib non-free
-deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
-deb http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
-deb-src http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
-deb http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
-deb-src http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
-
-deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
-deb-src http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
-deb http://security.debian.org/ ${ver}/updates main contrib non-free
-deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
-
-#Third Parties Repos -- retired
-#Debian Multimedia
-#deb http://www.deb-multimedia.org squeeze main non-free
-#deb http://www.deb-multimedia.org squeeze-backports main
-
-#Third Parties Repos -- updated
-# Deb Multimedia
-deb http://www.deb-multimedia.org ${ver} main non-free
-deb-src http://www.deb-multimedia.org ${ver} main non-free
-
-#Debian Backports Repos
-#http://backports.debian.org/debian-backports squeeze-backports main
-EOF
-  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
-  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
-  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
-
-else
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
@@ -641,26 +590,20 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
 EOF
-fi
 
   echo -n "Updating system ... "
 
-  if [[ $DISTRO == Debian ]]; then
-    export DEBIAN_FRONTEND=noninteractive
-    yes '' | apt-get update >>"${OUTTO}" 2>&1
-    apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-    yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
-  else
     export DEBIAN_FRONTEND=noninteractive
     apt-get -y --force-yes update >>"${OUTTO}" 2>&1
     apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
     apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
-  fi
+
     if [[ -e /etc/ssh/sshd_config ]]; then
       echo "Port 4747" /etc/ssh/sshd_config
       sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
       service ssh restart >>"${OUTTO}" 2>&1
     fi
+
   echo "${OK}"
   clear
 }
@@ -680,6 +623,12 @@ echo "LC_ALL=en_US.UTF-8" >>/etc/default/locale
     export LC_ALL="en_US.UTF-8"
     export LANGUAGE="en_US.UTF-8"
   fi
+}
+
+# package and repo addition (silently add php7) _add respo sources_
+function _repos() {
+  # now working with php 7 - so let's add it
+  LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php -y >>"${OUTTO}" 2>&1;
 }
 
 # setting system hostname function (6)
@@ -726,27 +675,20 @@ cat hostsTrackers >> /etc/hosts
 
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
-if [[ $DISTRO == Debian ]]; then
-yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
-  dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
-  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
-  fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
-  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
-  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
-elif [[ $DISTRO == Ubuntu ]]; then
 apt-get install -q -f -y build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
   dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
-  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
-  fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
-  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
+  apache2-utils autoconf cron curl libapache2-mod-geoip libxslt-dev libncurses5-dev yasm pcregrep apache2 php-net-socket libdbd-mysql-perl libdbi-perl \
+  php7.0 php7.0-fpm php7.0-mbstring php7.0-zip php7.0-mysql php7.0-curl php7.0-gd php7.0-json php7.0-mcrypt php7.0-opcache php7.0-xml \
+  php7.0-bcmath php7.0-zip fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo ifstat libapache2-mod-php7.0 \
+  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl openjdk-8-jre-headless openjdk-8-jre openjdk-8-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
-fi
+
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi
   mkdir /etc/skel
-  tar xf $REPOURL/sources/skel.tar -C /etc/skel
-  tar xzf $REPOURL/sources/rarlinux-x64-5.2.1.tar.gz -C ./
+  tar xf "${REPOURL}"/sources/skel.tar -C /etc/skel
+  tar xzf "${REPOURL}"/sources/rarlinux-x64-5.3.0.tar.gz -C ./
   cp ./rar/*rar /usr/bin
   cp ./rar/*rar /usr/sbin
   rm -rf rarlinux*.tar.gz
@@ -1056,7 +998,7 @@ cat >/etc/apache2/sites-enabled/fileshare.conf<<DOE
 </Directory>
 DOE
 
-  sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php5/apache2/php.ini
+  sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php/7.0/apache2/php.ini
 
   echo "${OK}"
 }
@@ -1139,7 +1081,8 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
-  wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare_2.1.2-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
+  wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare4_2.1.3-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
+  apt -y install plowshare >>"${OUTTO}" 2>&1
   dpkg -i plowshare.deb >>"${OUTTO}" 2>&1
   rm -rf plowshare.deb >>"${OUTTO}" 2>&1
   cd /root
@@ -1319,8 +1262,8 @@ function _boot() {
 
 # function to install pure-ftpd (27)
 function _installpureftpd() {
-  apt-get purge -y -q --force-yes vsftpd pure-ftpd >>"${OUTTO}" 2>&1
-  apt-get install -q -y --force-yes vsftpd >>"${OUTTO}" 2>&1
+  apt-get purge -q -fy vsftpd pure-ftpd >>"${OUTTO}" 2>&1
+  apt-get install -q -fy vsftpd >>"${OUTTO}" 2>&1
   echo "${OK}"
 }
 
@@ -1401,10 +1344,11 @@ function _askplex() {
       chown www-data: /srv/rutorrent/home/.plex
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
-      echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
-      curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
+      echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
+      wget -O - http://shell.ninthgate.se/packages/shell.nintghate.se.gpg.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
+      #curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
-      apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
+      apt-get install -qq -f -y plexmediaserver >>"${OUTTO}" 2>&1
       echo " ... ${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
@@ -1453,11 +1397,11 @@ function _pureftpcert() {
 # the proper functionality of the QuickBox Dashboard.
 function _quickstats() {
   # Dynamically adjust to use the servers active network adapter
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/stat.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/data.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/config.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/inc/config.php
-  sed -i "s/qb-version/$QBVERSION/g" /srv/rutorrent/home/inc/config.php
+  sed -i "s/eth0/$IFACE/g" /srv/rutorrent/home/widgets/stat.php
+  sed -i "s/eth0/$IFACE/g" /srv/rutorrent/home/widgets/data.php
+  sed -i "s/eth0/$IFACE/g" /srv/rutorrent/home/widgets/config.php
+  sed -i -e "s/eth0/$IFACE/g" \
+         -e "s/qb-version/$QBVERSION/g" /srv/rutorrent/home/inc/config.php
   # Use server timezone
   cd /usr/share/zoneinfo
   find * -type f -exec sh -c "diff -q /etc/localtime '{}' > /dev/null && echo {}" \; > ~/tz.txt
@@ -1468,10 +1412,10 @@ function _quickstats() {
 }
 
 function _quickconsole() {
-  ipconsole=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+  CONSOLEIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" \
-         -e "s/ipaccess/${ipconsole}/g" /home/${username}/.console/index.php
+         -e "s/ipconsole/$CONSOLEIP/g" /home/${username}/.console/index.php
 }
 
 # function to show finished data (32)
@@ -1498,17 +1442,10 @@ cat >/root/information.info<<EOF
 EOF
 
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  if [[ $DISTRO == Debian ]]; then
-    for i in ssh apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
-      service $i restart >>"${OUTTO}" 2>&1
-      systemctl enable $i >>"${OUTTO}" 2>&1
-    done
-  else
     for i in sshd apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
     done
-  fi
   rm -rf /root/tmp/
   echo -ne "Do you wish to reboot (recommended!): (Default ${green}Y${normal})"; read reboot
   case $reboot in
@@ -1519,6 +1456,13 @@ EOF
 
 clear
 
+Reth0=$(ifconfig | grep -m 1 "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
+IFACE=$(echo -n "${Reth0}");
+HOSTNAME1=$(hostname -s);
+REPOURL="/root/tmp/QuickBox"
+PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
+PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
+QBVERSION="2.1.1"
 PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$((${PORT} + 1500))
 S=$(date +%s)
@@ -1541,6 +1485,7 @@ _checkroot
 _logcheck
 _updates
 # _locale
+_repos
 _hostname
 _denyhosts
 echo -n "Installing building tools and all dependencies and perl modules, please wait ... ";_depends
