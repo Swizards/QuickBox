@@ -476,11 +476,11 @@ function _intro() {
   echo
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
-  if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
-    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by QuickBox ${normal} "
+  if [[ ! "${dis}" =~ ("Ubuntu") ]]; then
+    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by this version of QuickBox ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"16.04"|"7"|"8") ]]; then
+  elif [[ ! "${rel}" =~ ("16.04") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported $DISTRO release."
     echo 'Exiting...'
     exit 1
@@ -568,13 +568,12 @@ function _ssdpblock() {
 function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
-    apt-get -y -q install lsb-release >>"${OUTTO}" 2>&1
+    apt -y -q install lsb-release >>"${OUTTO}" 2>&1
     if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
     else echo "failed to install lsb-release from apt, please install manually and re-run script"; exit
     fi
   fi
 
-if [[ $DISTRO == Debian ]]; then
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL DEBIAN REPOS                             #
@@ -639,7 +638,6 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
 EOF
-fi
 
   if [[ $DISTRO == Debian ]]; then
     export DEBIAN_FRONTEND=noninteractive
