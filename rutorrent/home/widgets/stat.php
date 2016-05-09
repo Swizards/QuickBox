@@ -1,5 +1,5 @@
 <?php
-$interface = "enp0s20f0";
+$interface = "eth0";
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
 $data['rec'] = exec("cat /sys/class/net/{$interface}/statistics/rx_bytes");
