@@ -1345,7 +1345,7 @@ function _askplex() {
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
       echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
-      wget -O - http://shell.ninthgate.se/packages/shell.nintghate.se.gpg.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
+      wget -O - http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       #curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
       apt-get update >>"${OUTTO}" 2>&1
       apt-get install -qq -f -y plexmediaserver >>"${OUTTO}" 2>&1
