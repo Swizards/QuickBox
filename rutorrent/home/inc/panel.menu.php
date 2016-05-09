@@ -15,7 +15,7 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu pull-right">
-                <li><a href="https://github.com/Swizards/QuickBox/issues"><i class="fa fa-warning text-warning"></i> Report an issue</a></li>
+                <li><a href="https://plaza.quickbox.io/c/quickbox-support"><i class="fa fa-warning text-warning"></i> Report an issue</a></li>
                 <div class="usermenu-div"></div>
                 <li><span style="font-size:10px;">You are running QuickBox <b><?php echo "$version"; ?></b></span></li>
                 <li><span style="font-size:10px;">courtesy of <b><a href="https://swizards.net" target="_blank" rel="noindex,nofollow">swizards.net</a></b></li>
