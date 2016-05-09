@@ -44,6 +44,9 @@ After that access your box using a SSH client, like PuTTY.
 ## How to install
 > This script is valid for both VPS & Dedicated Environments.
 
+## NOTICE
+> It is highly advisable that QuickBox be installed on Ubuntu 16.04. For more about this, [see here](https://plaza.quickbox.io/t/poll-are-you-using-or-going-to-be-using-ubuntu-16-04/41) and weigh in on your thoughts.
+
 ####You must be logged in as root to run this installation.
 
 ---
@@ -76,8 +79,9 @@ bash quickbox.sh
 After installing you will have access to the following commands to be used directly in terminal
 
 * ~~quickbox~~ - tells you which version Quick Box you are running and shows commands list ``deprecated due to versioning now shows on the dashboard under username dropdown``
-* createSeedboxUser - creates a shelled seedbox user
-* deleteSeedboxUser - deletes a created seedbox user and their directories **This is permanent, current data will be deleted - you can create them again at any time**
-* setdisk - set your disk quota for any given user
-* reload - restarts your seedbox services, i.e; rtorrent & irssi
-* upgradeBTSync -- upgrades btsync when new version is available
+* __createSeedboxUser__ - creates a shelled seedbox user
+* __deleteSeedboxUser__ - deletes a created seedbox user and their directories **This is permanent, current data will be deleted - you can create them again at any time**
+* __changeUserpass__ - change users SSH/FTP/ruTorrent password
+* __setdisk__ - set your disk quota for any given user
+* __reload__ - restarts your seedbox services, i.e; rtorrent & irssi
+* __upgradeBTSync__ -- upgrades btsync when new version is available
