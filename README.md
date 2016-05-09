@@ -81,6 +81,16 @@ After that access your box using a SSH client, like PuTTY.
 > This script is valid for both VPS & Dedicated Environments.
 
 ---
+### Ubuntu 16.04
+
+**Run the following command to grab the latest stable release [Ubunut 16.04 w/ PHP 7 - standalone] ...**
+```
+apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
+git clone https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
+cd /root/tmp/QuickBox*; \
+bash qb_u_1604.sh
+
+```
 
 ### Ubuntu 14.04, 15.04, and 15.10 || Debian 7 & 8
 
