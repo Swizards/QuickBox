@@ -25,15 +25,11 @@ function _installPlex() {
     chown www-data: /srv/rutorrent/home/.plex
     touch /etc/apache2/sites-enabled/plex.conf
     chown www-data: /etc/apache2/sites-enabled/plex.conf
-    wget -O - http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add -
-    echo "deb http://www.deb-multimedia.org wheezy main non-free" > /etc/apt/sources.list.d/deb-multimedia.list
-    echo "deb http://shell.ninthgate.se/packages/debian wheezy main" > /etc/apt/sources.list.d/plexmediaserver.list
-    apt-get -y update
-    apt-get install deb-multimedia-keyring -y
-    apt-get -y install plexmediaserver
-    service plexmediaserver restart
-    touch /install/.plex.lock
-    /etc/init.d/apache2 reload
+    echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
+    curl -s http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add - > /dev/null 2>&1;
+    apt -y update >>"${OUTTO}" 2>&1
+    apt install plexmediaserver -y >>"${OUTTO}" 2>&1
+    /etc/init.d/apache2 restart
 }
 
 
