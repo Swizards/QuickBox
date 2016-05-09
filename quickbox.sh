@@ -3,8 +3,8 @@
 # [QuickBox Installation Script]
 #
 # GitHub:   https://github.com/Swizards/QuickBox
-# Author:   Swizards.net
-# URL:      https://swizards.net
+# Author:   Swizards.net https://swizards.net
+# URL:      https://plaza.quickbox.io
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -15,14 +15,6 @@
 #   under the GPL along with build & install instructions.
 #
 # find server hostname and repo location for quickbox configuration
-#################################################################################
-HOSTNAME1=$(hostname -s);
-REPOURL="/root/tmp/QuickBox"
-PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
-PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
-INETFACE=$(ifconfig | grep "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
-QBVERSION="2.1.0"
-ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 #################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
@@ -953,8 +945,8 @@ function _adduser() {
 
 # function to enable sudo for www-data function (16)
 function _apachesudo() {
-awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/bin/clean_mem, /usr/bin/installpackage-*, /usr/bin/removepackage-*, /usr/bin/installplugin-*, /usr/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/bin/clean_mem, /usr/bin/installpackage-*, /usr/bin/removepackage-*, /usr/bin/installplugin-*, /usr/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 }
 
 # function to configure apache (17)
@@ -1183,7 +1175,7 @@ ADC
 function _plugincommands() {
   mkdir -p /etc/quickbox/commands/rutorrent/plugins
   mv "${PLUGINURL}" /etc/quickbox/commands/rutorrent/
-  PLUGINCOMMANDS="/etc/quickbox/commands/rutorrent/plugins/"; cd "/usr/bin"
+  PLUGINCOMMANDS="/etc/quickbox/commands/rutorrent/plugins/"; cd "/usr/local/bin"
   LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspace removeplugin-diskspace installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
@@ -1195,8 +1187,8 @@ function _plugincommands() {
 }
 
 function _additionalsyscommands() {
-    cd /usr/bin
-    wget -q -O/usr/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
+    cd /usr/local/bin
+    wget -q -O/usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
     dos2unix clean_mem >>"${OUTTO}" 2>&1;
     chmod +x clean_mem >>"${OUTTO}" 2>&1;
     cd
@@ -1433,7 +1425,7 @@ function _askbtsync() {
 function _packagecommands() {
   mkdir -p /etc/quickbox/commands/system/packages
   mv "${PACKAGEURL}" /etc/quickbox/commands/system/
-  PACKAGECOMMANDS="/etc/quickbox/commands/system/packages/"; cd "/usr/bin"
+  PACKAGECOMMANDS="/etc/quickbox/commands/system/packages/"; cd "/usr/local/bin"
   LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync"
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
@@ -1453,11 +1445,11 @@ function _pureftpcert() {
 # the proper functionality of the QuickBox Dashboard.
 function _quickstats() {
   # Dynamically adjust to use the servers active network adapter
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/stat.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/data.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/widgets/config.php
-  sed -i "s/eth0/${INETFACE}/g" /srv/rutorrent/home/inc/config.php
-  sed -i "s/qb-version/$QBVERSION/g" /srv/rutorrent/home/inc/config.php
+  sed -i "s/eth0/$IFACE/g" /srv/rutorrent/home/widgets/stat.php
+  sed -i "s/eth0/$IFACE/g" /srv/rutorrent/home/widgets/data.php
+  sed -i "s/eth0/$IFACE/g" /srv/rutorrent/home/widgets/config.php
+  sed -i -e "s/eth0/$IFACE/g" \
+         -e "s/qb-version/$QBVERSION/g" /srv/rutorrent/home/inc/config.php
   # Use server timezone
   cd /usr/share/zoneinfo
   find * -type f -exec sh -c "diff -q /etc/localtime '{}' > /dev/null && echo {}" \; > ~/tz.txt
@@ -1468,10 +1460,10 @@ function _quickstats() {
 }
 
 function _quickconsole() {
-  ipconsole=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+  CONSOLEIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" \
-         -e "s/ipaccess/${ipconsole}/g" /home/${username}/.console/index.php
+         -e "s/ipconsole/$CONSOLEIP/g" /home/${username}/.console/index.php
 }
 
 # function to show finished data (32)
@@ -1519,6 +1511,13 @@ EOF
 
 clear
 
+Reth0=$(ifconfig | grep -m 1 "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
+IFACE=$(echo -n "${Reth0}");
+HOSTNAME1=$(hostname -s);
+REPOURL="/root/tmp/QuickBox"
+PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
+PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
+QBVERSION="2.1.1"
 PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$((${PORT} + 1500))
 S=$(date +%s)
