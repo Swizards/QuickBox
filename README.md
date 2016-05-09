@@ -1,18 +1,22 @@
 
 
+### For a full README and CHANGELOG
+For a full README and CHANGELOG on QuickBox as well as how to install, please visit the [QuickBox Plaza](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+
 ## Script status
 
-[![Version 2.1.0-production](https://img.shields.io/badge/version-2.1.0-674172.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Version 2.1.1-production](https://img.shields.io/badge/version-2.1.1-674172.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 [![GNU v3.0 License](https://img.shields.io/badge/license-GNU%20v3.0%20License-blue.svg?style=flat-square)](https://github.com/Swizards/QuickBox/blob/master/LICENSE.md)
 
 #### Ubuntu Builds
-[![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Ubuntu 16.04 Passing](https://img.shields.io/badge/Ubuntu%2016.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 
 #### Debian Builds
-[![Debian 7 Passing](https://img.shields.io/badge/Debain%207-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
-[![Debian 8 Passing](https://img.shields.io/badge/Debain%208-passing-brightgreen.svg?style=flat-square)](https://jmsolodesigns.com/code-projects/quick-box/seedbox-installer)
+[![Debian 7 Passing](https://img.shields.io/badge/Debain%207-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Debian 8 Passing](https://img.shields.io/badge/Debain%208-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 
 ---
 
@@ -25,48 +29,9 @@
 
 
 ###Using a _/home_ primary partition setup? Please read this first:
-It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process.
+It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process. Again, this will be resolved in the next couple of days (notice revised: May 9, 2016 at 12:55PM (CST))
 
 
-### A Preview of Quick Box
-[![Quick Box v2.0.5 Dashboard](https://raw.githubusercontent.com/JMSDOnline/quick-box-assets/master/assets/quickbox-dasboard-youtube-preview.png)](http://www.youtube.com/watch?v=F1344A6YPks)
-
----
-
-This script has the following features
-
-* A multi-user environment, complete with scripts to add and delete users.
-* Linux Quota, to control how much space every user can use in the box. This can be controlled via the '__setdisk__' command.
-* Customized Seedbox Dashboard located at https://SERVER_IP/
-* HTTPs Downloads directory (https://SERVER_IP/${username}.downloads)
-* Obscures ports for ssh and ftp. __SSH = 4747__ | __FTP = 5757__ (note, this is not for security reasons... it's simply a means to reduce bad bot hits from all over the web)
-* Creates a limited shell access environment. This gives your additional created users the ability to interact with their seedbox via ssh on port 4747 w/o having access to other users shells and/or root/sudo commands and functions.
-
-## Installed software
-* ruTorrent 3.7 + official plugins
-* rTorrent 0.9.6
-* libTorrrent 0.13.6
-* mktorrent
-* Linux Quota
-* SSH Server (for SSH terminal and sFTP connections)
-* pureftp - vsftp (CuteFTP multi-segmented download friendly ya'll)
-* IRSSI
-* Plex
-* BTSync
-* LShell
-
-## Main ruTorrent plugins
-autotools, cpuload, quotaspace, erasedata, extratio, extsearch, feeds, filedrop, filemanager, geoip, history, logoff, mediainfo, mediastream, ratiocolor, rss, scheduler, screenshots, theme, trafic and unpack
-
-## Additional ruTorrent plugins
-* Autodl-IRSSI (with an updated list of trackers)
-* A modified version of Diskpace to support quota (by Notos)
-* Filemanager (modified to handle rar, zip, unzip, tar and bzip)
-* Fileshare Plugin (http://forums.rutorrent.org/index.php?topic=705.0) _this is bugged - help anyone?_
-* Logoff
-* Theme: QuickBox ``Dark rutorrent skin``
-* Colorful Ratios: Customized to match QuickBox Theme
-* __rutorrentMobile__: Mobile version of ruTorrent - seriously - toss TransDroid and the pain that it is... this is a new essential plugin (IMO) _Helps usher in a future version of the Quick Box script per Nginx - **as nginx via fastcgi sockets can break Transdroid funtionality**_
 
 ## Before installation
 You need to have a Fresh "blank" server installation.
@@ -79,7 +44,19 @@ After that access your box using a SSH client, like PuTTY.
 ## How to install
 > This script is valid for both VPS & Dedicated Environments.
 
+####You must be logged in as root to run this installation.
+
 ---
+### Ubuntu 16.04
+
+**Run the following command to grab the latest stable release [Ubunut 16.04 w/ PHP 7 - standalone] ...**
+```
+apt -yqq update && apt -yqq upgrade && apt -yqq install git curl lsb-release; \
+git clone -b qb_u_1604 https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
+cd /root/tmp/QuickBox*; \
+bash quickbox.sh
+
+```
 
 ### Ubuntu 14.04, 15.04, and 15.10 || Debian 7 & 8
 
@@ -92,27 +69,15 @@ bash quickbox.sh
 
 ```
 
-**Run the following command to grab our development release _TESTING BRANCH_ ...**
-```
-apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
-git clone -b development https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
-cd /root/tmp/QuickBox*; \
-bash quickbox.sh
-
-```
-
 ---
 
-
-
-####You must be logged in as root to run this installation.
 
 ## Commands
 After installing you will have access to the following commands to be used directly in terminal
 
-* ~~quickbox - tells you which version Quick Box you are running and shows commands list~~ Deprecated due to ``panel now shows versioning``
+* ~~quickbox~~ - tells you which version Quick Box you are running and shows commands list ``deprecated due to versioning now shows on the dashboard under username dropdown``
 * createSeedboxUser - creates a shelled seedbox user
 * deleteSeedboxUser - deletes a created seedbox user and their directories **This is permanent, current data will be deleted - you can create them again at any time**
-* setdisk - set your user disk quota for any given user
+* setdisk - set your disk quota for any given user
 * reload - restarts your seedbox services, i.e; rtorrent & irssi
 * upgradeBTSync -- upgrades btsync when new version is available
