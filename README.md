@@ -36,6 +36,9 @@ After that access your box using a SSH client, like PuTTY.
 ## How to install
 > This script is valid for both VPS & Dedicated Environments.
 
+## NOTICE
+> It is highly advisable that QuickBox be installed on Ubuntu 16.04. For more about this, [see here](https://plaza.quickbox.io/t/poll-are-you-using-or-going-to-be-using-ubuntu-16-04/41) and weigh in on your thoughts.
+
 ####You must be logged in as root to run this installation.
 
 ---
