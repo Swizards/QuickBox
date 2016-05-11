@@ -1463,7 +1463,7 @@ function _quickconsole() {
   CONSOLEIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" \
-         -e "s/ipconsole/$CONSOLEIP/g" /home/${username}/.console/index.php
+         -e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
 }
 
 # function to show finished data (32)
