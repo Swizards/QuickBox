@@ -47,7 +47,7 @@ After that access your box using a SSH client, like PuTTY.
 
 **Run the following command to grab our latest stable release ...**
 ```
-apt -yqq update && apt -yqq upgrade && apt -yqq install git curl lsb-release; \
+apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install git curl lsb-release; \
 git clone -b qb_u_1604 https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
