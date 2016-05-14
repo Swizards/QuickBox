@@ -1,0 +1,11 @@
+{
+    "listening_port" : 0,
+    "storage_path" : "/var/lib/btsync/",
+    "pid_file" : "/var/run/btsync/btsync.pid",
+    "agree_to_EULA": "yes",
+
+    "webui" :
+    {
+        "listen" : "BTSGUIP:8888"
+    }
+}
