@@ -1365,11 +1365,20 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    wget -qq https://github.com/Swizards/QuickBox/raw/master/sources/btsync.latest.tar.gz .
-    tar xf btsync.latest.tar.gz -C /home/${username}/
-    chmod +x /home/${username}/btsync
-    sudo -u ${username} /home/${username}/btsync --webui.listen ${ip}:8888 >>"${OUTTO}" 2>&1
-    rm -rf btsync.latest.tar.gz
+    sudo sh -c 'echo "deb http://linux-packages.getsync.com/btsync/deb btsync non-free" > /etc/apt/sources.list.d/btsync.list'
+    wget -qO - http://linux-packages.getsync.com/btsync/key.asc | sudo apt-key add - >/dev/null 2>&1
+    sudo apt-get update >>"${OUTTO}" 2>&1
+    sudo apt-get install btsync >>"${OUTTO}" 2>&1
+    cd && mkdir /home/${MASTER}/sync_folder
+    sudo chown ${MASTER}:btsync /home/${MASTER}/sync_folder
+    sudo chmod 2775 /home/${MASTER}/sync_folder
+    sudo usermod -a -G btsync ${MASTER}
+    sudo sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${MASTER}/.startup
+    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/config.json ; cd; }
+    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/user_config.json ; cd; }
+    sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/config.json
+    sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/user_config.json
+    sudo service btsync start
     echo "${OK}"
     ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping BTSync install${normal} ... " ;;
