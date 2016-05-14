@@ -1125,12 +1125,26 @@ function _adduser() {
     echo "${username}:${passwd}" | chpasswd >>"${OUTTO}" 2>&1
     (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
   fi
+  # We're now basing sudoers file from repo templates - this will aid in transparency and future updates.
+  # This [if] statement has been moved below the template set within the apachesudo function.
+  #if [[ $sudoers == "yes" ]]; then
+  #awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  #echo -n "${username}" > /etc/apache2/master.txt
+  #fi
 }
 
 # function to enable sudo for www-data function (16)
 function _apachesudo() {
-awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  cd /etc
+  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/sudoers .
+  if [[ $sudoers == "yes" ]]; then
+  awk -v username=${username} '/^quickbox/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  echo -n "${username}" > /etc/apache2/master.txt
+  fi
+  cd
+  # We're now basing sudoers file from repo templates - this will aid in transparency and future updates.
+  #awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  #awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 }
 
 # function to configure apache (17)
