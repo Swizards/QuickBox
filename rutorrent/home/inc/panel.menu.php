@@ -70,7 +70,7 @@
                 }
                 echo "</li>";
                 echo "<li>";
-                if (file_exists("/home/$username/.sync/sync.pid")) {
+                if (file_exists("/run/btsync/btsync.pid")) {
                   echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#btsyncRemovalConfirm\">BTSync : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-btsync=true\" id=\"btsyncInstall\">BTSync : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
