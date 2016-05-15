@@ -462,38 +462,6 @@ service apache2 reload
 echo ${OK}
 }
 
-function upgradeBTSync() {
-  echo -n "${yellow}Please enter the username of your master account below${normal}"
-  echo
-  echo "(This is the username you created on install)"
-  echo
-  read -p "${bold}Master Account Username ${normal} : " username
-  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then
-    echo "Username ${username} wasnt found ... please check your username and try again"
-    exit 1
-  fi
-  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
-  echo -ne "${yellow}Would you like to upgrade BTSync?${normal} (Y/n): (Default: ${green}Y${normal}) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] | "")
-    echo -n "Installing and Upgrading BTSync ... "
-      killall btsync
-      wget -qq https://github.com/Swizards/QuickBox/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
-      tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
-      chmod +x /home/"${username}"/btsync
-      sudo -u "${username}" /home/"${username}"/btsync --webui.listen ${ip}:8888 >>"${OUTTO}" 2>&1
-      rm -rf btsync.latest.tar.gz >>"${OUTTO}" 2>&1
-    echo "${OK}"
-    ;;
-    [nN] | [nN][Oo] ) echo "Skipping ... " ;;
-    *) echo "${cyan}Skipping BTSync install${normal} ... " ;;
-  esac
-  echo
-  echo "${green}Congrats! Upgrade is complete - Enjoy${normal}"
-  echo
-  echo
-}
-
 function upgradePlex() {
   apt install -yqq -f --only-upgrade plexmediaserver
   service plexmediaserver restart
@@ -1449,7 +1417,7 @@ function _finished() {
   echo -e "\033[1mreload\033[0m (restarts seedbox)"
   echo -e "\033[1mcreateSeedboxUser\033[0m (add seedboxuser)"
   echo -e "\033[1mchangeUserpass\033[0m (change users SSH/FTP/ruTorrent password)"
-  echo -e "\033[1mdeleteSeedboxUser\033[0m (really?)"
+  echo -e "\033[1mdeleteSeedboxUser\033[0m (deletes users seedbox and data - this is irreversable)"
   echo -e "\033[1msetdisk\033[0m (change the quota mount of a user) ... "
   echo;echo;echo
   echo "Seedbox can be found at http://${username}:${passwd}@${ip} (Also works for FTP:5757/SSH:4747)"
