@@ -21,9 +21,8 @@ Cmnd_Alias   PLUGINHANDLE = /usr/local/bin/installplugin-*, /usr/local/bin/remov
 Cmnd_Alias   GENERALCMNDS = /usr/bin/ifstat, /usr/bin/vnstat, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /etc/init.d/apache2 restart
 
 # User privilege specification
-quickbox ALL=(ALL:ALL) NOPASSWD: ALL
-www-data     ALL = (ALL) NOPASSWD: CLEANMEM, PACKAGEHANDLE, PLUGINHANDLE, GENERALCMNDS
 root	ALL=(ALL:ALL) ALL
+www-data     ALL = (ALL) NOPASSWD: CLEANMEM, PACKAGEHANDLE, PLUGINHANDLE, GENERALCMNDS
 
 # Members of the admin group may gain root privileges
 %admin ALL=(ALL) ALL
