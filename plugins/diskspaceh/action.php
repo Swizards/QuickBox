@@ -1,8 +1,8 @@
 <?php
 
 #################################################################################
-##  [Quick Box - action.php modified for quota systems use]
-#################################################################################
+# [Quick Box - action.php modified for quota systems use]
+#
 # GitHub:   https://github.com/Swizards/QuickBox
 # Author:   Swizards.net https://swizards.net
 # URL:      https://plaza.quickbox.io
