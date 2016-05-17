@@ -236,7 +236,7 @@ PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$(($PORT + 1500))
 #RPORT=$(($PORT + 1500))
 RPORT=$(shuf -i 2000-61000 -n 1)
-ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 # --END HERE --
 echo -n "Username: "; read username
   if grep -Fxq "$username" /etc/passwd; then
@@ -274,7 +274,7 @@ echo -n "Username: "; read username
       echo "$SIZE" >>/root/${username}.info
     ;;
     *)
-      echo "Disk Space MUST be in GB/TB, Example: 711GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
+      echo "Disk Space MUST be in GB/TB - Do not attempt to add deciamals in space settings, Example - Good: 711GB OR 2TB, Example - Bad: 711.5GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
     ;;
   esac
 
@@ -323,7 +323,7 @@ export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 # NO NEED TO EDIT PAST HERE!
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -463,11 +463,12 @@ echo ${OK}
 }
 
 function upgradeBTSync() {
-  apt install -yqq -f --only-upgrade btsync
+  apt-get install -yqq -f --only-upgrade btsync
   service btsync restart
 }
+
 function upgradePlex() {
-  apt install -yqq -f --only-upgrade plexmediaserver
+  apt-get install -yqq -f --only-upgrade plexmediaserver
   service plexmediaserver restart
 }
 
@@ -1145,7 +1146,7 @@ IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
 BTSYNC=
-ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
 
@@ -1406,7 +1407,7 @@ function _quickstats() {
 }
 
 function _quickconsole() {
-  CONSOLEIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+  CONSOLEIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" \
          -e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
@@ -1414,7 +1415,7 @@ function _quickconsole() {
 
 # function to show finished data (32)
 function _finished() {
-  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+  ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
   echo "Valid Commands: "
   echo;echo;echo
@@ -1467,7 +1468,7 @@ rutorrent="/srv/rutorrent/"
 REALM="rutorrent"
 IRSSI_PASS=$(_string)
 IRSSI_PORT=$(shuf -i 2000-61000 -n 1)
-ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 export DEBIAN_FRONTEND=noninteractive
 cd
 

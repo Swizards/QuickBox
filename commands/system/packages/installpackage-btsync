@@ -15,7 +15,7 @@
 #   under the GPL along with build & install instructions.
 #
 MASTER=$(cat /etc/apache2/master.txt)
-BTSYNCIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+BTSYNCIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 OUTTO="/root/quick-box.log"
 
 function _installBTSync() {
