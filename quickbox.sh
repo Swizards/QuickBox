@@ -248,7 +248,7 @@ echo -n "Username: "; read username
       echo "$SIZE" >>/root/${username}.info
     ;;
     *)
-      echo "Disk Space MUST be in GB/TB, Example: 711GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
+      echo "Disk Space MUST be in GB/TB - Do not attempt to add deciamals in space settings, Example - Good: 711GB OR 2TB, Example - Bad: 711.5GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
     ;;
   esac
 
@@ -1647,7 +1647,7 @@ function _quickstats() {
 }
 
 function _quickconsole() {
-  CONSOLEIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+  CONSOLEIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" \
          -e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
