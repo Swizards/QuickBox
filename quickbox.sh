@@ -462,6 +462,10 @@ service apache2 reload
 echo ${OK}
 }
 
+function upgradeBTSync() {
+  apt install -yqq -f --only-upgrade btsync
+  service btsync restart
+}
 function upgradePlex() {
   apt install -yqq -f --only-upgrade plexmediaserver
   service plexmediaserver restart
