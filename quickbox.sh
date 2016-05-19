@@ -16,6 +16,10 @@
 #
 # find server hostname and repo location for quickbox configuration
 #################################################################################
+<<<<<<< HEAD
+=======
+#################################################################################
+>>>>>>> qb_u_1604
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
 blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7);
@@ -60,8 +64,8 @@ export TERM=xterm;TERM=xterm
 export PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/quickbox/.bin/
 TPUT=`which tput`
 BC=`which bc`
-if [ ! -e $TPUT ]; then echo "tput is missing, please install it (yum install tput/apt-get install tput)";fi
-if [ ! -e $BC ]; then echo "bc is missing, please install it (yum install bc/apt-get install bc)";fi
+if [ ! -e $TPUT ]; then echo "tput is missing, please install it (yum install tput/apt install tput)";fi
+if [ ! -e $BC ]; then echo "bc is missing, please install it (yum install bc/apt install bc)";fi
 DFSCRIPT="${HOME}/.du.sh"
 if [ ! -e $DFSCRIPT ]; then
 cat >"$DFSCRIPT"<<'DS'
@@ -140,6 +144,7 @@ function paste() { $* | curl -F 'sprunge=<-' http://sprunge.us ; }
 function disktest() { dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync;rm -rf test ; }
 function newpass() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 function fixhome() { chmod -R u=rwX,g=rX,o= "$HOME" ;}
+function showspace() { cd /home/ && du */ -hs; }
 
 transfer() {
   if [ $# -eq 0 ]; then
@@ -234,7 +239,7 @@ PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$(($PORT + 1500))
 #RPORT=$(($PORT + 1500))
 RPORT=$(shuf -i 2000-61000 -n 1)
-ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 # --END HERE --
 echo -n "Username: "; read username
   if grep -Fxq "$username" /etc/passwd; then
@@ -272,7 +277,7 @@ echo -n "Username: "; read username
       echo "$SIZE" >>/root/${username}.info
     ;;
     *)
-      echo "Disk Space MUST be in GB/TB, Example: 711GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
+      echo "Disk Space MUST be in GB/TB - Do not attempt to add deciamals in space settings, Example - Good: 711GB OR 2TB, Example - Bad: 711.5GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
     ;;
   esac
 
@@ -321,7 +326,7 @@ export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 # NO NEED TO EDIT PAST HERE!
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -461,39 +466,12 @@ echo ${OK}
 }
 
 function upgradeBTSync() {
-  echo -n "${yellow}Please enter the username of your master account below${normal}"
-  echo
-  echo "(This is the username you created on install)"
-  echo
-  read -p "${bold}Master Account Username ${normal} : " username
-  if [[ ! $(grep "^${username}" ${HTPASSWD}) ]]; then
-    echo "Username ${username} wasnt found ... please check your username and try again"
-    exit 1
-  fi
-  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
-  echo -ne "${yellow}Would you like to upgrade BTSync?${normal} (Y/n): (Default: ${green}Y${normal}) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] | "")
-    echo -n "Installing and Upgrading BTSync ... "
-      killall btsync
-      wget -qq https://github.com/Swizards/QuickBox/raw/master/sources/btsync.latest.tar.gz . >>"${OUTTO}" 2>&1
-      tar xf btsync.latest.tar.gz -C /home/"${username}"/ >>"${OUTTO}" 2>&1
-      chmod +x /home/"${username}"/btsync
-      sudo -u "${username}" /home/"${username}"/btsync --webui.listen ${ip}:8888 >>"${OUTTO}" 2>&1
-      rm -rf btsync.latest.tar.gz >>"${OUTTO}" 2>&1
-    echo "${OK}"
-    ;;
-    [nN] | [nN][Oo] ) echo "Skipping ... " ;;
-    *) echo "${cyan}Skipping BTSync install${normal} ... " ;;
-  esac
-  echo
-  echo "${green}Congrats! Upgrade is complete - Enjoy${normal}"
-  echo
-  echo
+  apt-get install -yqq -f --only-upgrade btsync
+  service btsync restart
 }
 
 function upgradePlex() {
-  apt-get install -yqq --force-yes --only-upgrade plexmediaserver
+  apt-get install -yqq -f --only-upgrade plexmediaserver
   service plexmediaserver restart
 }
 
@@ -518,11 +496,11 @@ function _intro() {
   echo
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
-  if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
-    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by QuickBox ${normal} "
+  if [[ ! "${dis}" =~ ("Ubuntu") ]]; then
+    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by this version of QuickBox ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"16.04"|"7"|"8") ]]; then
+  elif [[ ! "${rel}" =~ ("16.04") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported $DISTRO release."
     echo 'Exiting...'
     exit 1
@@ -561,56 +539,12 @@ function _logcheck() {
 function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
-    apt-get -y -q install lsb-release >>"${OUTTO}" 2>&1
+    apt -y -q install lsb-release >>"${OUTTO}" 2>&1
     if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
-    else echo "failed to install lsb-release from apt-get, please install manually and re-run script"; exit
+    else echo "failed to install lsb-release from apt, please install manually and re-run script"; exit
     fi
   fi
 
-if [[ $DISTRO == Debian ]]; then
-cat >/etc/apt/sources.list<<EOF
-#------------------------------------------------------------------------------#
-#                            OFFICIAL DEBIAN REPOS                             #
-#------------------------------------------------------------------------------#
-
-
-###### Debian Main Repos
-#deb http://ftp.nl.debian.org/debian testing main contrib non-free
-#deb-src http://ftp.nl.debian.org/debian testing main contrib non-free
-
-###### Debian Update Repos
-deb http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
-deb-src http://ftp.de.debian.org/debian/ ${ver} main contrib non-free
-deb http://security.debian.org/ ${ver}/updates main contrib non-free
-deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
-deb http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
-deb-src http://ftp.de.debian.org/debian/ ${ver}-updates main contrib non-free
-deb http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
-deb-src http://ftp.de.debian.org/debian ${ver}-backports main contrib non-free
-
-deb http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
-deb-src http://ftp.debian.org/debian/ ${ver}-updates main contrib non-free
-deb http://security.debian.org/ ${ver}/updates main contrib non-free
-deb-src http://security.debian.org/ ${ver}/updates main contrib non-free
-
-#Third Parties Repos -- retired
-#Debian Multimedia
-#deb http://www.deb-multimedia.org squeeze main non-free
-#deb http://www.deb-multimedia.org squeeze-backports main
-
-#Third Parties Repos -- updated
-# Deb Multimedia
-deb http://www.deb-multimedia.org ${ver} main non-free
-deb-src http://www.deb-multimedia.org ${ver} main non-free
-
-#Debian Backports Repos
-#http://backports.debian.org/debian-backports squeeze-backports main
-EOF
-  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
-  apt-get --yes --force-yes install deb-multimedia-keyring >>"${OUTTO}" 2>&1
-  apt-get --yes --force-yes update >>"${OUTTO}" 2>&1
-
-else
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL UBUNTU REPOS                             #
@@ -633,45 +567,44 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
 EOF
-fi
 
   echo -n "Updating system ... "
 
-  if [[ $DISTRO == Debian ]]; then
     export DEBIAN_FRONTEND=noninteractive
-    yes '' | apt-get update >>"${OUTTO}" 2>&1
-    apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-    yes '' | apt-get upgrade >>"${OUTTO}" 2>&1
-  else
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get -y --force-yes update >>"${OUTTO}" 2>&1
-    apt-get -y purge samba samba-common >>"${OUTTO}" 2>&1
-    apt-get -y --force-yes upgrade >>"${OUTTO}" 2>&1
-  fi
+    apt -y update >>"${OUTTO}" 2>&1
+    apt -y purge samba samba-common >>"${OUTTO}" 2>&1
+    apt -y -f upgrade >>"${OUTTO}" 2>&1
+
     if [[ -e /etc/ssh/sshd_config ]]; then
       echo "Port 4747" /etc/ssh/sshd_config
       sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
       service ssh restart >>"${OUTTO}" 2>&1
     fi
+
   echo "${OK}"
   clear
 }
 
 # setting locale function (5)
 function _locale() {
+echo 'LANGUAGE="en_US.UTF-8"' >> /etc/default/locale
+echo 'LC_ALL="en_US.UTF-8"' >> /etc/default/locale
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-echo "LANG=en_US.UTF-8" > /etc/default/locale
-echo "LANGUAGE=en_US.UTF-8">>/etc/default/locale
-echo "LC_ALL=en_US.UTF-8" >>/etc/default/locale
   if [[ -e /usr/sbin/locale-gen ]]; then locale-gen >>"${OUTTO}" 2>&1
   else
-    apt-get update >>"${OUTTO}" 2>&1
-    apt-get install locales locale-gen -y --force-yes >>"${OUTTO}" 2>&1
+    apt -y update >>"${OUTTO}" 2>&1
+    apt install locales -y >>"${OUTTO}" 2>&1
     locale-gen >>"${OUTTO}" 2>&1
     export LANG="en_US.UTF-8"
     export LC_ALL="en_US.UTF-8"
     export LANGUAGE="en_US.UTF-8"
   fi
+}
+
+# package and repo addition (silently add php7) _add respo sources_
+function _repos() {
+  # now working with php 7 - so let's add it
+  LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php -y >>"${OUTTO}" 2>&1;
 }
 
 # setting system hostname function (6)
@@ -718,27 +651,20 @@ cat hostsTrackers >> /etc/hosts
 
 # package and repo addition (8) _install softwares and packages_
 function _depends() {
-if [[ $DISTRO == Debian ]]; then
-yes '' | apt-get install --force-yes build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
+apt install -q -f -y build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
   dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
-  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
-  fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
-  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
+  apache2-utils autoconf cron curl libapache2-mod-geoip libxslt-dev libncurses5-dev yasm pcregrep apache2 php-net-socket libdbd-mysql-perl libdbi-perl \
+  php7.0 php7.0-fpm php7.0-mbstring php7.0-zip php7.0-mysql php7.0-curl php7.0-gd php7.0-json php7.0-mcrypt php7.0-opcache php7.0-xml \
+  php7.0-bcmath php7.0-zip fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo ifstat libapache2-mod-php7.0 \
+  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl openjdk-8-jre-headless openjdk-8-jre openjdk-8-jdk \
   libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
-elif [[ $DISTRO == Ubuntu ]]; then
-apt-get install -q -f -y build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
-  dstat automake make mktorrent libtool libcppunit-dev libssl-dev pkg-config libxml2-dev libcurl3 libcurl4-openssl-dev libsigc++-2.0-dev \
-  apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
-  fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
-  ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
-  libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
-fi
+
   cd
   rm -rf /etc/skel
   if [[ -e skel.tar ]]; then rm -rf skel.tar;fi
   mkdir /etc/skel
-  tar xf $REPOURL/sources/skel.tar -C /etc/skel
-  tar xzf $REPOURL/sources/rarlinux-x64-5.2.1.tar.gz -C ./
+  tar xf "${REPOURL}"/sources/skel.tar -C /etc/skel
+  tar xzf "${REPOURL}"/sources/rarlinux-x64-5.3.0.tar.gz -C ./
   cp ./rar/*rar /usr/bin
   cp ./rar/*rar /usr/sbin
   rm -rf rarlinux*.tar.gz
@@ -937,16 +863,31 @@ function _adduser() {
     echo "${username}:${passwd}" | chpasswd >>"${OUTTO}" 2>&1
     (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
   fi
-  if [[ $sudoers == "yes" ]]; then
-  awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-  echo -n "${username}" > /etc/apache2/master.txt
-  fi
+  # We're now basing sudoers file from repo templates - this will aid in transparency and future updates.
+  # This [if] statement has been moved below the template set within the apachesudo function.
+  #if [[ $sudoers == "yes" ]]; then
+  #awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  #echo -n "${username}" > /etc/apache2/master.txt
+  #fi
 }
 
 # function to enable sudo for www-data function (16)
 function _apachesudo() {
+<<<<<<< HEAD
 awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+=======
+  cd /etc
+  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/sudoers .
+  if [[ $sudoers == "yes" ]]; then
+  awk -v username=${username} '/^quickbox/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  echo -n "${username}" > /etc/apache2/master.txt
+  fi
+  cd
+  # We're now basing sudoers file from repo templates - this will aid in transparency and future updates.
+  #awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+  #awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+>>>>>>> qb_u_1604
 }
 
 # function to configure apache (17)
@@ -1048,7 +989,7 @@ cat >/etc/apache2/sites-enabled/fileshare.conf<<DOE
 </Directory>
 DOE
 
-  sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php5/apache2/php.ini
+  sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php/7.0/apache2/php.ini
 
   echo "${OK}"
 }
@@ -1131,7 +1072,8 @@ EOF
   rm -rf /srv/rutorrent/plugins/tracklabels/labels/nlb.png
 
   # Needed for fileupload
-  wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare_2.1.2-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
+  wget -q http://ftp.nl.debian.org/debian/pool/main/p/plowshare/plowshare4_2.1.3-1_all.deb -O plowshare.deb >>"${OUTTO}" 2>&1
+  apt -y install plowshare >>"${OUTTO}" 2>&1
   dpkg -i plowshare.deb >>"${OUTTO}" 2>&1
   rm -rf plowshare.deb >>"${OUTTO}" 2>&1
   cd /root
@@ -1188,7 +1130,11 @@ function _plugincommands() {
 
 function _additionalsyscommands() {
     cd /usr/local/bin
+<<<<<<< HEAD
     wget -q -O/usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
+=======
+    wget -q -O /usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
+>>>>>>> qb_u_1604
     dos2unix clean_mem >>"${OUTTO}" 2>&1;
     chmod +x clean_mem >>"${OUTTO}" 2>&1;
     cd
@@ -1212,7 +1158,7 @@ IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
 BTSYNC=
-ADDRESS=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
 
@@ -1311,8 +1257,8 @@ function _boot() {
 
 # function to install pure-ftpd (27)
 function _installpureftpd() {
-  apt-get purge -y -q --force-yes vsftpd pure-ftpd >>"${OUTTO}" 2>&1
-  apt-get install -q -y --force-yes vsftpd >>"${OUTTO}" 2>&1
+  apt purge -q -f -y vsftpd pure-ftpd >>"${OUTTO}" 2>&1
+  apt install -q -f -y vsftpd >>"${OUTTO}" 2>&1
   echo "${OK}"
 }
 
@@ -1393,10 +1339,14 @@ function _askplex() {
       chown www-data: /srv/rutorrent/home/.plex
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
-      echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
-      curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
-      apt-get update >>"${OUTTO}" 2>&1
-      apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
+      #echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
+      #curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
+      # We'll use curl silently over wget
+      #wget -O - http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | sudo apt-key add - >/dev/null 2>&1
+      echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
+      curl -s http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add - > /dev/null 2>&1;
+      apt -y update >>"${OUTTO}" 2>&1
+      apt install plexmediaserver -y >>"${OUTTO}" 2>&1
       echo " ... ${OK}"
       ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
@@ -1410,11 +1360,20 @@ function _askbtsync() {
   case $responce in
     [yY] | [yY][Ee][Ss] )
     echo -n "Installing BTSync ... "
-    wget -qq https://github.com/Swizards/QuickBox/raw/master/sources/btsync.latest.tar.gz .
-    tar xf btsync.latest.tar.gz -C /home/${username}/
-    chmod +x /home/${username}/btsync
-    sudo -u ${username} /home/${username}/btsync --webui.listen ${ip}:8888 >>"${OUTTO}" 2>&1
-    rm -rf btsync.latest.tar.gz
+    sudo sh -c 'echo "deb http://linux-packages.getsync.com/btsync/deb btsync non-free" > /etc/apt/sources.list.d/btsync.list'
+    wget -qO - http://linux-packages.getsync.com/btsync/key.asc | sudo apt-key add - >/dev/null 2>&1
+    sudo apt-get update >>"${OUTTO}" 2>&1
+    sudo apt-get install btsync >>"${OUTTO}" 2>&1
+    cd && mkdir /home/${MASTER}/sync_folder
+    sudo chown ${MASTER}:btsync /home/${MASTER}/sync_folder
+    sudo chmod 2775 /home/${MASTER}/sync_folder
+    sudo usermod -a -G btsync ${MASTER}
+    sudo sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${MASTER}/.startup
+    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/config.json ; cd; }
+    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/user_config.json ; cd; }
+    sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/config.json
+    sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/user_config.json
+    sudo service btsync start
     echo "${OK}"
     ;;
     [nN] | [nN][Oo] | "") echo "${cyan}Skipping BTSync install${normal} ... " ;;
@@ -1460,7 +1419,11 @@ function _quickstats() {
 }
 
 function _quickconsole() {
+<<<<<<< HEAD
   CONSOLEIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+=======
+  CONSOLEIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
+>>>>>>> qb_u_1604
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" \
          -e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
@@ -1468,14 +1431,14 @@ function _quickconsole() {
 
 # function to show finished data (32)
 function _finished() {
-  ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+  ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
   echo -e "\033[0mCOMPLETED in ${FIN}/min\033[0m"
   echo "Valid Commands: "
   echo;echo;echo
   echo -e "\033[1mreload\033[0m (restarts seedbox)"
   echo -e "\033[1mcreateSeedboxUser\033[0m (add seedboxuser)"
   echo -e "\033[1mchangeUserpass\033[0m (change users SSH/FTP/ruTorrent password)"
-  echo -e "\033[1mdeleteSeedboxUser\033[0m (really?)"
+  echo -e "\033[1mdeleteSeedboxUser\033[0m (deletes users seedbox and data - this is irreversable)"
   echo -e "\033[1msetdisk\033[0m (change the quota mount of a user) ... "
   echo;echo;echo
   echo "Seedbox can be found at http://${username}:${passwd}@${ip} (Also works for FTP:5757/SSH:4747)"
@@ -1490,17 +1453,10 @@ cat >/root/information.info<<EOF
 EOF
 
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  if [[ $DISTRO == Debian ]]; then
-    for i in ssh apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
-      service $i restart >>"${OUTTO}" 2>&1
-      systemctl enable $i >>"${OUTTO}" 2>&1
-    done
-  else
     for i in sshd apache2 pure-ftpd vsftpd fail2ban quota plexmediaserver; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
     done
-  fi
   rm -rf /root/tmp/
   echo -ne "Do you wish to reboot (recommended!): (Default ${green}Y${normal})"; read reboot
   case $reboot in
@@ -1528,7 +1484,7 @@ rutorrent="/srv/rutorrent/"
 REALM="rutorrent"
 IRSSI_PASS=$(_string)
 IRSSI_PORT=$(shuf -i 2000-61000 -n 1)
-ip=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 export DEBIAN_FRONTEND=noninteractive
 cd
 
@@ -1540,6 +1496,7 @@ _checkroot
 _logcheck
 _updates
 # _locale
+_repos
 _hostname
 _denyhosts
 echo -n "Installing building tools and all dependencies and perl modules, please wait ... ";_depends

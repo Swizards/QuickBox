@@ -215,7 +215,7 @@ function processExists($processName, $username) {
 
 $rtorrent = processExists("\"main|rtorrent\"",$username);
 $irssi = processExists("irssi",$username);
-$btsync = processExists("btsync",$username);
+$btsync = processExists("btsync",btsync);
 $plex = processExists("Plex",$username);
 
 function isEnabled($search, $username){

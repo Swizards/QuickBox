@@ -9,6 +9,7 @@
 [![GNU v3.0 License](https://img.shields.io/badge/license-GNU%20v3.0%20License-blue.svg?style=flat-square)](https://github.com/Swizards/QuickBox/blob/master/LICENSE.md)
 
 #### Ubuntu Builds
+<<<<<<< HEAD
 [![Ubuntu 16.04 Passing](https://img.shields.io/badge/Ubuntu%2016.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/clicks/track?url=https%3A%2F%2Fgithub.com%2FSwizards%2FQuickBox%2Ftree%2Fqb_u_1604&post_id=74&topic_id=31)
 [![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 [![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
@@ -17,6 +18,9 @@
 #### Debian Builds
 [![Debian 7 Passing](https://img.shields.io/badge/Debain%207-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 [![Debian 8 Passing](https://img.shields.io/badge/Debain%208-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+=======
+[![Ubuntu 16.04 Passing](https://img.shields.io/badge/Ubuntu%2016.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+>>>>>>> qb_u_1604
 
 ---
 
@@ -31,7 +35,12 @@
 ###Using a _/home_ primary partition setup? Please read this first:
 It is a known issue that will be resolved over the next few days. If you are running a server from a provider that only allows the use of __/home__ primary mounted partitions, please refrain from using QuickBox at this time. If you use __/__ primary mounted partitions, there are absolutely 0 issues with the install process. Again, this will be resolved in the next couple of days (notice revised: May 9, 2016 at 12:55PM (CST))
 
+<<<<<<< HEAD
 
+=======
+### For a full README and CHANGELOG
+For a full README and CHANGELOG on QuickBox as well as how to install, please visit the [QuickBox Plaza](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+>>>>>>> qb_u_1604
 
 ## Before installation
 You need to have a Fresh "blank" server installation.
@@ -54,13 +63,18 @@ After that access your box using a SSH client, like PuTTY.
 
 **Run the following command to grab the latest stable release [Ubunut 16.04 w/ PHP 7 - standalone] ...**
 ```
+<<<<<<< HEAD
 apt -yqq update && apt -yqq upgrade && apt -yqq install git curl lsb-release; \
+=======
+apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install git curl lsb-release; \
+>>>>>>> qb_u_1604
 git clone -b qb_u_1604 https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
 ```
 
+<<<<<<< HEAD
 ### Ubuntu 14.04, 15.04, and 15.10 || Debian 7 & 8
 
 **Run the following command to grab our latest stable release ...**
@@ -72,6 +86,8 @@ bash quickbox.sh
 
 ```
 
+=======
+>>>>>>> qb_u_1604
 ---
 
 
@@ -79,6 +95,7 @@ bash quickbox.sh
 After installing you will have access to the following commands to be used directly in terminal
 
 * ~~quickbox~~ - tells you which version Quick Box you are running and shows commands list ``deprecated due to versioning now shows on the dashboard under username dropdown``
+<<<<<<< HEAD
 * __createSeedboxUser__ - creates a shelled seedbox user
 * __deleteSeedboxUser__ - deletes a created seedbox user and their directories
 <sup>**This is permanent, current data will be deleted - you can create them again at any time**</sup>
@@ -86,3 +103,10 @@ After installing you will have access to the following commands to be used direc
 * __setdisk__ - set your disk quota for any given user
 * __reload__ - restarts your seedbox services, i.e; rtorrent & irssi
 * __upgradeBTSync__ -- upgrades btsync when new version is available
+=======
+* createSeedboxUser - creates a shelled seedbox user
+* deleteSeedboxUser - deletes a created seedbox user and their directories **This is permanent, current data will be deleted - you can create them again at any time**
+* setdisk - set your disk quota for any given user
+* reload - restarts your seedbox services, i.e; rtorrent & irssi
+* upgradeBTSync -- upgrades btsync when new version is available
+>>>>>>> qb_u_1604
