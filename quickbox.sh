@@ -248,7 +248,7 @@ echo -n "Username: "; read username
       echo "$SIZE" >>/root/${username}.info
     ;;
     *)
-      echo "Disk Space MUST be in GB/TB - Do not attempt to add deciamals in space settings, Example - Good: 711GB OR 2TB, Example - Bad: 711.5GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
+      echo "Disk Space MUST be in GB/TB, Example: 711GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
     ;;
   esac
 
@@ -475,11 +475,11 @@ function _intro() {
   echo
   dis="$(lsb_release -is)"
   rel="$(lsb_release -rs)"
-  if [[ ! "${dis}" =~ ("Ubuntu") ]]; then
-    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by this version of QuickBox ${normal} "
+  if [[ ! "${dis}" =~ ("Ubuntu"|"Debian") ]]; then
+    echo "${dis}: ${alert} It looks like you are running $DISTRO, which is not supported by QuickBox ${normal} "
     echo 'Exiting...'
     exit 1
-  elif [[ ! "${rel}" =~ ("16.04") ]]; then
+  elif [[ ! "${rel}" =~ ("14.04"|"15.04"|"15.10"|"16.04"|"7"|"8") ]]; then
     echo "${bold}${rel}:${normal} You do not appear to be running a supported $DISTRO release."
     echo 'Exiting...'
     exit 1
@@ -567,12 +567,13 @@ function _ssdpblock() {
 function _updates() {
   if lsb_release >>"${OUTTO}" 2>&1; then ver=$(lsb_release -c|awk '{print $2}')
   else
-    apt -y -q install lsb-release >>"${OUTTO}" 2>&1
+    apt-get -y -q install lsb-release >>"${OUTTO}" 2>&1
     if [[ -e /usr/bin/lsb_release ]]; then ver=$(lsb_release -c|awk '{print $2}')
     else echo "failed to install lsb-release from apt, please install manually and re-run script"; exit
     fi
   fi
 
+if [[ $DISTRO == Debian ]]; then
 cat >/etc/apt/sources.list<<EOF
 #------------------------------------------------------------------------------#
 #                            OFFICIAL DEBIAN REPOS                             #
@@ -637,6 +638,7 @@ deb-src http://nl.archive.ubuntu.com/ubuntu/ ${ver}-backports main restricted un
 deb http://archive.canonical.com/ubuntu ${ver} partner
 deb-src http://archive.canonical.com/ubuntu ${ver} partner
 EOF
+fi
 
   if [[ $DISTRO == Debian ]]; then
     export DEBIAN_FRONTEND=noninteractive
@@ -1125,21 +1127,16 @@ function _adduser() {
     echo "${username}:${passwd}" | chpasswd >>"${OUTTO}" 2>&1
     (echo -n "${username}:${REALM}:" && echo -n "${username}:${REALM}:${passwd}" | md5sum | awk '{print $1}' ) >> "${HTPASSWD}"
   fi
-  # We're now basing sudoers file from repo templates - this will aid in transparency and future updates.
-  # This [if] statement has been moved below the template set within the apachesudo function.
-  #if [[ $sudoers == "yes" ]]; then
-  #awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-  #echo -n "${username}" > /etc/apache2/master.txt
-  #fi
 }
 
 # function to enable sudo for www-data function (16)
 function _apachesudo() {
   cd /etc
+  rm sudoers
   wget -q https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/sudoers .
   if [[ $sudoers == "yes" ]]; then
-  awk -v username=${username} '/^quickbox/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-  echo -n "${username}" > /etc/apache2/master.txt
+    awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
+    echo -n "${username}" > /etc/apache2/master.txt
   fi
   cd
   # We're now basing sudoers file from repo templates - this will aid in transparency and future updates.
@@ -1412,7 +1409,11 @@ function _plugincommands() {
   mkdir -p /etc/quickbox/commands/rutorrent/plugins
   mv "${PLUGINURL}" /etc/quickbox/commands/rutorrent/
   PLUGINCOMMANDS="/etc/quickbox/commands/rutorrent/plugins/"; cd "/usr/local/bin"
-  LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspace removeplugin-diskspace installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
+  if [[ ${primaryroot} == "root" ]]; then
+    LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspace removeplugin-diskspace installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
+  else
+    LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspaceh removeplugin-diskspaceh installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
+  fi
   for i in $LIST; do
   cp -R "${PLUGINCOMMANDS}$i" .
   dos2unix installplugin* removeplugin* >>"${OUTTO}" 2>&1;
@@ -1467,7 +1468,7 @@ function _perms() {
   chown -R ${username}.${username} /home/${username}/ >>"${OUTTO}" 2>&1
   chown ${username}.${username} /home/${username}/.startup
   sudo -u ${username} chmod 755 /home/${username}/ >>"${OUTTO}" 2>&1
-  chmod +x /etc/cron.daily/denypublic >/dev/null 2>&1
+  #chmod +x /etc/cron.daily/denypublic >/dev/null 2>&1
   chmod 777 /home/${username}/.sessions >/dev/null 2>&1
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
   chmod +x /home/${username}/.startup >/dev/null 2>&1
@@ -1649,8 +1650,15 @@ function _quickstats() {
 function _quickconsole() {
   CONSOLEIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
   sed -i -e "s/console-username/${username}/g" \
-         -e "s/console-password/${password}/g" \
-         -e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
+         -e "s/console-password/${password}/g" /home/${username}/.console/index.php
+         # Deprecated due to browser php back fix
+         #-e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
+  # Stashing this here
+  #if [[ ${usefqdn} == "yes" ]]; then
+  #  sed -i "s/ipaccess/$FQDN/g" /home/${username}/.console/index.php
+  #else
+  #  sed -i "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
+  #fi
 }
 
 # function to show finished data (32)
@@ -1713,6 +1721,21 @@ EOF
 }
 
 clear
+
+spinner() {
+    local pid=$1
+    local delay=0.25
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [${bold}${yellow}%c${normal}]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+    echo -ne "${OK}"
+}
 
 Reth0=$(ifconfig | grep -m 1 "Link encap" | sed 's/[ \t].*//;/^\(lo\|\)$/d' | awk '{ print $1 '});
 IFACE=$(echo -n "${Reth0}");
