@@ -3,8 +3,8 @@
 # [Quick Box :: Install plexmediaserver package]
 #
 # GitHub:   https://github.com/Swizards/QuickBox
-# Author:   Swizards.net
-# URL:      https://swizards.net
+# Author:   Swizards.net https://swizards.net
+# URL:      https://plaza.quickbox.io
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -25,10 +25,10 @@ function _installPlex() {
     chown www-data: /srv/rutorrent/home/.plex
     touch /etc/apache2/sites-enabled/plex.conf
     chown www-data: /etc/apache2/sites-enabled/plex.conf
-    echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
-    curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
-    apt-get -qq -y --force-yes update >>"${OUTTO}" 2>&1
-    apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
+    echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
+    curl -s http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add - > /dev/null 2>&1;
+    apt -y update >>"${OUTTO}" 2>&1
+    apt install plexmediaserver -y >>"${OUTTO}" 2>&1
     /etc/init.d/apache2 restart
 }
 

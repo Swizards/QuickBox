@@ -15,14 +15,12 @@
 #   under the GPL along with build & install instructions.
 #
 MASTER=$(cat /etc/apache2/master.txt)
+OUTTO="/root/quick-box.log"
 
 function _removeBTSync() {
+  sudo service btsync stop
   sudo killall btsync
-  sudo find / -name ".sync" -type d -exec rm -rf {} \;
-  sudo find / -name "btsync" -type f -exec rm -rf {} \;
-  sudo rm /home/${MASTER}/LICENSE.TXT
-  sudo rm /home/${MASTER}/README
-  sudo apt-get -y remove --purge btsync btsync-common
+  sudo apt-get -y remove --purge btsync* >>"${OUTTO}" 2>&1
   sudo sed -i 's/BTSYNC=yes/BTSYNC=/g' /home/${MASTER}/.startup
   sudo service apache2 reload
 }
