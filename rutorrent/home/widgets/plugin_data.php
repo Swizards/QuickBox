@@ -54,11 +54,7 @@ if ($_GET['removeplugin-autodl']) {
         header('Refresh: 5; /');
         writeMsg("Hello <b>$username</b>: I have removed the <b>autodl-irssi plugin</b> for ruTorrent. Your browser will refresh now ... <br>");
         $message = "Hello <b>$username</b>: I have removed the <b>autodl-irssi plugin</b> for ruTorrent. Your browser will refresh now ... <br>";
-<<<<<<< HEAD
-        shell_exec("sudo -u root /usr/local/bin/removeplugin-autodl"); 
-=======
         shell_exec("sudo -u root /usr/local/bin/removeplugin-autodl");
->>>>>>> qb_u_1604
         $myUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && !in_array(strtolower($_SERVER['HTTPS']),array('off','no'))) ? 'https' : 'http';
         $myUrl .= '://'.$_SERVER['HTTP_HOST'];
         $newURL = $myURL;
@@ -243,8 +239,6 @@ if ($_GET['removeplugin-diskspace']) {
         $myUrl .= '://'.$_SERVER['HTTP_HOST'];
         $newURL = $myURL;
 }
-<<<<<<< HEAD
-=======
 /*! ----------------------------------------------------------------------
   BEGIN: If Using /home As The Primary partition Install Plugin diskspaceh
 ---------------------------------------------------------------------- !*/
@@ -271,7 +265,6 @@ if ($_GET['removeplugin-diskspaceh']) {
 /*! ----------------------------------------------------------------------
   END: If Using /home As The Primary partition Install Plugin diskspaceh
 ---------------------------------------------------------------------- !*/
->>>>>>> qb_u_1604
 if ($_GET['installplugin-edit']) {
         //header('Location: /');
         header('Refresh: 5; /');
