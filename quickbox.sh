@@ -1362,16 +1362,17 @@ function _plugincommands() {
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PLUGINCOMMANDS}$i" .
-  dos2unix installplugin* >>"${OUTTO}" 2>&1; dos2unix removeplugin* >>"${OUTTO}" 2>&1;
-  chmod +x installplugin* >>"${OUTTO}" 2>&1; chmod +x removeplugin* >>"${OUTTO}" 2>&1;
+  dos2unix installplugin* removeplugin* >>"${OUTTO}" 2>&1;
+  chmod +x installplugin* removeplugin* >>"${OUTTO}" 2>&1;
   done
 }
 
 function _additionalsyscommands() {
     cd /usr/local/bin
     wget -q -O /usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
-    dos2unix clean_mem >>"${OUTTO}" 2>&1;
-    chmod +x clean_mem >>"${OUTTO}" 2>&1;
+    wget -q -O /usr/local/bin/showspace https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/showspace
+    dos2unix clean_mem showspace >>"${OUTTO}" 2>&1;
+    chmod +x clean_mem showspace >>"${OUTTO}" 2>&1;
     cd
 }
 
