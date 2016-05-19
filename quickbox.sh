@@ -1117,7 +1117,7 @@ function _adduser() {
 function _apachesudo() {
   cd /etc
   rm sudoers
-  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/sudoers .
+  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/sudoers .
   if [[ $sudoers == "yes" ]]; then
     awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
     echo -n "${username}" > /etc/apache2/master.txt
@@ -1598,8 +1598,8 @@ function _askbtsync() {
     sudo chmod 2775 /home/${MASTER}/sync_folder
     sudo usermod -a -G btsync ${MASTER}
     sudo sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${MASTER}/.startup
-    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/config.json ; cd; }
-    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/sources/user_config.json ; cd; }
+    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/config.json ; cd; }
+    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/user_config.json ; cd; }
     sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/config.json
     sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/user_config.json
     sudo service btsync start
@@ -1645,7 +1645,7 @@ function _quickstats() {
   echo "" >> /srv/rutorrent/home/widgets/config.php
   echo "?>" >> /srv/rutorrent/home/widgets/config.php
   if [[ ${primaryroot} == "home" ]]; then
-    cd /srv/rutorrent/home/widgets && rm disk_data.php && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/qb_u_1604/rutorrent/home/widgets/disk_datah.php; }
+    cd /srv/rutorrent/home/widgets && rm disk_data.php && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/master/rutorrent/home/widgets/disk_datah.php; }
     mv disk_datah.php disk_data.php
     chown -R www-data:www-data /srv/rutorrent/home/widgets
   fi
