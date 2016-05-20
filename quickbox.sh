@@ -141,7 +141,7 @@ function paste() { $* | curl -F 'sprunge=<-' http://sprunge.us ; }
 function disktest() { dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync;rm -rf test ; }
 function newpass() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 function fixhome() { chmod -R u=rwX,g=rX,o= "$HOME" ;}
-function showspace() { cd /home/ && du */ -hs; }
+#function showspace() { cd /home/ && du */ -hs; }
 
 transfer() {
   if [ $# -eq 0 ]; then
