@@ -16,20 +16,23 @@
 #
 OUTTO="/root/quick-box.log"
 HOSTNAME1=$(hostname -s)
-PUBLICIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
+PUBLICIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 function _installPlex() {
-    echo -n "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
+    echo -ne "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
     sudo a2enconf fqdn >>"${OUTTO}" 2>&1
     touch /srv/rutorrent/home/.plex
     chown www-data: /srv/rutorrent/home/.plex
     touch /etc/apache2/sites-enabled/plex.conf
     chown www-data: /etc/apache2/sites-enabled/plex.conf
-    echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
-    curl -s http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add - > /dev/null 2>&1;
-    apt -y update >>"${OUTTO}" 2>&1
-    apt install plexmediaserver -y >>"${OUTTO}" 2>&1
-    /etc/init.d/apache2 restart
+    wget -O - http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add -
+    echo "deb http://www.deb-multimedia.org wheezy main non-free" > /etc/apt/sources.list.d/deb-multimedia.list
+    echo "deb http://shell.ninthgate.se/packages/debian wheezy main" > /etc/apt/sources.list.d/plexmediaserver.list
+    apt-get -y update
+    apt-get install deb-multimedia-keyring -y
+    apt-get -y install plexmediaserver
+    service plexmediaserver restart
+    /etc/init.d/apache2 reload
 }
 
 

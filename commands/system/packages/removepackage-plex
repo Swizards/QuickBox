@@ -16,9 +16,9 @@
 #
 
 function _removePlex() {
-  apt-get purge -y --force-yes plexmediaserver
+  dpkg -r plexmediaserver
   rm -rf /var/lib/plexmediaserver
-  userdel plex
+  rm -rf /usr/lib/plexmediaserver
   rm /etc/init/plexmediaserver.conf
   rm /etc/default/plexmediaserver
   rm /etc/apache2/conf-available/fqdn.conf
