@@ -323,17 +323,18 @@ export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 # NO NEED TO EDIT PAST HERE!
-if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
+if [ "\$WIPEDEAD" == "yes" ]; then
+  screen -wipe > /dev/null
+fi
 
 if [ "\$IRSSI_CLIENT" == "yes" ]; then
-  (screen -ls|grep irssi > /dev/null || (screen -fa -dmS irssi irssi && false))
+    (screen -ls|grep irssi > /dev/null || (screen -fa -dmS irssi irssi && false))
 fi
 
 if [ "\$RTORRENT_CLIENT" == "yes" ]; then
-  (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+    (screen -ls|grep rtorrent > /dev/null || (screen -fa -dmS rtorrent rtorrent && false))
 fi
 SU
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
