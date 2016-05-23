@@ -1693,8 +1693,12 @@ cat >/root/information.info<<EOF
 EOF
 
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  quotacheck -auMF vfsv1
-    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached plexmediaserver; do
+  service quota stop >>"${OUTTO}" 2>&1
+  quotaoff -a >>"${OUTTO}" 2>&1
+  quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+  quotaon -a >>"${OUTTO}" 2>&1
+  service quota start >>"${OUTTO}" 2>&1
+    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached plexmediaserver cron; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
     done
