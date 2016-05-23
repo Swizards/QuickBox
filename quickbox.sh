@@ -330,11 +330,11 @@ if [ "\$WIPEDEAD" == "yes" ]; then
 fi
 
 if [ "\$IRSSI_CLIENT" == "yes" ]; then
-    (screen -ls|grep irssi > /dev/null || (screen -fa -dmS irssi irssi && false))
+    screen -fa -dmS irssi irssi
 fi
 
 if [ "\$RTORRENT_CLIENT" == "yes" ]; then
-    (screen -ls|grep rtorrent > /dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+    screen -fa -dmS rtorrent rtorrent
 fi
 SU
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
