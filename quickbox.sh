@@ -673,6 +673,10 @@ fi
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
     service ssh restart >>"${OUTTO}" 2>&1
   fi
+
+  # Create the service lock file directory
+  mkdir /install
+
 }
 
 # setting locale function (6)
@@ -1050,6 +1054,7 @@ function _rtorrent() {
   cd /root/tmp
   ldconfig >>"${OUTTO}" 2>&1
   rm -rf /root/tmp/rtorrent-${RTVERSION}* >>"${OUTTO}" 2>&1
+  touch /install/.rtorrent.lock
 }
 
 # scgi enable function (13-nixed)
@@ -1097,6 +1102,7 @@ function _askshell() {
 # adduser function (15)
 function _adduser() {
   theshell="/bin/bash";
+  echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
   echo -n "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
@@ -1119,10 +1125,10 @@ function _apachesudo() {
   cd /etc
   rm sudoers
   wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/sudoers .
-  if [[ $sudoers == "yes" ]]; then
+  #if [[ $sudoers == "yes" ]]; then
     awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
     echo -n "${username}" > /etc/apache2/master.txt
-  fi
+  #fi
   cd
 }
 
@@ -1271,7 +1277,6 @@ function _plugins() {
   mkdir -p "${rutorrent}plugins"; cd "${rutorrent}plugins"
   LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
   for i in $LIST; do
-  #echo -ne "Installing Plugin: ${green}${i}${normal} ... "
   cp -R "${PLUGINVAULT}$i" .
   done
 
@@ -1361,7 +1366,6 @@ function _plugincommands() {
     LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspaceh removeplugin-diskspaceh installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
   fi
   for i in $LIST; do
-  #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PLUGINCOMMANDS}$i" .
   dos2unix installplugin* removeplugin* >>"${OUTTO}" 2>&1;
   chmod +x installplugin* removeplugin* >>"${OUTTO}" 2>&1;
@@ -1393,7 +1397,6 @@ export USER=`id -un`
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-BTSYNC=
 ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
@@ -1405,14 +1408,8 @@ fi
 if [ "$RTORRENT_CLIENT" == "yes" ]; then
   (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
 fi
-
-if [ "$BTSYNC" == "yes" ]; then
-  (pgrep -u "$USER" btsync >/dev/null || /home/"$USER"/btsync --webui.listen "${ADDRESS}":8888 >/dev/null 2>&1 && false)
-fi
 EOF
-if [[ $btsync == "yes" ]]; then
-  sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${username}/.startup
-fi
+
 }
 
 # function to set permissions on first user (23)
@@ -1570,10 +1567,6 @@ function _askplex() {
       chown www-data: /srv/rutorrent/home/.plex
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
-      #echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
-      #curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
-      # We'll use curl silently over wget
-      #wget -O - http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | sudo apt-key add - >/dev/null 2>&1
       echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
       curl -s http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add - > /dev/null 2>&1;
       apt -y update >>"${OUTTO}" 2>&1
@@ -1658,14 +1651,6 @@ function _quickconsole() {
 
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" /home/${username}/.console/index.php
-         # Deprecated due to browser php back fix
-         #-e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
-  # Stashing this here
-  #if [[ ${usefqdn} == "yes" ]]; then
-  #  sed -i "s/ipaccess/$FQDN/g" /home/${username}/.console/index.php
-  #else
-  #  sed -i "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
-  #fi
 }
 
 # function to show finished data (32)
@@ -1791,12 +1776,17 @@ elif [[ ${csf} == "no" ]]; then
 fi
 _denyhosts
 echo -n "Building required user directories ... ";_skel & spinner $!;echo
-_askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg & spinner $!;echo; fi
+_askffmpeg;
+if [[ ${ffmpeg} == "yes" ]]; then
+    _ffmpeg & spinner $!;echo;
+fi
 _askrtorrent
 _xmlrpc & spinner $!;echo
 _libtorrent & spinner $!;echo
 _rtorrent & spinner $!;echo
-echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;_askshell;_adduser;_apachesudo
+echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;
+#_askshell;
+_adduser;_apachesudo
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf & spinner $!;echo
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf & spinner $!;echo
 echo -n "Installing rutorrent plugins ... ";_plugins & spinner $!;echo
@@ -1808,7 +1798,8 @@ echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf & spinner $
 echo -n "Writing seedbox reload script ... ";_reloadscript & spinner $!;echo
 echo -n "Installing VSFTPd ... ";_installftpd & spinner $!;echo
 echo -n "Setting up VSFTPd ... ";_ftpdconfig & spinner $!;echo
-_askplex;_askbtsync;_packagecommands;_quickstats;_quickconsole
+#_askplex;_askbtsync;
+_packagecommands;_quickstats;_quickconsole
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot & spinner $!;echo;
 echo -n "Setting permissions on ${username} ... ";_perms & spinner $!;echo;
 cd
