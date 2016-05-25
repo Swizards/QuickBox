@@ -574,10 +574,12 @@ echo "Press ${standout}${green}ENTER${normal} when you're ready to begin or ${st
 echo
 }
 
-# We'll use a more robust firewall solution for this: see CSF.
-#function _ssdpblock() {
-#  iptables -I INPUT 1 -p udp -m udp --dport 1900 -j DROP
-#}
+# This function blocks an insecure port 1900 that may lead to
+# DDoS masked attacks. Only remove this function if you absolutely
+# need port 1900. In most cases, this is a junk port.
+function _ssdpblock() {
+  iptables -I INPUT 1 -p udp -m udp --dport 1900 -j DROP
+}
 
 # package and repo addition (5) _update and upgrade_
 function _updates() {
@@ -874,30 +876,42 @@ function _cloudflare() {
   fi
 }
 
-# ban public trackers (8)
-function _denyhosts() {
+# ban public trackers [csf option] (8)
+function _csfdenyhosts() {
 echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
 case $responce in
   [yY] | [yY][Ee][Ss] | "")
 echo "[ ${red}Blocking public trackers${normal} ]"
 sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" \
        -e "/GLOBAL_DYNDNS = \"\"/cGLOBAL_DYNDNS = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" /etc/csf/csf.conf
-#wget -q -O/etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
-#cat >/etc/cron.daily/denypublic<<'EOF'
-#IFS=$'\n'
-#L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
-#for fn in $L; do
-#        /sbin/iptables -D INPUT -d $fn -j DROP
-#        /sbin/iptables -D FORWARD -d $fn -j DROP
-#        /sbin/iptables -D OUTPUT -d $fn -j DROP
-#        /sbin/iptables -A INPUT -d $fn -j DROP
-#        /sbin/iptables -A FORWARD -d $fn -j DROP
-#        /sbin/iptables -A OUTPUT -d $fn -j DROP
-#done
-#EOF
-#chmod +x /etc/cron.daily/denypublic
-#curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
-#cat hostsTrackers >> /etc/hosts
+  ;;
+  [nN] | [nN][Oo] ) echo "[ ${green}Allowing${normal} ]"
+                ;;
+        esac
+}
+
+# ban public trackers [iptables option] (8)
+function _csfdenyhosts() {
+echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
+case $responce in
+  [yY] | [yY][Ee][Ss] | "")
+echo "[ ${red}Blocking public trackers${normal} ]"
+wget -q -O /etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
+cat >/etc/cron.daily/denypublic<<'EOF'
+IFS=$'\n'
+L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
+for fn in $L; do
+        /sbin/iptables -D INPUT -d $fn -j DROP
+        /sbin/iptables -D FORWARD -d $fn -j DROP
+        /sbin/iptables -D OUTPUT -d $fn -j DROP
+        /sbin/iptables -A INPUT -d $fn -j DROP
+        /sbin/iptables -A FORWARD -d $fn -j DROP
+        /sbin/iptables -A OUTPUT -d $fn -j DROP
+done
+EOF
+chmod +x /etc/cron.daily/denypublic
+curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
+cat hostsTrackers >> /etc/hosts
   ;;
   [nN] | [nN][Oo] ) echo "[ ${green}Allowing${normal} ]"
                 ;;
@@ -1761,7 +1775,7 @@ _checkroot
 _logcheck
 _askpartition
 _askcontinue
-#_ssdpblock
+_ssdpblock
 echo -n "Updating system ... ";_updates & spinner $!;echo
 clear
 #_locale
@@ -1781,7 +1795,11 @@ if [[ ${csf} == "yes" ]]; then
 elif [[ ${csf} == "no" ]]; then
     _nocsf;
 fi
-_denyhosts
+if [[ ${csf} == "yes" ]]; then
+    _csfdenyhosts
+else
+    _denyhosts
+fi
 echo -n "Building required user directories ... ";_skel & spinner $!;echo
 _askffmpeg;
 if [[ ${ffmpeg} == "yes" ]]; then
