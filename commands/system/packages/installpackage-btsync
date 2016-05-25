@@ -32,8 +32,8 @@ function _installBTSync() {
   cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/user_config.json ; cd; }
   sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/config.json
   sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/user_config.json
+  touch /install/.btsync.lock
   sudo service btsync start
-
 }
 
 _installBTSync

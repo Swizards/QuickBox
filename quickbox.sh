@@ -796,6 +796,7 @@ function _csf() {
     # modify csf conf - make suitable changes for non-cpanel environment
     cd /etc/csf
     rm csf.conf
+    touch /install/.csf.lock
     wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/csf.conf
   fi
 }

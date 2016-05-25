@@ -25,6 +25,7 @@ function _removePlex() {
   rm /etc/apache2/conf-enabled/fqdn.conf
   rm /etc/apache2/sites-enabled/plex.conf
   rm /srv/rutorrent/home/.plex
+  rm /install/.plex.lock
   pkill -f plex
 }
 
