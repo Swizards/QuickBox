@@ -334,7 +334,7 @@ if [ "\$IRSSI_CLIENT" == "yes" ]; then
 fi
 
 if [ "\$RTORRENT_CLIENT" == "yes" ]; then
-  (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+  (screen -ls|grep rtorrent >/dev/null || (screen -dmS rtorrent rtorrent && false))
 fi
 SU
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
@@ -432,6 +432,8 @@ SC
 
 sed -i -e "s/console-username/${username}/g" \
        -e "s/console-password/${password}/g" /home/${username}/.console/index.php
+
+sudo -u "${username}" pkill -f rtorrent >/dev/null 2>&1
 
 service apache2 reload >/dev/null 2>&1
 
