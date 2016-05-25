@@ -62,20 +62,29 @@
               echo "<ul class=\"children\">";
                 echo "<li class=\"info-quote\"><p class=\"info-quote\">Easily install and uninstall any software package simply by clicking on the software package name</p></li>";
                 echo "<li class=\"warning-quote\"><p class=\"warning-quote\">Please be advised that these options are not the same as enabling and disabling a software package. These options are designed to either install or uninstall.</p></li>";
+                
                 echo "<li>";
-                if (file_exists('/srv/rutorrent/home/.plex')) {
-                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#plexRemovalConfirm\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
-                } else {
-                  echo "<a href=\"?installpackage-plex=true\" id=\"plexInstall\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
-                }
-                echo "</li>";
-                echo "<li>";
-                if (file_exists("/run/btsync/btsync.pid")) {
+                if (file_exists("/install/.btsync.lock")) {
                   echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#btsyncRemovalConfirm\">BTSync : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-btsync=true\" id=\"btsyncInstall\">BTSync : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
                 }
                 echo "</li>";
+                echo "<li>";
+                if (file_exists("/install/.csf.lock")) {
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#csfRemovalConfirm\">CSF : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                } else {
+                  echo "<a href=\"?installpackage-csf=true\" id=\"csfInstall\">CSF : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
+                }
+                echo "</li>";
+                echo "<li>";
+                if (file_exists('/install/.plex.lock')) {
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#plexRemovalConfirm\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                } else {
+                  echo "<a href=\"?installpackage-plex=true\" id=\"plexInstall\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
+                }
+                echo "</li>";
+
               echo "</ul>";
             echo "</li>";
             } ?>
