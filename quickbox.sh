@@ -234,8 +234,10 @@ IRSSI_PORT=$((RANDOM%64025+1024))
 #PORT=$(($RANDOM + ($RANDOM % 2) * 32768))
 PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$(($PORT + 1500))
+while [[ "$(netstat -ln | grep ':'"$PORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do PORT="$(shuf -i 2000-61000 -n 1)"; done
 #RPORT=$(($PORT + 1500))
 RPORT=$(shuf -i 2000-61000 -n 1)
+while [[ "$(netstat -ln | grep ':'"$RPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do RPORT="$(shuf -i 2000-61000 -n 1)"; done
 ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 # --END HERE --
 echo -n "Username: "; read username
