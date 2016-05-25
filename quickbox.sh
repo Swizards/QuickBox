@@ -234,8 +234,10 @@ IRSSI_PORT=$((RANDOM%64025+1024))
 #PORT=$(($RANDOM + ($RANDOM % 2) * 32768))
 PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$(($PORT + 1500))
+while [[ "$(netstat -ln | grep ':'"$PORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do PORT="$(shuf -i 2000-61000 -n 1)"; done
 #RPORT=$(($PORT + 1500))
 RPORT=$(shuf -i 2000-61000 -n 1)
+while [[ "$(netstat -ln | grep ':'"$RPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do RPORT="$(shuf -i 2000-61000 -n 1)"; done
 ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 # --END HERE --
 echo -n "Username: "; read username
@@ -794,6 +796,7 @@ function _csf() {
     # modify csf conf - make suitable changes for non-cpanel environment
     cd /etc/csf
     rm csf.conf
+    touch /install/.csf.lock
     wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/csf.conf
   fi
 }
