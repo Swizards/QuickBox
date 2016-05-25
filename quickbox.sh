@@ -326,15 +326,15 @@ WIPEDEAD=yes
 
 # NO NEED TO EDIT PAST HERE!
 if [ "\$WIPEDEAD" == "yes" ]; then
-  screen -wipe > /dev/null
+	screen -wipe >/dev/null 2>&1;
 fi
 
 if [ "\$IRSSI_CLIENT" == "yes" ]; then
-    screen -fa -dmS irssi irssi
+  (screen -ls|grep irssi >/dev/null || (screen -fa -dmS irssi irssi && false))
 fi
 
 if [ "\$RTORRENT_CLIENT" == "yes" ]; then
-    screen -fa -dmS rtorrent rtorrent
+  (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
 fi
 SU
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
