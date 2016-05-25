@@ -323,17 +323,18 @@ export USER=\$(id -un)
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 # NO NEED TO EDIT PAST HERE!
-if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
+if [ "\$WIPEDEAD" == "yes" ]; then
+  screen -wipe >/dev/null 2>&1;
+fi
 
 if [ "\$IRSSI_CLIENT" == "yes" ]; then
-  (screen -ls|grep irssi > /dev/null || (screen -fa -dmS irssi irssi && false))
+  (screen -ls|grep irssi >/dev/null || (screen -fa -dmS irssi irssi && false))
 fi
 
 if [ "\$RTORRENT_CLIENT" == "yes" ]; then
-  (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+  (screen -ls|grep rtorrent >/dev/null || (screen -dmS rtorrent rtorrent && false))
 fi
 SU
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
@@ -431,6 +432,8 @@ SC
 
 sed -i -e "s/console-username/${username}/g" \
        -e "s/console-password/${password}/g" /home/${username}/.console/index.php
+
+sudo -u "${username}" pkill -f rtorrent >/dev/null 2>&1
 
 service apache2 reload >/dev/null 2>&1
 
@@ -573,10 +576,12 @@ echo "Press ${standout}${green}ENTER${normal} when you're ready to begin or ${st
 echo
 }
 
-# We'll use a more robust firewall solution for this: see CSF.
-#function _ssdpblock() {
-#  iptables -I INPUT 1 -p udp -m udp --dport 1900 -j DROP
-#}
+# This function blocks an insecure port 1900 that may lead to
+# DDoS masked attacks. Only remove this function if you absolutely
+# need port 1900. In most cases, this is a junk port.
+function _ssdpblock() {
+  iptables -I INPUT 1 -p udp -m udp --dport 1900 -j DROP
+}
 
 # package and repo addition (5) _update and upgrade_
 function _updates() {
@@ -672,6 +677,10 @@ fi
     sed -i 's/Port 22/Port 4747/g' /etc/ssh/sshd_config
     service ssh restart >>"${OUTTO}" 2>&1
   fi
+
+  # Create the service lock file directory
+  mkdir /install
+
 }
 
 # setting locale function (6)
@@ -869,30 +878,42 @@ function _cloudflare() {
   fi
 }
 
-# ban public trackers (8)
-function _denyhosts() {
+# ban public trackers [csf option] (8)
+function _csfdenyhosts() {
 echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
 case $responce in
   [yY] | [yY][Ee][Ss] | "")
 echo "[ ${red}Blocking public trackers${normal} ]"
 sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" \
        -e "/GLOBAL_DYNDNS = \"\"/cGLOBAL_DYNDNS = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" /etc/csf/csf.conf
-#wget -q -O/etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
-#cat >/etc/cron.daily/denypublic<<'EOF'
-#IFS=$'\n'
-#L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
-#for fn in $L; do
-#        /sbin/iptables -D INPUT -d $fn -j DROP
-#        /sbin/iptables -D FORWARD -d $fn -j DROP
-#        /sbin/iptables -D OUTPUT -d $fn -j DROP
-#        /sbin/iptables -A INPUT -d $fn -j DROP
-#        /sbin/iptables -A FORWARD -d $fn -j DROP
-#        /sbin/iptables -A OUTPUT -d $fn -j DROP
-#done
-#EOF
-#chmod +x /etc/cron.daily/denypublic
-#curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
-#cat hostsTrackers >> /etc/hosts
+  ;;
+  [nN] | [nN][Oo] ) echo "[ ${green}Allowing${normal} ]"
+                ;;
+        esac
+}
+
+# ban public trackers [iptables option] (8)
+function _csfdenyhosts() {
+echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
+case $responce in
+  [yY] | [yY][Ee][Ss] | "")
+echo "[ ${red}Blocking public trackers${normal} ]"
+wget -q -O /etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
+cat >/etc/cron.daily/denypublic<<'EOF'
+IFS=$'\n'
+L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
+for fn in $L; do
+        /sbin/iptables -D INPUT -d $fn -j DROP
+        /sbin/iptables -D FORWARD -d $fn -j DROP
+        /sbin/iptables -D OUTPUT -d $fn -j DROP
+        /sbin/iptables -A INPUT -d $fn -j DROP
+        /sbin/iptables -A FORWARD -d $fn -j DROP
+        /sbin/iptables -A OUTPUT -d $fn -j DROP
+done
+EOF
+chmod +x /etc/cron.daily/denypublic
+curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
+cat hostsTrackers >> /etc/hosts
   ;;
   [nN] | [nN][Oo] ) echo "[ ${green}Allowing${normal} ]"
                 ;;
@@ -1049,6 +1070,7 @@ function _rtorrent() {
   cd /root/tmp
   ldconfig >>"${OUTTO}" 2>&1
   rm -rf /root/tmp/rtorrent-${RTVERSION}* >>"${OUTTO}" 2>&1
+  touch /install/.rtorrent.lock
 }
 
 # scgi enable function (13-nixed)
@@ -1096,6 +1118,7 @@ function _askshell() {
 # adduser function (15)
 function _adduser() {
   theshell="/bin/bash";
+  echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
   echo -n "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
@@ -1118,10 +1141,10 @@ function _apachesudo() {
   cd /etc
   rm sudoers
   wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/sudoers .
-  if [[ $sudoers == "yes" ]]; then
+  #if [[ $sudoers == "yes" ]]; then
     awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
     echo -n "${username}" > /etc/apache2/master.txt
-  fi
+  #fi
   cd
 }
 
@@ -1268,9 +1291,8 @@ function _plugins() {
   mv "${REPOURL}/plugins/" /etc/quickbox/rutorrent/
   PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"
   mkdir -p "${rutorrent}plugins"; cd "${rutorrent}plugins"
-  LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
+  LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace diskspaceh edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
   for i in $LIST; do
-  #echo -ne "Installing Plugin: ${green}${i}${normal} ... "
   cp -R "${PLUGINVAULT}$i" .
   done
 
@@ -1360,7 +1382,6 @@ function _plugincommands() {
     LIST="installplugin-getdir removeplugin-getdir installplugin-task removeplugin-task installplugin-autodl removeplugin-autodl installplugin-autotools removeplugin-autotools installplugin-checkport removeplugin-checkport installplugin-chunks removeplugin-chunks installplugin-cookies removeplugin-cookies installplugin-cpuload removeplugin-cpuload installplugin-create removeplugin-create installplugin-data removeplugin-data installplugin-datadir removeplugin-datadir installplugin-diskspaceh removeplugin-diskspaceh installplugin-edit removeplugin-edit installplugin-erasedata removeplugin-erasedata installplugin-extratio removeplugin-extratio installplugin-extsearch removeplugin-extsearch installplugin-feeds removeplugin-feeds installplugin-filedrop removeplugin-filedrop installplugin-filemanager removeplugin-filemanager installplugin-fileshare removeplugin-fileshare installplugin-fileupload removeplugin-fileupload installplugin-history removeplugin-history installplugin-httprpc removeplugin-httprpc installplugin-ipad removeplugin-ipad installplugin-loginmgr removeplugin-loginmgr installplugin-logoff removeplugin-logoff installplugin-lookat removeplugin-lookat installplugin-mediainfo removeplugin-mediainfo installplugin-mobile removeplugin-mobile installplugin-noty removeplugin-noty installplugin-pausewebui removeplugin-pausewebui installplugin-ratio removeplugin-ratio installplugin-ratiocolor removeplugin-ratiocolor installplugin-retrackers removeplugin-retrackers installplugin-rpc removeplugin-rpc installplugin-rss removeplugin-rss installplugin-rssurlrewrite removeplugin-rssurlrewrite installplugin-rutracker_check removeplugin-rutracker_check installplugin-scheduler removeplugin-scheduler installplugin-screenshots removeplugin-screenshots installplugin-seedingtime removeplugin-seedingtime installplugin-show_peers_like_wtorrent removeplugin-show_peers_like_wtorrent installplugin-source removeplugin-source installplugin-stream removeplugin-stream installplugin-theme removeplugin-theme installplugin-throttle removeplugin-throttle installplugin-tracklabels removeplugin-tracklabels installplugin-trafic removeplugin-trafic installplugin-unpack removeplugin-unpack installplugin-xmpp removeplugin-xmpp"
   fi
   for i in $LIST; do
-  #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PLUGINCOMMANDS}$i" .
   dos2unix installplugin* removeplugin* >>"${OUTTO}" 2>&1;
   chmod +x installplugin* removeplugin* >>"${OUTTO}" 2>&1;
@@ -1392,26 +1413,22 @@ export USER=`id -un`
 IRSSI_CLIENT=yes
 RTORRENT_CLIENT=yes
 WIPEDEAD=yes
-BTSYNC=
 ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
-if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
+if [ "$WIPEDEAD" == "yes" ]; then
+	screen -wipe >/dev/null 2>&1;
+fi
 
 if [ "$IRSSI_CLIENT" == "yes" ]; then
   (screen -ls|grep irssi >/dev/null || (screen -S irssi -d -t irssi -m irssi -h "${ADDRESS}" && false))
 fi
 
 if [ "$RTORRENT_CLIENT" == "yes" ]; then
-  (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+  (screen -ls|grep rtorrent >/dev/null || (sudo -u $USER pkill -f rtorrent; screen -dmS rtorrent rtorrent && false))
 fi
 
-if [ "$BTSYNC" == "yes" ]; then
-  (pgrep -u "$USER" btsync >/dev/null || /home/"$USER"/btsync --webui.listen "${ADDRESS}":8888 >/dev/null 2>&1 && false)
-fi
 EOF
-if [[ $btsync == "yes" ]]; then
-  sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${username}/.startup
-fi
+
 }
 
 # function to set permissions on first user (23)
@@ -1569,10 +1586,6 @@ function _askplex() {
       chown www-data: /srv/rutorrent/home/.plex
       touch /etc/apache2/sites-enabled/plex.conf
       chown www-data: /etc/apache2/sites-enabled/plex.conf
-      #echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
-      #curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
-      # We'll use curl silently over wget
-      #wget -O - http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | sudo apt-key add - >/dev/null 2>&1
       echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
       curl -s http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add - > /dev/null 2>&1;
       apt -y update >>"${OUTTO}" 2>&1
@@ -1657,14 +1670,6 @@ function _quickconsole() {
 
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" /home/${username}/.console/index.php
-         # Deprecated due to browser php back fix
-         #-e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
-  # Stashing this here
-  #if [[ ${usefqdn} == "yes" ]]; then
-  #  sed -i "s/ipaccess/$FQDN/g" /home/${username}/.console/index.php
-  #else
-  #  sed -i "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
-  #fi
 }
 
 # function to show finished data (32)
@@ -1707,8 +1712,12 @@ cat >/root/information.info<<EOF
 EOF
 
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  quotacheck -auMF vfsv1
-    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached plexmediaserver; do
+  service quota stop >>"${OUTTO}" 2>&1
+  quotaoff -a >>"${OUTTO}" 2>&1
+  quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+  quotaon -a >>"${OUTTO}" 2>&1
+  service quota start >>"${OUTTO}" 2>&1
+    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached plexmediaserver cron; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
     done
@@ -1768,7 +1777,7 @@ _checkroot
 _logcheck
 _askpartition
 _askcontinue
-#_ssdpblock
+_ssdpblock
 echo -n "Updating system ... ";_updates & spinner $!;echo
 clear
 #_locale
@@ -1788,14 +1797,23 @@ if [[ ${csf} == "yes" ]]; then
 elif [[ ${csf} == "no" ]]; then
     _nocsf;
 fi
-_denyhosts
+if [[ ${csf} == "yes" ]]; then
+    _csfdenyhosts
+else
+    _denyhosts
+fi
 echo -n "Building required user directories ... ";_skel & spinner $!;echo
-_askffmpeg;if [[ ${ffmpeg} == "yes" ]]; then _ffmpeg & spinner $!;echo; fi
+_askffmpeg;
+if [[ ${ffmpeg} == "yes" ]]; then
+    _ffmpeg & spinner $!;echo;
+fi
 _askrtorrent
 _xmlrpc & spinner $!;echo
 _libtorrent & spinner $!;echo
 _rtorrent & spinner $!;echo
-echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;_askshell;_adduser;_apachesudo
+echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;
+#_askshell;
+_adduser;_apachesudo
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf & spinner $!;echo
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf & spinner $!;echo
 echo -n "Installing rutorrent plugins ... ";_plugins & spinner $!;echo
@@ -1807,7 +1825,8 @@ echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf & spinner $
 echo -n "Writing seedbox reload script ... ";_reloadscript & spinner $!;echo
 echo -n "Installing VSFTPd ... ";_installftpd & spinner $!;echo
 echo -n "Setting up VSFTPd ... ";_ftpdconfig & spinner $!;echo
-_askplex;_askbtsync;_packagecommands;_quickstats;_quickconsole
+#_askplex;_askbtsync;
+_packagecommands;_quickstats;_quickconsole
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot & spinner $!;echo;
 echo -n "Setting permissions on ${username} ... ";_perms & spinner $!;echo;
 cd
