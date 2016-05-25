@@ -1422,7 +1422,7 @@ if [ "$IRSSI_CLIENT" == "yes" ]; then
 fi
 
 if [ "$RTORRENT_CLIENT" == "yes" ]; then
-  (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
+  (screen -ls|grep rtorrent >/dev/null || (sudo -u $USER pkill -f rtorrent; screen -dmS rtorrent rtorrent && false))
 fi
 
 EOF
