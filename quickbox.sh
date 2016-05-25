@@ -1399,15 +1399,18 @@ RTORRENT_CLIENT=yes
 WIPEDEAD=yes
 ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
-if [ "$WIPEDEAD" == "yes" ]; then screen -wipe >/dev/null 2>&1; fi
+if [ "$WIPEDEAD" == "yes" ]; then
+	screen -wipe >/dev/null 2>&1;
+fi
 
 if [ "$IRSSI_CLIENT" == "yes" ]; then
-  screen -S irssi -d -t irssi -m irssi -h "${ADDRESS}" && false
+  (screen -ls|grep irssi >/dev/null || (screen -S irssi -d -t irssi -m irssi -h "${ADDRESS}" && false))
 fi
 
 if [ "$RTORRENT_CLIENT" == "yes" ]; then
-  screen -fa -dmS rtorrent rtorrent && false
+  (screen -ls|grep rtorrent >/dev/null || (screen -fa -dmS rtorrent rtorrent && false))
 fi
+
 EOF
 
 }
