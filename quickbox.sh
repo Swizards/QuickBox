@@ -326,7 +326,7 @@ WIPEDEAD=yes
 
 # NO NEED TO EDIT PAST HERE!
 if [ "\$WIPEDEAD" == "yes" ]; then
-	screen -wipe >/dev/null 2>&1;
+  screen -wipe >/dev/null 2>&1;
 fi
 
 if [ "\$IRSSI_CLIENT" == "yes" ]; then
