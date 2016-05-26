@@ -1119,7 +1119,7 @@ function _adduser() {
 function _apachesudo() {
   cd /etc
   rm sudoers
-  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/sudoers .
+  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/sudoers
   #if [[ $sudoers == "yes" ]]; then
     awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
     echo -n "${username}" > /etc/apache2/master.txt

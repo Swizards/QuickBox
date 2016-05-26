@@ -46,8 +46,10 @@
           <ul class="nav nav-pills nav-stacked nav-quirk">
             <li class="active"><a href="index.php"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
             <li><a href="/rutorrent" target="_blank"><i class="fa fa-share"></i> <span>ruTorrent</span></a></li>
-            <?php if (processExists("btsync",btsync) && ($username == "$master")) { echo "<li><a href=\"$btsyncURL\" target=\"_blank\"><i class=\"fa fa-retweet\"></i> <span>BTSync</span></a></li>"; } ?>
-            <?php if (file_exists('.plex') && ($username == "$master")) { echo "<li><a href=\"$plexURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>Plex</span></a></li>"; } ?>
+            <?php if (file_exists('/install/.btsync.lock') && ($username == "$master")) { echo "<li><a href=\"$btsyncURL\" target=\"_blank\"><i class=\"fa fa-retweet\"></i> <span>BTSync</span></a></li>"; } ?>
+            <?php if (file_exists('/install/.plex.lock') && ($username == "$master")) { echo "<li><a href=\"$plexURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>Plex</span></a></li>"; } ?>
+            <?php if (file_exists('/install/.rapidleech.lock') && ($username == "$master")) { echo "<li><a href=\"$rapidleechURL\" target=\"_blank\"><i class=\"fa fa-share-alt\"></i> <span>Rapidleech</span></a></li>"; } ?>
+            <?php if (file_exists('/install/.sickrage.lock') && ($username == "$master")) { echo "<li><a href=\"$sickrageURL\" target=\"_blank\"><i class=\"fa fa-television\"></i> <span>SickRage</span></a></li>"; } ?>
             <li class="nav-parent">
               <a href=""><i class="fa fa-download"></i> <span>Downloads</span></a>
               <ul class="children">
@@ -82,6 +84,20 @@
                   echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#plexRemovalConfirm\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-plex=true\" id=\"plexInstall\">Plex Media Server  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
+                }
+                echo "</li>";
+                echo "<li>";
+                if (file_exists("/install/.rapidleech.lock")) {
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#rapidleechRemovalConfirm\">CSF : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                } else {
+                  echo "<a href=\"?installpackage-rapidleech=true\" id=\"rapidleechInstall\">CSF  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
+                }
+                echo "</li>";
+                echo "<li>";
+                if (file_exists("/install/.sickrage.lock")) {
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#sickrageRemovalConfirm\">CSF : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                } else {
+                  echo "<a href=\"?installpackage-sickrage=true\" id=\"sickrageInstall\">CSF  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
                 }
                 echo "</li>";
 
