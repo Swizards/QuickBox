@@ -896,7 +896,7 @@ sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.co
 }
 
 # ban public trackers [iptables option] (8)
-function _csfdenyhosts() {
+function _denyhosts() {
 echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
 case $responce in
   [yY] | [yY][Ee][Ss] | "")
