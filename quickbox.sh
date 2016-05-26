@@ -1121,7 +1121,7 @@ function _askshell() {
 # adduser function (15)
 function _adduser() {
   theshell="/bin/bash";
-  echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
+  echo -n "${bold}${yellow}Add a Master Account user to sudoers${normal}";
   echo -n "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
@@ -1756,7 +1756,7 @@ HOSTNAME1=$(hostname -s);
 REPOURL="/root/tmp/QuickBox"
 PLUGINURL="/root/tmp/QuickBox/commands/rutorrent/plugins/"
 PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
-QBVERSION="2.2.0"
+QBVERSION="2.2.1"
 PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$((${PORT} + 1500))
 S=$(date +%s)
