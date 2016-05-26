@@ -18,28 +18,23 @@ MASTER=$(cat /etc/apache2/master.txt)
 OUTTO="/root/quick-box.log"
 
 function _installSickRage() {
-  sudo git clone https://github.com/SickRage/SickRage.git.  /home/"${MASTER}"/.sickrage
+  sudo git clone https://github.com/SickRage/SickRage.git  /home/"${MASTER}"/.sickrage
   touch /install/.sickrage.lock
   chown "${MASTER}":"${MASTER}" -R /home/"${MASTER}"/.sickrage
+  #cd /home/"${MASTER}"/.sickrage
+  #cp -a autoProcessTV/autoProcessTV.cfg.sample autoProcessTV/autoProcessTV.cfg
+  cd /home/"${MASTER}"/.sickrage/runscripts
+  cd /etc/init.d/
+  wget https://raw.githubusercontent.com/Swizards/QuickBox/experimental/commands/sickrage .
+  sudo chmod +x /etc/init.d/sickrage
 
-echo -e "[Unit]
-Description=SickRage Daemon
+echo -e "SR_HOME=/home/${MASTER}/.sickrage/
+SR_DATA=/home/${MASTER}/.sickrage/
+SR_USER=${MASTER}" > /etc/default/sickrage
 
-[Service]
-User=${MASTER}
-Group=${MASTER}
-Type=forking
-GuessMainPID=no
-ExecStart=/usr/bin/python /home/"${MASTER}"/.sickrage/SickBeard.py -q --daemon --nolaunch --datadir=/home/"${MASTER}"/.sickrage
-
-[Install]
-WantedBy=multi-user.target" > /etc/systemd/system/sickrage.service
-
-  cd /home/"${MASTER}"/.sickrage
-  cp -a autoProcessTV/autoProcessTV.cfg.sample autoProcessTV/autoProcessTV.cfg
-
-  systemctl enable sickrage.service
+  update-rc.d sickrage defaults
   sudo service sickrage start
+
 }
 
 _installSickRage
