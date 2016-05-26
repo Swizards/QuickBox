@@ -23,8 +23,8 @@ function _installRapidleech() {
   chown "${MASTER}":"${MASTER}" -R /home/"${MASTER}"/rapidleech
 
 cat >/etc/apache2/sites-enabled/${MASTER}.rapidleech.conf<<EOF
-Alias /rapidleech "/home/quickbox/rapidleech/"
-<Directory "/home/quickbox/rapidleech/">
+Alias /rapidleech "/home/${MASTER}/rapidleech/"
+<Directory "/home/${MASTER}/rapidleech/">
   Options Indexes FollowSymLinks MultiViews
   AuthType Digest
   AuthName "rutorrent"
