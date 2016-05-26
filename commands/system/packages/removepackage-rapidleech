@@ -24,4 +24,4 @@ function _removeRapidleech() {
   service apache2 reload
 }
 
-_installRapidleech
+_removeRapidleech
