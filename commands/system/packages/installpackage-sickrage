@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# [Quick Box :: Install SickRage package]
+#
+# GitHub:   https://github.com/Swizards/QuickBox
+# Author:   QuickBox.io
+# URL:      https://plaza.quickbox.io/
+#
+# QuickBox Copyright (C) 2016 Swizards.net
+# Licensed under GNU General Public License v3.0 GPL-3 (in short)
+#
+#   You may copy, distribute and modify the software as long as you track
+#   changes/dates in source files. Any modifications to our software
+#   including (via compiler) GPL-licensed code must also be made available
+#   under the GPL along with build & install instructions.
+#
+MASTER=$(cat /etc/apache2/master.txt)
+OUTTO="/root/quick-box.log"
+
+function _installSickRage() {
+  #sudo git clone https://github.com/SickRage/SickRage.git /srv/sickrage
+  sudo git clone https://github.com/SickRage/SickRage.git.  /home/"${MASTER}"/.sickrage
+  touch /install/.sickrage.lock
+  chown "${MASTER}":"${MASTER}" -R /srv/sickrage
+
+echo -e "[Unit]
+Description=SickRage Daemon
+
+[Service]
+User=${MASTER}
+Group=${MASTER}
+Type=forking
+GuessMainPID=no
+ExecStart=/usr/bin/python /home/"${MASTER}"/.sickrage/SickBeard.py -q --daemon --nolaunch --datadir=/home/"${MASTER}"/.sickrage
+
+[Install]
+WantedBy=multi-user.target" > /etc/systemd/system/sickrage.service
+
+  systemctl enable sickrage.service
+  sudo service sickrage start
+}
+
+_installSickRage
