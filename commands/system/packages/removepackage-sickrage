@@ -25,6 +25,8 @@ function _removeSickRage() {
   sudo update-rc.d -f sickrage remove
   sudo rm /etc/default/sickrage
   sudo rm /etc/init.d/sickrage
+  sudo rm -r /var/run/sickrage
+  sudo rm /install/.sickrage.lock
 
   cd /home/"$MASTER"
   sudo rm -r .sickrage
@@ -34,7 +36,7 @@ function _removeSickRage() {
   ls -al
   echo ""
   echo ""
-  echo "SickRage Uninstall Complete. You may reinstall at any time by running `installpackage-sickrage`."
+  echo "SickRage Uninstall Complete. You may reinstall at any time by running [installpackage-sickrage]."
 
 }
 
