@@ -48,8 +48,8 @@
             <li><a href="/rutorrent" target="_blank"><i class="fa fa-share"></i> <span>ruTorrent</span></a></li>
             <?php if (file_exists('/install/.btsync.lock') && ($username == "$master")) { echo "<li><a href=\"$btsyncURL\" target=\"_blank\"><i class=\"fa fa-retweet\"></i> <span>BTSync</span></a></li>"; } ?>
             <?php if (file_exists('/install/.plex.lock') && ($username == "$master")) { echo "<li><a href=\"$plexURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>Plex</span></a></li>"; } ?>
-            <?php if (file_exists('/install/.rapidleech.lock') && ($username == "$master")) { echo "<li><a href=\"$rapidleechURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>Rapidleech</span></a></li>"; } ?>
-            <?php if (file_exists('/install/.sickrage.lock') && ($username == "$master")) { echo "<li><a href=\"$sickrageURL\" target=\"_blank\"><i class=\"fa fa-play\"></i> <span>SickRage</span></a></li>"; } ?>
+            <?php if (file_exists('/install/.rapidleech.lock') && ($username == "$master")) { echo "<li><a href=\"$rapidleechURL\" target=\"_blank\"><i class=\"fa fa-share-alt\"></i> <span>Rapidleech</span></a></li>"; } ?>
+            <?php if (file_exists('/install/.sickrage.lock') && ($username == "$master")) { echo "<li><a href=\"$sickrageURL\" target=\"_blank\"><i class=\"fa fa-television\"></i> <span>SickRage</span></a></li>"; } ?>
             <li class="nav-parent">
               <a href=""><i class="fa fa-download"></i> <span>Downloads</span></a>
               <ul class="children">
