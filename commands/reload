@@ -8,7 +8,7 @@
 #
 OUTTO=/dev/null
 export USER=`id -un`
-killall -u $USER irssi >>"${OUTTO}" 2>&1
-killall -u $USER rtorrent >>"${OUTTO}" 2>&1
+pkill -u $USER irssi >>"${OUTTO}" 2>&1
+pkill -u $USER rtorrent >>"${OUTTO}" 2>&1
 killall -U $USER main >>"${OUTTO}" 2>&1
 rm -rf ~/.sessions/rtorrent.lock
