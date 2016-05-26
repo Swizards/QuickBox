@@ -93,25 +93,6 @@ $(document).ready(function() {
 
   'use strict';
 
-  // PlexInstall
-  $('#plexInstall').click(function(){
-    $.gritter.add({
-      title: 'Installing Plex',
-      text: 'Please wait while Plex Media Server is being installed on your system.',
-      class_name: 'with-icon check-circle success',
-      sticky: true
-    });
-  });
-  // PlexRemove
-  $('#plexRemove').click(function(){
-    $.gritter.add({
-      title: 'Uninstalling Plex',
-      text: 'Please wait while Plex Media Server is being uninstalled from your system.',
-      class_name: 'with-icon times-circle danger',
-      sticky: true
-    });
-  });
-
   // BTSyncInstall
   $('#btsyncInstall').click(function(){
     $.gritter.add({
@@ -130,12 +111,48 @@ $(document).ready(function() {
       sticky: true
     });
   });
+  // CSFInstall
+  $('#csfInstall').click(function(){
+    $.gritter.add({
+      title: 'Installing CSF',
+      text: 'Please wait while Config Server Firewall is being installed on your system. This may take up to 5 minutes to complete.',
+      class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // csfRemove
+  $('#csfRemove').click(function(){
+    $.gritter.add({
+      title: 'Uninstalling CSF',
+      text: 'Please wait while Config Server Firewall is being uninstalled from your system.',
+      class_name: 'with-icon times-circle danger',
+      sticky: true
+    });
+  });
   // CleanMemCache
   $('#cleanmem').click(function(){
     $.gritter.add({
       title: 'Cleaning Memory Cache',
       text: 'Please wait while your Physical Memory Cache is being flushed on your system.',
       class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // PlexInstall
+  $('#plexInstall').click(function(){
+    $.gritter.add({
+      title: 'Installing Plex',
+      text: 'Please wait while Plex Media Server is being installed on your system.',
+      class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // PlexRemove
+  $('#plexRemove').click(function(){
+    $.gritter.add({
+      title: 'Uninstalling Plex',
+      text: 'Please wait while Plex Media Server is being uninstalled from your system.',
+      class_name: 'with-icon times-circle danger',
       sticky: true
     });
   });
