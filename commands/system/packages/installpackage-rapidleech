@@ -32,6 +32,8 @@ function _installRapidleech() {
   </Directory>
   EOF
 
+  service apache2 reload
+
 }
 
 _installRapidleech
