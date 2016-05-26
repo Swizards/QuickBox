@@ -15,7 +15,7 @@
 #   under the GPL along with build & install instructions.
 #
 
-function _setdiskspace() {
+function _setdisk() {
 echo -n "Username: "
 read username
 echo "Quota size for user: (EX: 500GB): "
@@ -42,4 +42,4 @@ case $SIZE in
 esac
 }
 
-_setdiskspace
+_setdisk

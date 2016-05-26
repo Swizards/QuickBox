@@ -196,33 +196,6 @@ echo -n "Username: "; read user
   echo "$username : $passwd" >>/root/${username}.txt
 }
 
-
-function setdisk() {
-echo -n "Username: "
-read username
-echo "Quota size for user: (EX: 500GB): "
-read SIZE
-case $SIZE in
-  *TB)
-    QUOTASIZE=$(echo $SIZE|cut -d'T' -f1)
-    DISKSIZE=$(($QUOTASIZE * 1024 * 1024 * 1024))
-    setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
-  ;;
-  *GB)
-    QUOTASIZE=$(echo $SIZE|cut -d'G' -f1)
-    DISKSIZE=$(($QUOTASIZE * 1024 * 1024))
-    setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
-  ;;
-  *MB)
-    QUOTASIZE=$(echo $SIZE|cut -d'M' -f1)
-                DISKSIZE=$(($QUOTASIZE * 1024))
-                setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
-  ;;
-  *)
-    echo "Disk Space MUST be in GB/TB - Do not attempt to add deciamals in space settings, Example - Good: 711GB OR 2TB, Example - Bad: 711.5GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
-  ;;
-esac
-}
 function createSeedboxUser() {
 OK=`echo -e "[\e[0;32mOK\e[00m]"`
 realm="rutorrent"
