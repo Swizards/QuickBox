@@ -54,6 +54,42 @@
     </div><!-- modal-content -->
   </div><!-- modal-dialog -->
 </div><!-- modal -->
+<!-- RAPIDLEECH UNINSTALL MODAL -->
+<div class="modal bounceIn animated" id="rapidleechRemovalConfirm" tabindex="-1" role="dialog" aria-labelledby="RapidleechRemovalConfirm" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="RapidleechRemovalConfirm">Uninstall Rapidleech?</h4>
+      </div>
+      <div class="modal-body">
+        You are about to uninstall Rapidleech from your system.<br/><br/>This will completely remove all of your configuration settings... this action is irreversable. <br/><br/>You may reinstall Rapidleech at any time, however, your configuration settings will be reset to default.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a href="?removepackage-rapidleech=true" id="rapidleechRemove" class="btn btn-primary">I understand, do it!</a>
+      </div>
+    </div><!-- modal-content -->
+  </div><!-- modal-dialog -->
+</div><!-- modal -->
+<!-- SICKRAGE UNINSTALL MODAL -->
+<div class="modal bounceIn animated" id="sickrageRemovalConfirm" tabindex="-1" role="dialog" aria-labelledby="SickRageRemovalConfirm" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="SickRageRemovalConfirm">Uninstall SickRage?</h4>
+      </div>
+      <div class="modal-body">
+        You are about to uninstall SickRage from your system.<br/><br/>This will completely remove all of your configuration settings... this action is irreversable. <br/><br/>You may reinstall SickRage at any time, however, your configuration settings will be reset to default.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a href="?removepackage-sickrage=true" id="sickrageRemove" class="btn btn-primary">I understand, do it!</a>
+      </div>
+    </div><!-- modal-content -->
+  </div><!-- modal-dialog -->
+</div><!-- modal -->
 
 
 <script src="js/script.js"></script>
@@ -152,6 +188,42 @@ $(document).ready(function() {
     $.gritter.add({
       title: 'Uninstalling Plex',
       text: 'Please wait while Plex Media Server is being uninstalled from your system.',
+      class_name: 'with-icon times-circle danger',
+      sticky: true
+    });
+  });
+  // RapidleechInstall
+  $('#rapidleechInstall').click(function(){
+    $.gritter.add({
+      title: 'Installing Rapidleech',
+      text: 'Please wait while Rapidleech is being installed on your system.',
+      class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // RapidleechRemove
+  $('#rapidleechRemove').click(function(){
+    $.gritter.add({
+      title: 'Uninstalling Rapidleech',
+      text: 'Please wait while Rapidleech is being uninstalled from your system.',
+      class_name: 'with-icon times-circle danger',
+      sticky: true
+    });
+  });
+  // SickRageInstall
+  $('#sickrageInstall').click(function(){
+    $.gritter.add({
+      title: 'Installing SickRage',
+      text: 'Please wait while SickRage is being installed on your system.',
+      class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // SickRageRemove
+  $('#sickrageRemove').click(function(){
+    $.gritter.add({
+      title: 'Uninstalling SickRage',
+      text: 'Please wait while SickRage is being uninstalled from your system.',
       class_name: 'with-icon times-circle danger',
       sticky: true
     });
