@@ -22,7 +22,7 @@ function _installRapidleech() {
   touch /install/.rapidleech.lock
   chown "${MASTER}":"${MASTER}" -R /home/"${MASTER}"/rapidleech
 
-  cat >/etc/apache2/sites-enabled/rapidleech.conf<<EOF
+cat >/etc/apache2/sites-enabled/rapidleech.conf<<EOF
   Alias /Rapidleech "/home/${MASTER}/rapidleech/"
   <Directory "/home/${MASTER}/rapidleech/">
     Options Indexes FollowSymLinks MultiViews
@@ -30,7 +30,7 @@ function _installRapidleech() {
     Order allow,deny
     allow from all
   </Directory>
-  EOF
+EOF
 
   service apache2 reload
 
