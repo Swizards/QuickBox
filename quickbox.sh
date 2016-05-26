@@ -1121,7 +1121,7 @@ function _askshell() {
 # adduser function (15)
 function _adduser() {
   theshell="/bin/bash";
-  echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
+  echo -n "${bold}${yellow}Add a Master Account user to sudoers${normal}";
   echo -n "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
