@@ -196,33 +196,6 @@ echo -n "Username: "; read user
   echo "$username : $passwd" >>/root/${username}.txt
 }
 
-
-function setdisk() {
-echo -n "Username: "
-read username
-echo "Quota size for user: (EX: 500GB): "
-read SIZE
-case $SIZE in
-  *TB)
-    QUOTASIZE=$(echo $SIZE|cut -d'T' -f1)
-    DISKSIZE=$(($QUOTASIZE * 1024 * 1024 * 1024))
-    setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
-  ;;
-  *GB)
-    QUOTASIZE=$(echo $SIZE|cut -d'G' -f1)
-    DISKSIZE=$(($QUOTASIZE * 1024 * 1024))
-    setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
-  ;;
-  *MB)
-    QUOTASIZE=$(echo $SIZE|cut -d'M' -f1)
-                DISKSIZE=$(($QUOTASIZE * 1024))
-                setquota -u ${username} ${DISKSIZE} ${DISKSIZE} 0 0 -a
-  ;;
-  *)
-    echo "Disk Space MUST be in GB/TB - Do not attempt to add deciamals in space settings, Example - Good: 711GB OR 2TB, Example - Bad: 711.5GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
-  ;;
-esac
-}
 function createSeedboxUser() {
 OK=`echo -e "[\e[0;32mOK\e[00m]"`
 realm="rutorrent"
@@ -731,7 +704,8 @@ function _depends() {
     apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
     fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
     ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
-    libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl \
+    libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   elif [[ "${rel}" =~ ("14.04"|"15.04"|"15.10") ]]; then
   apt-get -y update >>"${OUTTO}" 2>&1
     apt-get install -y build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
@@ -739,7 +713,8 @@ function _depends() {
     apache2-utils autoconf cron curl libxslt-dev libncurses5-dev yasm pcregrep apache2 php5 php5-cli php-net-socket libdbd-mysql-perl libdbi-perl \
     fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
     ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
-    libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl \
+    libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   elif [[ "${rel}" = "16.04" ]]; then
   apt-get -y update >>"${OUTTO}" 2>&1
     apt-get -y install build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
@@ -748,7 +723,8 @@ function _depends() {
     php7.0 php7.0-fpm php7.0-mbstring php7.0-zip php7.0-mysql php7.0-curl php-memcached memcached php7.0-gd php7.0-json php7.0-mcrypt php7.0-opcache php7.0-xml \
     php7.0-zip fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo ifstat libapache2-mod-php7.0 \
     ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl openjdk-8-jre-headless openjdk-8-jre openjdk-8-jdk \
-    libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl \
+    libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   fi
 }
 
@@ -1294,7 +1270,11 @@ function _plugins() {
   mv "${REPOURL}/plugins/" /etc/quickbox/rutorrent/
   PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"
   mkdir -p "${rutorrent}plugins"; cd "${rutorrent}plugins"
-  LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace diskspaceh edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
+  if [[ ${primaryroot} == "root" ]]; then
+    LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspace edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
+  else
+    LIST="_getdir _noty _noty2 _task autodl-irssi autotools check_port chunks cookies cpuload create data datadir diskspaceh edit erasedata extratio extsearch feeds filedrop filemanager fileshare fileupload geoip history httprpc loginmgr logoff lookat mediainfo mobile pausewebui ratio ratiocolor retrackers rpc rss rssurlrewrite rutracker_check scheduler screenshots seedingtime show_peers_like_wtorrent source stream theme throttle tracklabels trafic unpack xmpp"
+  fi
   for i in $LIST; do
   cp -R "${PLUGINVAULT}$i" .
   done
