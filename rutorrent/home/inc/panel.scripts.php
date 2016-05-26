@@ -1,23 +1,5 @@
 </section>
 
-<!-- PLEX UNINSTALL MODAL -->
-<div class="modal bounceIn animated" id="plexRemovalConfirm" tabindex="-1" role="dialog" aria-labelledby="PlexRemovalConfirm" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="PlexRemovalConfirm">Uninstall Plex?</h4>
-      </div>
-      <div class="modal-body">
-        You are about to uninstall Plex Media Server from your system.<br/><br/>This will completely remove all of your configuration and library settings... this action is irreversable. <br/><br/>You may reinstall Plex at any time, however, your library settings will be reset to default.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <a href="?removepackage-plex=true" id="plexRemove" class="btn btn-primary">I understand, do it!</a>
-      </div>
-    </div><!-- modal-content -->
-  </div><!-- modal-dialog -->
-</div><!-- modal -->
 <!-- BTSYNC UNINSTALL MODAL -->
 <div class="modal bounceIn animated" id="btsyncRemovalConfirm" tabindex="-1" role="dialog" aria-labelledby="BTSyncRemovalConfirm" aria-hidden="true">
   <div class="modal-dialog">
@@ -32,6 +14,42 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <a href="?removepackage-btsync=true" id="btsyncRemove" class="btn btn-primary">I understand, do it!</a>
+      </div>
+    </div><!-- modal-content -->
+  </div><!-- modal-dialog -->
+</div><!-- modal -->
+<!-- CSF UNINSTALL MODAL -->
+<div class="modal bounceIn animated" id="csfRemovalConfirm" tabindex="-1" role="dialog" aria-labelledby="CSFRemovalConfirm" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="CSFRemovalConfirm">Uninstall Config Server Firewall?</h4>
+      </div>
+      <div class="modal-body">
+        You are about to uninstall Config Server Firewall (CSF) from your system.<br/><br/>This will completely remove all of your configuration settings... this action is irreversable. <br/><br/>You may reinstall Config Server Firewall (CSF) at any time, however, your configuration settings (if any changes were made) will be reset to default.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a href="?removepackage-csf=true" id="csfRemove" class="btn btn-primary">I understand, do it!</a>
+      </div>
+    </div><!-- modal-content -->
+  </div><!-- modal-dialog -->
+</div><!-- modal -->
+<!-- PLEX UNINSTALL MODAL -->
+<div class="modal bounceIn animated" id="plexRemovalConfirm" tabindex="-1" role="dialog" aria-labelledby="PlexRemovalConfirm" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="PlexRemovalConfirm">Uninstall Plex?</h4>
+      </div>
+      <div class="modal-body">
+        You are about to uninstall Plex Media Server from your system.<br/><br/>This will completely remove all of your configuration and library settings... this action is irreversable. <br/><br/>You may reinstall Plex at any time, however, your library settings will be reset to default.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a href="?removepackage-plex=true" id="plexRemove" class="btn btn-primary">I understand, do it!</a>
       </div>
     </div><!-- modal-content -->
   </div><!-- modal-dialog -->
@@ -75,25 +93,6 @@ $(document).ready(function() {
 
   'use strict';
 
-  // PlexInstall
-  $('#plexInstall').click(function(){
-    $.gritter.add({
-      title: 'Installing Plex',
-      text: 'Please wait while Plex Media Server is being installed on your system.',
-      class_name: 'with-icon check-circle success',
-      sticky: true
-    });
-  });
-  // PlexRemove
-  $('#plexRemove').click(function(){
-    $.gritter.add({
-      title: 'Uninstalling Plex',
-      text: 'Please wait while Plex Media Server is being uninstalled from your system.',
-      class_name: 'with-icon times-circle danger',
-      sticky: true
-    });
-  });
-
   // BTSyncInstall
   $('#btsyncInstall').click(function(){
     $.gritter.add({
@@ -112,12 +111,48 @@ $(document).ready(function() {
       sticky: true
     });
   });
+  // CSFInstall
+  $('#csfInstall').click(function(){
+    $.gritter.add({
+      title: 'Installing CSF',
+      text: 'Please wait while Config Server Firewall is being installed on your system. This may take up to 5 minutes to complete.',
+      class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // csfRemove
+  $('#csfRemove').click(function(){
+    $.gritter.add({
+      title: 'Uninstalling CSF',
+      text: 'Please wait while Config Server Firewall is being uninstalled from your system.',
+      class_name: 'with-icon times-circle danger',
+      sticky: true
+    });
+  });
   // CleanMemCache
   $('#cleanmem').click(function(){
     $.gritter.add({
       title: 'Cleaning Memory Cache',
       text: 'Please wait while your Physical Memory Cache is being flushed on your system.',
       class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // PlexInstall
+  $('#plexInstall').click(function(){
+    $.gritter.add({
+      title: 'Installing Plex',
+      text: 'Please wait while Plex Media Server is being installed on your system.',
+      class_name: 'with-icon check-circle success',
+      sticky: true
+    });
+  });
+  // PlexRemove
+  $('#plexRemove').click(function(){
+    $.gritter.add({
+      title: 'Uninstalling Plex',
+      text: 'Please wait while Plex Media Server is being uninstalled from your system.',
+      class_name: 'with-icon times-circle danger',
       sticky: true
     });
   });

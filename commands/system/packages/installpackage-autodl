@@ -35,6 +35,7 @@ function _installautodl() {
   cp autodl-irssi.pl autorun/
   mkdir -p "/home/${MASTER}/.autodl" >>"${OUTTO}" 2>&1
   touch "/home/${MASTER}/.autodl/autodl.cfg"
+  touch /install/.autodlirssi.lock
 
 cat >"/home/${MASTER}/.autodl/autodl2.cfg"<<ADC
 [options]

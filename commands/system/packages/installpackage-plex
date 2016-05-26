@@ -32,6 +32,7 @@ function _installPlex() {
     apt-get install deb-multimedia-keyring -y
     apt-get -y install plexmediaserver
     service plexmediaserver restart
+    touch /install/.plex.lock
     /etc/init.d/apache2 reload
 }
 
