@@ -18,7 +18,7 @@ Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 Cmnd_Alias   CLEANMEM = /usr/local/bin/clean_mem, /proc/sys/vm/drop_caches
 Cmnd_Alias   PACKAGEHANDLE = /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*
 Cmnd_Alias   PLUGINHANDLE = /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*
-Cmnd_Alias   GENERALCMNDS = /usr/bin/ifstat, /usr/bin/vnstat, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /etc/init.d/apache2 restart
+Cmnd_Alias   GENERALCMNDS = /usr/bin/ifstat, /usr/bin/vnstat, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /etc/init.d/apache2 restart, /usr/bin/pkill, /usr/bin/killall
 
 # User privilege specification
 root	ALL=(ALL:ALL) ALL
