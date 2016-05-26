@@ -21,11 +21,9 @@ function _installSickRage() {
   sudo git clone https://github.com/SickRage/SickRage.git  /home/"${MASTER}"/.sickrage
   touch /install/.sickrage.lock
   chown "${MASTER}":"${MASTER}" -R /home/"${MASTER}"/.sickrage
-  #cd /home/"${MASTER}"/.sickrage
-  #cp -a autoProcessTV/autoProcessTV.cfg.sample autoProcessTV/autoProcessTV.cfg
   cd /home/"${MASTER}"/.sickrage/runscripts
   cd /etc/init.d/
-  wget https://raw.githubusercontent.com/Swizards/QuickBox/experimental/commands/sickrage .
+  wget https://raw.githubusercontent.com/Swizards/QuickBox/experimental/commands/sickrage
   sudo chmod +x /etc/init.d/sickrage
 
 echo -e "SR_HOME=/home/${MASTER}/.sickrage/
