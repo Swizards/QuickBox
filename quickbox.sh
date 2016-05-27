@@ -1612,7 +1612,7 @@ function _packagecommands() {
   mkdir -p /etc/quickbox/commands/system/packages
   mv "${PACKAGEURL}" /etc/quickbox/commands/system/
   PACKAGECOMMANDS="/etc/quickbox/commands/system/packages/"; cd "/usr/local/bin"
-  LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync installpackage-csf removepackage-csf"
+  LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync installpackage-csf removepackage-csf installpackage-sickrage removepackage-sickrage installpackage-rapidleech removepackage-rapidleech"
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PACKAGECOMMANDS}$i" .
