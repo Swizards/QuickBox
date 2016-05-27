@@ -67,35 +67,35 @@
 
                 echo "<li>";
                 if (file_exists("/install/.btsync.lock")) {
-                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#btsyncRemovalConfirm\">BTSync : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#btsyncRemovalConfirm\">BTSync  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-btsync=true\" id=\"btsyncInstall\">BTSync  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
                 }
                 echo "</li>";
                 echo "<li>";
                 if (file_exists("/install/.csf.lock")) {
-                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#csfRemovalConfirm\">CSF : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#csfRemovalConfirm\">CSF  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-csf=true\" id=\"csfInstall\">CSF  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
                 }
                 echo "</li>";
                 echo "<li>";
                 if (file_exists('/install/.plex.lock')) {
-                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#plexRemovalConfirm\">Plex Media Server : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#plexRemovalConfirm\">Plex Media Server  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-plex=true\" id=\"plexInstall\">Plex Media Server  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
                 }
                 echo "</li>";
                 echo "<li>";
                 if (file_exists("/install/.rapidleech.lock")) {
-                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#rapidleechRemovalConfirm\">CSF : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#rapidleechRemovalConfirm\">Rapidleech <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-rapidleech=true\" id=\"rapidleechInstall\">Rapidleech  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
                 }
                 echo "</li>";
                 echo "<li>";
                 if (file_exists("/install/.sickrage.lock")) {
-                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#sickrageRemovalConfirm\">CSF : <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
+                  echo "<a href=\"javascript:void()\" data-toggle=\"modal\" data-target=\"#sickrageRemovalConfirm\">SickRage <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-installed.png\"></span></a>";
                 } else {
                   echo "<a href=\"?installpackage-sickrage=true\" id=\"sickrageInstall\">SickRage  <span class=\"pull-right plgin-center-switch\"><img src=\"img/switch-notinstalled.png\"></span></a>";
                 }

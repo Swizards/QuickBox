@@ -51,7 +51,7 @@ esac
 
 BASHRCVERSION="23.2"
 EDITOR=nano; export EDITOR=nano
-USER=`whoami`
+USER=`id -un`
 TMPDIR=$HOME/.tmp/
 HOSTNAME=`hostname -s`
 IDUSER=`id -u`
@@ -373,6 +373,7 @@ echo $OK
 sudo -u $username /home/$username/.startup >/dev/null 2>&1
 command1="*/1 * * * * /home/${username}/.startup"
 cat <(fgrep -iv "${command1}" <(sh -c 'sudo -u ${username} crontab -l' >/dev/null 2>&1)) <(echo "${command1}") | sudo -u ${username} crontab -
+
 cat >/etc/apache2/sites-enabled/alias.${username}.download.conf<<AS
 Alias /${username}.downloads "/home/${username}/torrents/"
   <Directory "/home/${username}/torrents/">
@@ -408,7 +409,7 @@ SC
 sed -i -e "s/console-username/${username}/g" \
        -e "s/console-password/${password}/g" /home/${username}/.console/index.php
 
-sudo -u "${username}" pkill -f rtorrent >/dev/null 2>&1
+pkill -u "${username}" -f rtorrent >/dev/null 2>&1
 
 service apache2 reload >/dev/null 2>&1
 
@@ -924,7 +925,10 @@ function _skel() {
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv / >>"${OUTTO}" 2>&1
     service quota start >>"${OUTTO}" 2>&1
-    quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+    #modprobe quota_v2
+    #modprobe quota_v1
+    #echo "modprobe quota_v2
+    #modprobe quota_v1" >> /etc/modules-load.d/modules.conf
   else
     sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
     apt-get install -y linux-image-extra-virtual >>"${OUTTO}" 2>&1
@@ -932,7 +936,11 @@ function _skel() {
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv /home >>"${OUTTO}" 2>&1
     service quota start >>"${OUTTO}" 2>&1
-    quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+    #modprobe quota_v2
+    #modprobe quota_v1
+    #echo "modprobe quota_v2
+    #modprobe quota_v1" >> /etc/modules-load.d/modules.conf
+
   fi
 cat >/etc/lshell.conf<<'LS'
 [global]
@@ -1007,7 +1015,7 @@ function _askrtorrent() {
 # xmlrpc-c function (11)
 function _xmlrpc() {
   cd /root/tmp
-  echo -ne "Installing xmlrpc-c-${green}1.33.12${normal} ... "
+  echo "Installing xmlrpc-c-${green}1.33.12${normal} ... "
   if [[ -d /root/tmp/xmlrpc-c ]]; then rm -rf xmlrpc-c;fi
   cp -R "$REPOURL/xmlrpc-c_1-33-12/" .
   cd xmlrpc-c_1-33-12
@@ -1022,7 +1030,7 @@ function _xmlrpc() {
 function _libtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -ne "Installing libtorrent-${green}$LTORRENT${normal} ... "
+  echo "Installing libtorrent-${green}$LTORRENT${normal} ... "
   rm -rf xmlrpc-c  >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/libtorrent-${LTORRENT}.tar.gz .
@@ -1038,7 +1046,7 @@ function _libtorrent() {
 function _rtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -ne "Installing rtorrent-${green}$RTVERSION${normal} ... "
+  echo "Installing rtorrent-${green}$RTVERSION${normal} ... "
   rm -rf libtorrent-${LTORRENT}* >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/rtorrent-${RTVERSION}.tar.gz .
@@ -1100,7 +1108,7 @@ function _askshell() {
 function _adduser() {
   theshell="/bin/bash";
   echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
-  echo -n "Username: "; read user
+  echo "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
   echo -n "Password: (hit enter to generate a password) "; read password
@@ -1131,6 +1139,7 @@ function _apachesudo() {
 
 # function to configure apache (17)
 function _apacheconf() {
+  if [[ "${rel}" = "16.04" ]]; then
 cat >/etc/apache2/sites-enabled/aliases-seedbox.conf<<EOF
 Alias /rutorrent "/srv/rutorrent"
 <Directory "/srv/rutorrent">
@@ -1142,6 +1151,11 @@ Alias /rutorrent "/srv/rutorrent"
   AllowOverride None
   Order allow,deny
   allow from all
+  <IfModule mod_fastcgi.c>
+    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
+      SetHandler php7-fcgi-${username}
+    </FilesMatch>
+  </IfModule>
 </Directory>
 Alias /${username}.downloads "/home/${username}/torrents/"
 <Directory "/home/${username}/torrents/">
@@ -1153,6 +1167,11 @@ Alias /${username}.downloads "/home/${username}/torrents/"
   AllowOverride None
   Order allow,deny
   allow from all
+  <IfModule mod_fastcgi.c>
+    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
+      SetHandler php7-fcgi-${username}
+    </FilesMatch>
+  </IfModule>
 </Directory>
 Alias /${username}.console "/home/${username}/.console/"
 <Directory "/home/${username}/.console/">
@@ -1164,12 +1183,19 @@ Alias /${username}.console "/home/${username}/.console/"
   AllowOverride None
   Order allow,deny
   allow from all
+  <IfModule mod_fastcgi.c>
+    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
+      SetHandler php7-fcgi-${username}
+    </FilesMatch>
+  </IfModule>
 </Directory>
 EOF
   a2enmod auth_digest >>"${OUTTO}" 2>&1
   a2enmod ssl >>"${OUTTO}" 2>&1
   a2enmod scgi >>"${OUTTO}" 2>&1
   a2enmod rewrite >>"${OUTTO}" 2>&1
+  a2enmod actions >>"${OUTTO}" 2>&1
+  a2enmod fastcgi >>"${OUTTO}" 2>&1
   mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/ >>"${OUTTO}" 2>&1
 cat >/etc/apache2/sites-enabled/default-ssl.conf<<EOF
 SSLPassPhraseDialog  builtin
@@ -1180,55 +1206,192 @@ SSLRandomSeed startup file:/dev/urandom  256
 SSLRandomSeed connect builtin
 SSLCryptoDevice builtin
 <VirtualHost *:80>
-        DocumentRoot "/srv/rutorrent/home"
-        <Directory "/srv/rutorrent/home/">
-                Options Indexes FollowSymLinks
-                AllowOverride All AuthConfig
-                Order allow,deny
-                Allow from all
-        AuthType Digest
-        AuthName "${REALM}"
-        AuthUserFile '${HTPASSWD}'
-        Require valid-user
-        </Directory>
+  DocumentRoot "/srv/rutorrent/home"
+  <Directory "/srv/rutorrent/home/">
+    Options Indexes FollowSymLinks
+    AllowOverride All AuthConfig
+    Order allow,deny
+    Allow from all
+    AuthType Digest
+    AuthName "${REALM}"
+    AuthUserFile '${HTPASSWD}'
+    Require valid-user
+  </Directory>
+  <IfModule mod_fastcgi.c>
+    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
+      SetHandler php7-fcgi-${username}
+    </FilesMatch>
+  </IfModule>
 SCGIMount /${username} 127.0.0.1:$PORT
 </VirtualHost>
 <VirtualHost *:443>
 Options +Indexes +MultiViews +FollowSymLinks
 SSLEngine on
-        DocumentRoot "/srv/rutorrent/home"
-        <Directory "/srv/rutorrent/home/">
-                Options +Indexes +FollowSymLinks +MultiViews
-                AllowOverride All AuthConfig
-                Order allow,deny
-                Allow from all
-        AuthType Digest
-        AuthName "${REALM}"
-        AuthUserFile '${HTPASSWD}'
-        Require valid-user
-        </Directory>
-        SSLEngine on
-        SSLProtocol all -SSLv2
-        SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
-        SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
-        SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-        SetEnvIf User-Agent ".*MSIE.*" \
-                 nokeepalive ssl-unclean-shutdown \
-                 downgrade-1.0 force-response-1.0
+  DocumentRoot "/srv/rutorrent/home"
+  <Directory "/srv/rutorrent/home/">
+    Options +Indexes +FollowSymLinks +MultiViews
+    AllowOverride All AuthConfig
+    Order allow,deny
+    Allow from all
+    AuthType Digest
+    AuthName "${REALM}"
+    AuthUserFile '${HTPASSWD}'
+    Require valid-user
+  </Directory>
+  <IfModule mod_fastcgi.c>
+    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
+      SetHandler php7-fcgi-${username}
+    </FilesMatch>
+  </IfModule>
+  SSLEngine on
+  SSLProtocol all -SSLv2
+  SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+  SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+  SetEnvIf User-Agent ".*MSIE.*" \
+    nokeepalive ssl-unclean-shutdown \
+    downgrade-1.0 force-response-1.0
 SCGIMount /${username} 127.0.0.1:$PORT
 </Virtualhost>
 SCGIMount /${username} 127.0.0.1:$PORT
 EOF
+cat >"/etc/php/7.0/fpm/pool.d/${username}.conf"<<EOF
+[${username}]
+    user = ${username}
+    group = ${username}
+    listen = /run/php/php7.0-fpm.${username}.sock
+    listen.owner = ${username}
+    listen.group = ${username}
+
+    pm = dynamic
+    pm.max_children = 5
+    pm.start_servers = 2
+    pm.min_spare_servers = 1
+    pm.max_spare_servers = 3
+EOF
+cat >"/etc/apache2/sites-enabled/${username}.conf"<<EOF
+<IfModule mod_fastcgi.c>
+    AddHandler php7-fcgi-${username} .php
+    Action php7-fcgi-${username} /php7-fcgi-${username}
+    Alias /php7-fcgi-${username} /usr/lib/cgi-bin/php7-fcgi-${username}
+    FastCgiExternalServer /usr/lib/cgi-bin/php7-fcgi-${username} -socket /run/php/php7.0-fpm.${username}.sock -pass-header Authorization
+    <Directory "/usr/lib/cgi-bin">
+    Require all granted
+    </Directory>
+</IfModule>
+EOF
+else
+cat >/etc/apache2/sites-enabled/aliases-seedbox.conf<<EOF
+  Alias /rutorrent "/srv/rutorrent"
+  <Directory "/srv/rutorrent">
+    Options Indexes FollowSymLinks MultiViews
+    AuthType Digest
+    AuthName "rutorrent"
+    AuthUserFile '/etc/htpasswd'
+    Require valid-user
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+  Alias /${username}.downloads "/home/${username}/torrents/"
+  <Directory "/home/${username}/torrents/">
+    Options Indexes FollowSymLinks MultiViews
+    AuthType Digest
+    AuthName "rutorrent"
+    AuthUserFile '/etc/htpasswd'
+    Require valid-user
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+  Alias /${username}.console "/home/${username}/.console/"
+  <Directory "/home/${username}/.console/">
+    Options Indexes FollowSymLinks MultiViews
+    AuthType Digest
+    AuthName "rutorrent"
+    AuthUserFile '/etc/htpasswd'
+    Require valid-user
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+EOF
+    a2enmod auth_digest >>"${OUTTO}" 2>&1
+    a2enmod ssl >>"${OUTTO}" 2>&1
+    a2enmod scgi >>"${OUTTO}" 2>&1
+    a2enmod rewrite >>"${OUTTO}" 2>&1
+    mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/ >>"${OUTTO}" 2>&1
+cat >/etc/apache2/sites-enabled/default-ssl.conf<<EOF
+  SSLPassPhraseDialog  builtin
+  SSLSessionCache         shmcb:/var/cache/mod_ssl/scache(512000)
+  SSLSessionCacheTimeout  300
+  #SSLMutex default
+  SSLRandomSeed startup file:/dev/urandom  256
+  SSLRandomSeed connect builtin
+  SSLCryptoDevice builtin
+  <VirtualHost *:80>
+    DocumentRoot "/srv/rutorrent/home"
+    <Directory "/srv/rutorrent/home/">
+      Options Indexes FollowSymLinks
+      AllowOverride All AuthConfig
+      Order allow,deny
+      Allow from all
+      AuthType Digest
+      AuthName "${REALM}"
+      AuthUserFile '${HTPASSWD}'
+      Require valid-user
+    </Directory>
+  SCGIMount /${username} 127.0.0.1:$PORT
+  </VirtualHost>
+  <VirtualHost *:443>
+    Options +Indexes +MultiViews +FollowSymLinks
+    SSLEngine on
+    DocumentRoot "/srv/rutorrent/home"
+    <Directory "/srv/rutorrent/home/">
+      Options +Indexes +FollowSymLinks +MultiViews
+      AllowOverride All AuthConfig
+      Order allow,deny
+      Allow from all
+      AuthType Digest
+      AuthName "${REALM}"
+      AuthUserFile '${HTPASSWD}'
+      Require valid-user
+    </Directory>
+    SSLEngine on
+    SSLProtocol all -SSLv2
+    SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    SetEnvIf User-Agent ".*MSIE.*" \
+    nokeepalive ssl-unclean-shutdown \
+    downgrade-1.0 force-response-1.0
+  SCGIMount /${username} 127.0.0.1:$PORT
+  </Virtualhost>
+  SCGIMount /${username} 127.0.0.1:$PORT
+EOF
+fi
 
 cat >/etc/apache2/sites-enabled/fileshare.conf<<DOE
 <Directory "/srv/rutorrent/home/fileshare">
-  Options -Indexes
-  AllowOverride All
-  Satisfy Any
+    Options -Indexes
+    AllowOverride All
+    Satisfy Any
 </Directory>
 DOE
 
 if [[ "${rel}" = "16.04" ]]; then
+  sed -i.bak -e "s/post_max_size = 8M/post_max_size = 64M/" \
+           -e "s/upload_max_filesize = 2M/upload_max_filesize = 92M/" \
+           -e "s/expose_php = On/expose_php = Off/" \
+           -e "s/128M/768M/" \
+           -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" \
+           -e "s/;opcache.enable=0/opcache.enable=1/" \
+           -e "s/;opcache.memory_consumption=64/opcache.memory_consumption=128/" \
+           -e "s/;opcache.max_accelerated_files=2000/opcache.max_accelerated_files=4000/" \
+           -e "s/;opcache.revalidate_freq=2/opcache.revalidate_freq=240/" /etc/php/7.0/fpm/php.ini
+# ensure opcache module is activated
+phpenmod -v 7.0 opcache >>"${OUTTO}" 2>&1
+a2enmod proxy_fcgi >>"${OUTTO}" 2>&1
   sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php/7.0/apache2/php.ini
 else
   sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php5/apache2/php.ini
@@ -1423,7 +1586,7 @@ function _perms() {
   chown -R ${username}.${username} /home/${username}/ >>"${OUTTO}" 2>&1
   chown ${username}.${username} /home/${username}/.startup
   sudo -u ${username} chmod 755 /home/${username}/ >>"${OUTTO}" 2>&1
-  #chmod +x /etc/cron.daily/denypublic >/dev/null 2>&1
+  chmod +x /etc/cron.daily/denypublic >/dev/null 2>&1
   chmod 777 /home/${username}/.sessions >/dev/null 2>&1
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
   chmod +x /home/${username}/.startup >/dev/null 2>&1
@@ -1559,58 +1722,6 @@ VSD
   echo "" > /etc/vsftpd.chroot_list
 }
 
-# function to ask for plexmediaserver (29)
-function _askplex() {
-  echo -ne "${bold}${yellow}Would you like to install Plex Media Server${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] )
-    echo -n "Installing Plex ... "
-      #cp $REPOURL/sources/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb .
-      #dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb >/dev/null 2>&1
-      echo -n "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
-      sudo a2enconf fqdn >>"${OUTTO}" 2>&1
-      touch /srv/rutorrent/home/.plex
-      chown www-data: /srv/rutorrent/home/.plex
-      touch /etc/apache2/sites-enabled/plex.conf
-      chown www-data: /etc/apache2/sites-enabled/plex.conf
-      echo "deb http://shell.ninthgate.se/packages/debian jessie main" > /etc/apt/sources.list.d/plexmediaserver.list
-      curl -s http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add - > /dev/null 2>&1;
-      apt -y update >>"${OUTTO}" 2>&1
-      apt install plexmediaserver -y >>"${OUTTO}" 2>&1
-      echo " ... ${OK}"
-      ;;
-    [nN] | [nN][Oo] | "") echo "${cyan}Skipping Plex install${normal} ... " ;;
-    *) echo "${cyan}Skipping Plex install${normal} ... " ;;
-  esac
-}
-
-# function to ask for btsync (30)
-function _askbtsync() {
-  echo -ne "${bold}${yellow}Would you like to install BTSync?${normal} (Y/n): (Default: ${red}N${normal}) "; read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] )
-    echo -n "Installing BTSync ... "
-    sudo sh -c 'echo "deb http://linux-packages.getsync.com/btsync/deb btsync non-free" > /etc/apt/sources.list.d/btsync.list'
-    wget -qO - http://linux-packages.getsync.com/btsync/key.asc | sudo apt-key add - >/dev/null 2>&1
-    sudo apt-get update >>"${OUTTO}" 2>&1
-    sudo apt-get install btsync >>"${OUTTO}" 2>&1
-    cd && mkdir /home/${MASTER}/sync_folder
-    sudo chown ${MASTER}:btsync /home/${MASTER}/sync_folder
-    sudo chmod 2775 /home/${MASTER}/sync_folder
-    sudo usermod -a -G btsync ${MASTER}
-    sudo sed -i 's/BTSYNC=/BTSYNC=yes/g' /home/${MASTER}/.startup
-    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/config.json ; cd; }
-    cd /etc/btsync && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/user_config.json ; cd; }
-    sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/config.json
-    sudo sed -i "s/BTSGUIP/$BTSYNCIP/g" /etc/btsync/user_config.json
-    sudo service btsync start
-    echo "${OK}"
-    ;;
-    [nN] | [nN][Oo] | "") echo "${cyan}Skipping BTSync install${normal} ... " ;;
-    *) echo "${cyan}Skipping BTSync install${normal} ... " ;;
-  esac
-}
-
 function _packagecommands() {
   mkdir -p /etc/quickbox/commands/system/packages
   mv "${PACKAGEURL}" /etc/quickbox/commands/system/
@@ -1649,6 +1760,8 @@ function _quickstats() {
     cd /srv/rutorrent/home/widgets && rm disk_data.php && { curl -O -s https://raw.githubusercontent.com/Swizards/QuickBox/master/rutorrent/home/widgets/disk_datah.php; }
     mv disk_datah.php disk_data.php
     chown -R www-data:www-data /srv/rutorrent/home/widgets
+  else
+    rm /srv/rutorrent/home/widgets/disk_datah.php
   fi
 }
 
@@ -1704,7 +1817,9 @@ EOF
   quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
   quotaon -a >>"${OUTTO}" 2>&1
   service quota start >>"${OUTTO}" 2>&1
-    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached plexmediaserver cron; do
+  service apache2 restart >>"${OUTTO}" 2>&1
+  service php7.0-fpm restart >>"${OUTTO}" 2>&1
+    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached cron; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
     done
