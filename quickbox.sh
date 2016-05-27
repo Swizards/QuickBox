@@ -919,6 +919,7 @@ function _skel() {
   (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA >>"${OUTTO}" 2>&1
   if [[ ${primaryroot} == "root" ]]; then
     sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
+    apt-get install -y linux-image-extra-virtual >>"${OUTTO}" 2>&1
     mount -o remount / || mount -o remount /home >>"${OUTTO}" 2>&1
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv / >>"${OUTTO}" 2>&1
@@ -926,6 +927,7 @@ function _skel() {
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
   else
     sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
+    apt-get install -y linux-image-extra-virtual >>"${OUTTO}" 2>&1
     mount -o remount /home >>"${OUTTO}" 2>&1
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv /home >>"${OUTTO}" 2>&1
@@ -1005,7 +1007,7 @@ function _askrtorrent() {
 # xmlrpc-c function (11)
 function _xmlrpc() {
   cd /root/tmp
-  echo -n "Installing xmlrpc-c-${green}1.33.12${normal} ... "
+  echo -ne "Installing xmlrpc-c-${green}1.33.12${normal} ... "
   if [[ -d /root/tmp/xmlrpc-c ]]; then rm -rf xmlrpc-c;fi
   cp -R "$REPOURL/xmlrpc-c_1-33-12/" .
   cd xmlrpc-c_1-33-12
@@ -1020,7 +1022,7 @@ function _xmlrpc() {
 function _libtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -n "Installing libtorrent-${green}$LTORRENT${normal} ... "
+  echo -ne "Installing libtorrent-${green}$LTORRENT${normal} ... "
   rm -rf xmlrpc-c  >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/libtorrent-${LTORRENT}.tar.gz .
@@ -1036,7 +1038,7 @@ function _libtorrent() {
 function _rtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -n "Installing rtorrent-${green}$RTVERSION${normal} ... "
+  echo -ne "Installing rtorrent-${green}$RTVERSION${normal} ... "
   rm -rf libtorrent-${LTORRENT}* >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/rtorrent-${RTVERSION}.tar.gz .
@@ -1097,7 +1099,7 @@ function _askshell() {
 # adduser function (15)
 function _adduser() {
   theshell="/bin/bash";
-  echo -n "${bold}${yellow}Add a Master Account user to sudoers${normal}";
+  echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
   echo -n "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
@@ -1376,8 +1378,9 @@ function _additionalsyscommands() {
     cd /usr/local/bin
     wget -q -O /usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
     wget -q -O /usr/local/bin/showspace https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/showspace
-    dos2unix clean_mem showspace >>"${OUTTO}" 2>&1;
-    chmod +x clean_mem showspace >>"${OUTTO}" 2>&1;
+    wget -q -O /usr/local/bin/showspace https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/setdisk
+    dos2unix clean_mem showspace setdisk >>"${OUTTO}" 2>&1;
+    chmod +x clean_mem showspace setdisk >>"${OUTTO}" 2>&1;
     cd
 }
 
