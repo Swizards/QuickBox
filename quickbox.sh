@@ -1098,7 +1098,7 @@ function _askshell() {
 function _adduser() {
   theshell="/bin/bash";
   echo -n "${bold}${yellow}Add a Master Account user to sudoers${normal}";
-  echo -n "Username: "; read user
+  echo "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
   echo -n "Password: (hit enter to generate a password) "; read password
