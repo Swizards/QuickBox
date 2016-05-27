@@ -919,6 +919,7 @@ function _skel() {
   (echo y;echo o conf prerequisites_policy follow;echo o conf commit)>/dev/null 2>&1|cpan Digest::SHA >>"${OUTTO}" 2>&1
   if [[ ${primaryroot} == "root" ]]; then
     sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
+    apt-get install -y linux-image-extra-virtual >>"${OUTTO}" 2>&1
     mount -o remount / || mount -o remount /home >>"${OUTTO}" 2>&1
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv / >>"${OUTTO}" 2>&1
@@ -926,6 +927,7 @@ function _skel() {
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
   else
     sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
+    apt-get install -y linux-image-extra-virtual >>"${OUTTO}" 2>&1
     mount -o remount /home >>"${OUTTO}" 2>&1
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv /home >>"${OUTTO}" 2>&1
