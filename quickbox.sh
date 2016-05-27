@@ -1201,6 +1201,7 @@ EOF
   a2enmod rewrite >>"${OUTTO}" 2>&1
   a2enmod actions >>"${OUTTO}" 2>&1
   a2enmod fastcgi >>"${OUTTO}" 2>&1
+  a2dismod mpm_prefork >>"${OUTTO}" 2>&1
   mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/ >>"${OUTTO}" 2>&1
 cat >/etc/apache2/sites-enabled/default-ssl.conf<<EOF
 SSLPassPhraseDialog  builtin
