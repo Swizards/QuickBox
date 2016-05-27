@@ -290,6 +290,11 @@ echo -n "setting permissions ... "
   usermod -a -G www-data $username >/dev/null 2>&1
   usermod -a -G $username www-data >/dev/null 2>&1
   chmod 777 /home/${username}/.sessions >/dev/null 2>&1
+  usermod -a -G ${username} plex >/dev/null 2>&1
+  chown ${username}:plex /home/${username} >/dev/null 2>&1
+  chmod 750 /home/${username} >/dev/null 2>&1
+  setfacl -m g:${username}:rwx /home/${username} >/dev/null 2>&1
+
 echo $OK
 echo -n "writing $username rtorrent/irssi cron script ... "
 cat >/home/${username}/.startup<<SU
@@ -1015,7 +1020,7 @@ function _askrtorrent() {
 # xmlrpc-c function (11)
 function _xmlrpc() {
   cd /root/tmp
-  echo "Installing xmlrpc-c-${green}1.33.12${normal} ... "
+  echo -n "Installing xmlrpc-c-${green}1.33.12${normal} ... "
   if [[ -d /root/tmp/xmlrpc-c ]]; then rm -rf xmlrpc-c;fi
   cp -R "$REPOURL/xmlrpc-c_1-33-12/" .
   cd xmlrpc-c_1-33-12
@@ -1030,7 +1035,7 @@ function _xmlrpc() {
 function _libtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo "Installing libtorrent-${green}$LTORRENT${normal} ... "
+  echo -n "Installing libtorrent-${green}$LTORRENT${normal} ... "
   rm -rf xmlrpc-c  >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/libtorrent-${LTORRENT}.tar.gz .
@@ -1046,7 +1051,7 @@ function _libtorrent() {
 function _rtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo "Installing rtorrent-${green}$RTVERSION${normal} ... "
+  echo -n "Installing rtorrent-${green}$RTVERSION${normal} ... "
   rm -rf libtorrent-${LTORRENT}* >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/rtorrent-${RTVERSION}.tar.gz .
@@ -1107,7 +1112,7 @@ function _askshell() {
 # adduser function (15)
 function _adduser() {
   theshell="/bin/bash";
-  echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
+  echo -n "${bold}${yellow}Add a Master Account user to sudoers${normal}";
   echo "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
