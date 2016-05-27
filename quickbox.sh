@@ -924,7 +924,10 @@ function _skel() {
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv / >>"${OUTTO}" 2>&1
     service quota start >>"${OUTTO}" 2>&1
-    quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+    modprobe quota_v2
+    modprobe quota_v1
+    echo "modprobe quota_v2
+    modprobe quota_v1" >> /etc/modules-load.d/modules.conf
   else
     sed -i 's/errors=remount-ro/usrquota,errors=remount-ro/g' /etc/fstab
     apt-get install -y linux-image-extra-virtual >>"${OUTTO}" 2>&1
@@ -932,7 +935,11 @@ function _skel() {
     quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
     quotaon -uv /home >>"${OUTTO}" 2>&1
     service quota start >>"${OUTTO}" 2>&1
-    quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+    modprobe quota_v2
+    modprobe quota_v1
+    echo "modprobe quota_v2
+    modprobe quota_v1" >> /etc/modules-load.d/modules.conf
+
   fi
 cat >/etc/lshell.conf<<'LS'
 [global]
