@@ -1163,106 +1163,94 @@ cat >"/etc/php/7.0/fpm/pool.d/${username}.conf"<<EOF
     pm.min_spare_servers = 1
     pm.max_spare_servers = 3
 EOF
-cat >"/etc/apache2/sites-enabled/${username}.conf"<<EOF
-<IfModule mod_fastcgi.c>
-    AddHandler php7-fcgi-${username} .php
-    Action php7-fcgi-${username} /php7-fcgi-${username}
-    Alias /php7-fcgi-${username} /usr/lib/cgi-bin/php7-fcgi-${username}
-    FastCgiExternalServer /usr/lib/cgi-bin/php7-fcgi-${username} -socket /run/php/php7.0-fpm.${username}.sock -pass-header Authorization
-    <Directory "/usr/lib/cgi-bin">
-    Require all granted
-    </Directory>
-</IfModule>
-EOF
-fi
-
+  fi
 cat >/etc/apache2/sites-enabled/aliases-seedbox.conf<<EOF
-  Alias /rutorrent "/srv/rutorrent"
-  <Directory "/srv/rutorrent">
-    Options Indexes FollowSymLinks MultiViews
-    AuthType Digest
-    AuthName "rutorrent"
-    AuthUserFile '/etc/htpasswd'
-    Require valid-user
-    AllowOverride None
-    Order allow,deny
-    allow from all
-  </Directory>
-  Alias /${username}.downloads "/home/${username}/torrents/"
-  <Directory "/home/${username}/torrents/">
-    Options Indexes FollowSymLinks MultiViews
-    AuthType Digest
-    AuthName "rutorrent"
-    AuthUserFile '/etc/htpasswd'
-    Require valid-user
-    AllowOverride None
-    Order allow,deny
-    allow from all
-  </Directory>
-  Alias /${username}.console "/home/${username}/.console/"
-  <Directory "/home/${username}/.console/">
-    Options Indexes FollowSymLinks MultiViews
-    AuthType Digest
-    AuthName "rutorrent"
-    AuthUserFile '/etc/htpasswd'
-    Require valid-user
-    AllowOverride None
-    Order allow,deny
-    allow from all
-  </Directory>
+Alias /rutorrent "/srv/rutorrent"
+<Directory "/srv/rutorrent">
+  Options Indexes FollowSymLinks MultiViews
+  AuthType Digest
+  AuthName "rutorrent"
+  AuthUserFile '/etc/htpasswd'
+  Require valid-user
+  AllowOverride None
+  Order allow,deny
+  allow from all
+</Directory>
+Alias /${username}.downloads "/home/${username}/torrents/"
+<Directory "/home/${username}/torrents/">
+  Options Indexes FollowSymLinks MultiViews
+  AuthType Digest
+  AuthName "rutorrent"
+  AuthUserFile '/etc/htpasswd'
+  Require valid-user
+  AllowOverride None
+  Order allow,deny
+  allow from all
+</Directory>
+Alias /${username}.console "/home/${username}/.console/"
+<Directory "/home/${username}/.console/">
+  Options Indexes FollowSymLinks MultiViews
+  AuthType Digest
+  AuthName "rutorrent"
+  AuthUserFile '/etc/htpasswd'
+  Require valid-user
+  AllowOverride None
+  Order allow,deny
+  allow from all
+</Directory>
 EOF
-    a2enmod auth_digest >>"${OUTTO}" 2>&1
-    a2enmod ssl >>"${OUTTO}" 2>&1
-    a2enmod scgi >>"${OUTTO}" 2>&1
-    a2enmod rewrite >>"${OUTTO}" 2>&1
-    mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/ >>"${OUTTO}" 2>&1
+  a2enmod auth_digest >>"${OUTTO}" 2>&1
+  a2enmod ssl >>"${OUTTO}" 2>&1
+  a2enmod scgi >>"${OUTTO}" 2>&1
+  a2enmod rewrite >>"${OUTTO}" 2>&1
+  mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/ >>"${OUTTO}" 2>&1
 cat >/etc/apache2/sites-enabled/default-ssl.conf<<EOF
-  SSLPassPhraseDialog  builtin
-  SSLSessionCache         shmcb:/var/cache/mod_ssl/scache(512000)
-  SSLSessionCacheTimeout  300
-  #SSLMutex default
-  SSLRandomSeed startup file:/dev/urandom  256
-  SSLRandomSeed connect builtin
-  SSLCryptoDevice builtin
-  <VirtualHost *:80>
-    DocumentRoot "/srv/rutorrent/home"
-    <Directory "/srv/rutorrent/home/">
-      Options Indexes FollowSymLinks
-      AllowOverride All AuthConfig
-      Order allow,deny
-      Allow from all
-      AuthType Digest
-      AuthName "${REALM}"
-      AuthUserFile '${HTPASSWD}'
-      Require valid-user
-    </Directory>
-  SCGIMount /${username} 127.0.0.1:$PORT
-  </VirtualHost>
-  <VirtualHost *:443>
-    Options +Indexes +MultiViews +FollowSymLinks
-    SSLEngine on
-    DocumentRoot "/srv/rutorrent/home"
-    <Directory "/srv/rutorrent/home/">
-      Options +Indexes +FollowSymLinks +MultiViews
-      AllowOverride All AuthConfig
-      Order allow,deny
-      Allow from all
-      AuthType Digest
-      AuthName "${REALM}"
-      AuthUserFile '${HTPASSWD}'
-      Require valid-user
-    </Directory>
-    SSLEngine on
-    SSLProtocol all -SSLv2
-    SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
-    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
-    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-    SetEnvIf User-Agent ".*MSIE.*" \
-    nokeepalive ssl-unclean-shutdown \
-    downgrade-1.0 force-response-1.0
-  SCGIMount /${username} 127.0.0.1:$PORT
-  </Virtualhost>
-  SCGIMount /${username} 127.0.0.1:$PORT
+SSLPassPhraseDialog  builtin
+SSLSessionCache         shmcb:/var/cache/mod_ssl/scache(512000)
+SSLSessionCacheTimeout  300
+#SSLMutex default
+SSLRandomSeed startup file:/dev/urandom  256
+SSLRandomSeed connect builtin
+SSLCryptoDevice builtin
+<VirtualHost *:80>
+        DocumentRoot "/srv/rutorrent/home"
+        <Directory "/srv/rutorrent/home/">
+                Options Indexes FollowSymLinks
+                AllowOverride All AuthConfig
+                Order allow,deny
+                Allow from all
+        AuthType Digest
+        AuthName "${REALM}"
+        AuthUserFile '${HTPASSWD}'
+        Require valid-user
+        </Directory>
+SCGIMount /${username} 127.0.0.1:$PORT
+</VirtualHost>
+<VirtualHost *:443>
+Options +Indexes +MultiViews +FollowSymLinks
+SSLEngine on
+        DocumentRoot "/srv/rutorrent/home"
+        <Directory "/srv/rutorrent/home/">
+                Options +Indexes +FollowSymLinks +MultiViews
+                AllowOverride All AuthConfig
+                Order allow,deny
+                Allow from all
+        AuthType Digest
+        AuthName "${REALM}"
+        AuthUserFile '${HTPASSWD}'
+        Require valid-user
+        </Directory>
+        SSLEngine on
+        SSLProtocol all -SSLv2
+        SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+        SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+        SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+        SetEnvIf User-Agent ".*MSIE.*" \
+                 nokeepalive ssl-unclean-shutdown \
+                 downgrade-1.0 force-response-1.0
+SCGIMount /${username} 127.0.0.1:$PORT
+</Virtualhost>
+SCGIMount /${username} 127.0.0.1:$PORT
 EOF
 
 cat >/etc/apache2/sites-enabled/fileshare.conf<<DOE
@@ -1285,7 +1273,7 @@ if [[ "${rel}" = "16.04" ]]; then
            -e "s/;opcache.revalidate_freq=2/opcache.revalidate_freq=240/" /etc/php/7.0/fpm/php.ini
 # ensure opcache module is activated
 phpenmod -v 7.0 opcache >>"${OUTTO}" 2>&1
-a2enmod proxy_fcgi >>"${OUTTO}" 2>&1
+#a2enmod proxy_fcgi >>"${OUTTO}" 2>&1
   sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php/7.0/apache2/php.ini
 else
   sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php5/apache2/php.ini
