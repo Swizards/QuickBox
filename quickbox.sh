@@ -1145,121 +1145,10 @@ function _apachesudo() {
 # function to configure apache (17)
 function _apacheconf() {
   if [[ "${rel}" = "16.04" ]]; then
-cat >/etc/apache2/sites-enabled/aliases-seedbox.conf<<EOF
-Alias /rutorrent "/srv/rutorrent"
-<Directory "/srv/rutorrent">
-  Options Indexes FollowSymLinks MultiViews
-  AuthType Digest
-  AuthName "rutorrent"
-  AuthUserFile '/etc/htpasswd'
-  Require valid-user
-  AllowOverride None
-  Order allow,deny
-  allow from all
-  <IfModule mod_fastcgi.c>
-    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
-      SetHandler php7-fcgi-${username}
-    </FilesMatch>
-  </IfModule>
-</Directory>
-Alias /${username}.downloads "/home/${username}/torrents/"
-<Directory "/home/${username}/torrents/">
-  Options Indexes FollowSymLinks MultiViews
-  AuthType Digest
-  AuthName "rutorrent"
-  AuthUserFile '/etc/htpasswd'
-  Require valid-user
-  AllowOverride None
-  Order allow,deny
-  allow from all
-  <IfModule mod_fastcgi.c>
-    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
-      SetHandler php7-fcgi-${username}
-    </FilesMatch>
-  </IfModule>
-</Directory>
-Alias /${username}.console "/home/${username}/.console/"
-<Directory "/home/${username}/.console/">
-  Options Indexes FollowSymLinks MultiViews
-  AuthType Digest
-  AuthName "rutorrent"
-  AuthUserFile '/etc/htpasswd'
-  Require valid-user
-  AllowOverride None
-  Order allow,deny
-  allow from all
-  <IfModule mod_fastcgi.c>
-    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
-      SetHandler php7-fcgi-${username}
-    </FilesMatch>
-  </IfModule>
-</Directory>
-EOF
-  a2enmod auth_digest >>"${OUTTO}" 2>&1
-  a2enmod ssl >>"${OUTTO}" 2>&1
-  a2enmod scgi >>"${OUTTO}" 2>&1
-  a2enmod rewrite >>"${OUTTO}" 2>&1
   a2enmod actions >>"${OUTTO}" 2>&1
   a2enmod fastcgi >>"${OUTTO}" 2>&1
-  mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/ >>"${OUTTO}" 2>&1
-cat >/etc/apache2/sites-enabled/default-ssl.conf<<EOF
-SSLPassPhraseDialog  builtin
-SSLSessionCache         shmcb:/var/cache/mod_ssl/scache(512000)
-SSLSessionCacheTimeout  300
-#SSLMutex default
-SSLRandomSeed startup file:/dev/urandom  256
-SSLRandomSeed connect builtin
-SSLCryptoDevice builtin
-<VirtualHost *:80>
-  DocumentRoot "/srv/rutorrent/home"
-  <Directory "/srv/rutorrent/home/">
-    Options Indexes FollowSymLinks
-    AllowOverride All AuthConfig
-    Order allow,deny
-    Allow from all
-    AuthType Digest
-    AuthName "${REALM}"
-    AuthUserFile '${HTPASSWD}'
-    Require valid-user
-  </Directory>
-  <IfModule mod_fastcgi.c>
-    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
-      SetHandler php7-fcgi-${username}
-    </FilesMatch>
-  </IfModule>
-SCGIMount /${username} 127.0.0.1:$PORT
-</VirtualHost>
-<VirtualHost *:443>
-Options +Indexes +MultiViews +FollowSymLinks
-SSLEngine on
-  DocumentRoot "/srv/rutorrent/home"
-  <Directory "/srv/rutorrent/home/">
-    Options +Indexes +FollowSymLinks +MultiViews
-    AllowOverride All AuthConfig
-    Order allow,deny
-    Allow from all
-    AuthType Digest
-    AuthName "${REALM}"
-    AuthUserFile '${HTPASSWD}'
-    Require valid-user
-  </Directory>
-  <IfModule mod_fastcgi.c>
-    <FilesMatch ".+\.ph(p[345]?|t|tml)$">
-      SetHandler php7-fcgi-${username}
-    </FilesMatch>
-  </IfModule>
-  SSLEngine on
-  SSLProtocol all -SSLv2
-  SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
-  SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
-  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-  SetEnvIf User-Agent ".*MSIE.*" \
-    nokeepalive ssl-unclean-shutdown \
-    downgrade-1.0 force-response-1.0
-SCGIMount /${username} 127.0.0.1:$PORT
-</Virtualhost>
-SCGIMount /${username} 127.0.0.1:$PORT
-EOF
+  #a2dismod mpm_prefork >>"${OUTTO}" 2>&1
+  #a2enmod mpm_worker >>"${OUTTO}" 2>&1
 cat >"/etc/php/7.0/fpm/pool.d/${username}.conf"<<EOF
 [${username}]
     user = ${username}
@@ -1285,7 +1174,8 @@ cat >"/etc/apache2/sites-enabled/${username}.conf"<<EOF
     </Directory>
 </IfModule>
 EOF
-else
+fi
+
 cat >/etc/apache2/sites-enabled/aliases-seedbox.conf<<EOF
   Alias /rutorrent "/srv/rutorrent"
   <Directory "/srv/rutorrent">
@@ -1374,7 +1264,6 @@ cat >/etc/apache2/sites-enabled/default-ssl.conf<<EOF
   </Virtualhost>
   SCGIMount /${username} 127.0.0.1:$PORT
 EOF
-fi
 
 cat >/etc/apache2/sites-enabled/fileshare.conf<<DOE
 <Directory "/srv/rutorrent/home/fileshare">
