@@ -1015,7 +1015,7 @@ function _askrtorrent() {
 # xmlrpc-c function (11)
 function _xmlrpc() {
   cd /root/tmp
-  echo -ne "Installing xmlrpc-c-${green}1.33.12${normal} ... "
+  echo "Installing xmlrpc-c-${green}1.33.12${normal} ... "
   if [[ -d /root/tmp/xmlrpc-c ]]; then rm -rf xmlrpc-c;fi
   cp -R "$REPOURL/xmlrpc-c_1-33-12/" .
   cd xmlrpc-c_1-33-12
@@ -1030,7 +1030,7 @@ function _xmlrpc() {
 function _libtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -ne "Installing libtorrent-${green}$LTORRENT${normal} ... "
+  echo "Installing libtorrent-${green}$LTORRENT${normal} ... "
   rm -rf xmlrpc-c  >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/libtorrent-${LTORRENT}.tar.gz .
@@ -1046,7 +1046,7 @@ function _libtorrent() {
 function _rtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -ne "Installing rtorrent-${green}$RTVERSION${normal} ... "
+  echo "Installing rtorrent-${green}$RTVERSION${normal} ... "
   rm -rf libtorrent-${LTORRENT}* >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/rtorrent-${RTVERSION}.tar.gz .
@@ -1108,7 +1108,7 @@ function _askshell() {
 function _adduser() {
   theshell="/bin/bash";
   echo -ne "${bold}${yellow}Add a Master Account user to sudoers${normal}";
-  echo -n "Username: "; read user
+  echo "Username: "; read user
   username=$(echo "$user"|sed 's/.*/\L&/')
   useradd "${username}" -m -G www-data -s "${theshell}"
   echo -n "Password: (hit enter to generate a password) "; read password
@@ -1390,8 +1390,8 @@ if [[ "${rel}" = "16.04" ]]; then
            -e "s/;opcache.max_accelerated_files=2000/opcache.max_accelerated_files=4000/" \
            -e "s/;opcache.revalidate_freq=2/opcache.revalidate_freq=240/" /etc/php/7.0/fpm/php.ini
 # ensure opcache module is activated
-phpenmod -v 7.0 opcache
-a2enmod proxy_fcgi
+phpenmod -v 7.0 opcache >>"${OUTTO}" 2>&1
+a2enmod proxy_fcgi >>"${OUTTO}" 2>&1
   sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php/7.0/apache2/php.ini
 else
   sed -i 's/memory_limit = 128M/memory_limit = 768M/g' /etc/php5/apache2/php.ini
@@ -1817,7 +1817,9 @@ EOF
   quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
   quotaon -a >>"${OUTTO}" 2>&1
   service quota start >>"${OUTTO}" 2>&1
-    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached plexmediaserver cron; do
+  service apache2 restart >>"${OUTTO}" 2>&1
+  service php7.0-fpm restart >>"${OUTTO}" 2>&1
+    for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached cron; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
     done
