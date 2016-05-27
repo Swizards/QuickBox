@@ -1475,10 +1475,10 @@ function _reloadscript() {
 cat >/usr/bin/reload<<'EOF'
 #!/bin/bash
 export USER=$(id -un)
-sudo killall -u $USER irssi >/dev/null 2>&1
-sudo killall -u $USER rtorrent >/dev/null 2>&1
-sudo killall -u $USER main >/dev/null 2>&1
-sudo rm -rf ~/.sessions/rtorrent.lock
+pkill -u $USER irssi >/dev/null 2>&1
+pkill -u $USER rtorrent >/dev/null 2>&1
+killall -u $USER main >/dev/null 2>&1
+rm -rf ~/.sessions/rtorrent.lock
 EOF
 chmod +x /usr/bin/reload
 }
@@ -1612,7 +1612,7 @@ function _packagecommands() {
   mkdir -p /etc/quickbox/commands/system/packages
   mv "${PACKAGEURL}" /etc/quickbox/commands/system/
   PACKAGECOMMANDS="/etc/quickbox/commands/system/packages/"; cd "/usr/local/bin"
-  LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync installpackage-csf removepackage-csf"
+  LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync installpackage-csf removepackage-csf installpackage-sickrage removepackage-sickrage installpackage-rapidleech removepackage-rapidleech"
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PACKAGECOMMANDS}$i" .
