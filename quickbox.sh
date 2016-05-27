@@ -1541,7 +1541,7 @@ function _additionalsyscommands() {
     cd /usr/local/bin
     wget -q -O /usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
     wget -q -O /usr/local/bin/showspace https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/showspace
-    wget -q -O /usr/local/bin/showspace https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/setdisk
+    wget -q -O /usr/local/bin/setdisk https://raw.githubusercontent.com/Swizards/QuickBox/development/commands/setdisk
     dos2unix clean_mem showspace setdisk >>"${OUTTO}" 2>&1;
     chmod +x clean_mem showspace setdisk >>"${OUTTO}" 2>&1;
     cd
