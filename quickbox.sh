@@ -1475,10 +1475,10 @@ function _reloadscript() {
 cat >/usr/bin/reload<<'EOF'
 #!/bin/bash
 export USER=$(id -un)
-sudo killall -u $USER irssi >/dev/null 2>&1
-sudo killall -u $USER rtorrent >/dev/null 2>&1
-sudo killall -u $USER main >/dev/null 2>&1
-sudo rm -rf ~/.sessions/rtorrent.lock
+pkill -u $USER irssi >/dev/null 2>&1
+pkill -u $USER rtorrent >/dev/null 2>&1
+killall -u $USER main >/dev/null 2>&1
+rm -rf ~/.sessions/rtorrent.lock
 EOF
 chmod +x /usr/bin/reload
 }
