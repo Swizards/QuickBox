@@ -1463,22 +1463,20 @@ function _askdeluge() {
 
 # build deluge from source ()
 function _deluge() {
-  if [[ ${deluge} == "yes" ]]; then
-    echo -n "Building deluge "${DELUGE_VERSION}" from source ... "
-    DELUGE_VERSION=1.3.12
-    cd /root/tmp
-    apt-get -y install python python-geoip python-libtorrent python-notify python-pygame python-gtk2 python-gtk2-dev python-twisted python-twisted-web2 python-openssl python-simplejson python-setuptools gettext python-xdg python-chardet librsvg2-dev xdg-utils python-mako
-    sudo kill -9 `sudo ps aux | grep deluge | grep -v grep | awk '{print $2}' | cut -d. -f 1` &> /dev/null
-    sudo wget https://github.com/Swizards/QuickBox/raw/experimental/sources/deluge_"${DELUGE_VERSION}".tar.gz
-    mkdir -p /etc/quickbox/sources
-    cd /etc/quickbox/sources
-    sudo tar xvfz deluge_"${DELUGE_VERSION}".tar.gz
-    sudo rm deluge_"${DELUGE_VERSION}".tar.gz
-    cd deluge_"${DELUGE_VERSION}"
-    sudo python setup.py build
-    sudo python setup.py install
-    sudo ldconfig
-  fi
+  echo -n "Building deluge "${DELUGE_VERSION}" from source ... "
+  DELUGE_VERSION=1.3.12
+  cd /root/tmp
+  apt-get -y install python python-geoip python-libtorrent python-notify python-pygame python-gtk2 python-gtk2-dev python-twisted python-twisted-web2 python-openssl python-simplejson python-setuptools gettext python-xdg python-chardet librsvg2-dev xdg-utils python-mako
+  sudo kill -9 `sudo ps aux | grep deluge | grep -v grep | awk '{print $2}' | cut -d. -f 1` &> /dev/null
+  sudo wget https://github.com/Swizards/QuickBox/raw/experimental/sources/deluge_"${DELUGE_VERSION}".tar.gz
+  mkdir -p /etc/quickbox/sources
+  cd /etc/quickbox/sources
+  sudo tar xvfz deluge_"${DELUGE_VERSION}".tar.gz
+  sudo rm deluge_"${DELUGE_VERSION}".tar.gz
+  cd deluge_"${DELUGE_VERSION}"
+  sudo python setup.py build
+  sudo python setup.py install
+  sudo ldconfig
 }
 
 function _delugecore() {
@@ -1586,7 +1584,6 @@ cat >"${home}"/.config/deluge/core.conf<<DL
   "listen_interface": ""
 }
 DL
-fi
 }
 
 function _delugeconf() {
@@ -1617,7 +1614,6 @@ cat >"${home}"/.config/deluge/web.conf<<DWC
 }
 DWC
   echo "You may access Deluge at http://${ip}:$WEBPORT" >>/root/"${username}".info
-fi
 }
 
 # function to configure first user config (18)
@@ -2158,9 +2154,11 @@ echo -n "Installing xmlrpc-c-${green}1.33.12${normal} ... ";_xmlrpc & spinner $!
 echo -n "Installing libtorrent-${green}$LTORRENT${normal} ... ";_libtorrent & spinner $!;echo
 echo -n "Installing rtorrent-${green}$RTVERSION${normal} ... ";_rtorrent & spinner $!;echo
 echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;
-echo -n "Building and Installing Deluge ... ";_deluge & spinner $!;echo;
-echo -n "Writing ${username} deluge config ... ";_delugecore & spinner $!;echo;
-echo -n "Writing ${username} deluge web config ... ";_delugeconf & spinner $!;echo;
+if [[ ${deluge} == "yes" ]]; then
+  echo -n "Building and Installing Deluge ... ";_deluge & spinner $!;echo;
+  echo -n "Writing ${username} deluge config ... ";_delugecore & spinner $!;echo;
+  echo -n "Writing ${username} deluge web config ... ";_delugeconf & spinner $!;echo;
+fi
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf & spinner $!;echo
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf & spinner $!;echo
 echo -n "Installing rutorrent plugins ... ";_plugins & spinner $!;echo
