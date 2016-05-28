@@ -1465,7 +1465,7 @@ fi
 
 # install deluge question ()
 function _askdeluge() {
-  echo -n "${bold}${yellow}Would you like to install Deluge?${normal} [${green}y${normal}]es or [n]o: " read responce
+  echo -n "${bold}${yellow}Would you like to install Deluge?${normal} [${green}y${normal}]es or [n]o: "; read responce
   case $responce in
     [yY] | [yY][Ee][Ss] | "" ) deluge=yes ;;
     [nN] | [nN][Oo] ) deluge=no ;;
