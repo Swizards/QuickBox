@@ -1045,7 +1045,7 @@ case $responce in
 esac
 }
 
-function _csfblockpublic() {}
+function _csfblockpublic() {
   if [[ ${csfdenyhosts} == "yes" ]]; then
     echo -n "[ ${red}Blocking public trackers${normal} ]"
     sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" \
