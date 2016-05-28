@@ -1362,6 +1362,17 @@ Alias /${username}.downloads "/home/${username}/torrents/"
   Order allow,deny
   allow from all
 </Directory>
+Alias /${username}.deluge.downloads "/home/${username}/downloads/deluge.files/"
+<Directory "/home/${username}/downloads/deluge.files/">
+  Options Indexes FollowSymLinks MultiViews
+  AllowOverride None
+  AuthType Digest
+  AuthName "rutorrent"
+  AuthUserFile '/etc/htpasswd'
+  Require valid-user
+  Order allow,deny
+  Allow from all
+</Directory>
 Alias /${username}.console "/home/${username}/.console/"
 <Directory "/home/${username}/.console/">
   Options Indexes FollowSymLinks MultiViews
@@ -1484,7 +1495,8 @@ function _deluge() {
 }
 
 function _delugecore() {
-    home="/home/${username}"
+  home="/home/${username}"
+  mkdir -p /home/${username}/{.config/deluge/{icons,plugins,ssl,state},deluge.torrents,downloads/deluge.files,dwatch} >>"${OUTTO}" 2>&1
 cat >"${home}"/.config/deluge/core.conf<<DL
 {
   "file": 1,
