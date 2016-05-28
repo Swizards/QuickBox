@@ -1038,15 +1038,21 @@ function _cloudflare() {
 # ban public trackers [csf option] (8)
 function _csfdenyhosts() {
 echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
+read responce
 case $responce in
-  [yY] | [yY][Ee][Ss] | "")
-echo "[ ${red}Blocking public trackers${normal} ]"
-sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" \
+  [yY] | [yY][Ee][Ss] | "" ) csfdenyhosts=yes ;;
+  [nN] | [nN][Oo] ) csfdenyhosts=no ;;
+esac
+}
+
+function _csfblockpublic
+  if [[ ${csfdenyhosts} == "yes" ]]; then
+    echo -n "[ ${red}Blocking public trackers${normal} ]"
+    sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" \
        -e "/GLOBAL_DYNDNS = \"\"/cGLOBAL_DYNDNS = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" /etc/csf/csf.conf
-  ;;
-  [nN] | [nN][Oo] ) echo "[ ${green}Allowing${normal} ]"
-                ;;
-        esac
+  else
+    echo -n "[ ${green}Allowing${normal} ]"
+  fi
 }
 
 # ban public trackers [iptables option] (8)
@@ -1464,17 +1470,17 @@ function _deluge() {
   echo -n "Building deluge "${DELUGE_VERSION}" from source ... "
   DELUGE_VERSION=1.3.12
   cd /root/tmp
-  apt-get -y install python python-geoip python-libtorrent python-notify python-pygame python-gtk2 python-gtk2-dev python-twisted python-twisted-web2 python-openssl python-simplejson python-setuptools gettext python-xdg python-chardet librsvg2-dev xdg-utils python-mako
+  apt-get -y install python python-geoip python-libtorrent python-notify python-pygame python-gtk2 python-gtk2-dev python-twisted python-twisted-web2 python-openssl python-simplejson python-setuptools gettext python-xdg python-chardet librsvg2-dev xdg-utils python-mako >>"${OUTTO}" 2>&1
   sudo kill -9 `sudo ps aux | grep deluge | grep -v grep | awk '{print $2}' | cut -d. -f 1` &> /dev/null
-  sudo wget https://github.com/Swizards/QuickBox/raw/experimental/sources/deluge_"${DELUGE_VERSION}".tar.gz
+  sudo wget https://github.com/Swizards/QuickBox/raw/experimental/sources/deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
   mkdir -p /etc/quickbox/sources
   cd /etc/quickbox/sources
-  sudo tar xvfz deluge_"${DELUGE_VERSION}".tar.gz
-  sudo rm deluge_"${DELUGE_VERSION}".tar.gz
+  sudo tar xvfz deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
+  sudo rm deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
   cd deluge_"${DELUGE_VERSION}"
-  sudo python setup.py build
-  sudo python setup.py install
-  sudo ldconfig
+  sudo python setup.py build >>"${OUTTO}" 2>&1
+  sudo python setup.py install >>"${OUTTO}" 2>&1
+  sudo ldconfig >>"${OUTTO}" 2>&1
 }
 
 function _delugecore() {
@@ -2132,6 +2138,9 @@ if [[ ${csf} == "yes" ]]; then
     _csfsendmail3 & spinner $!;echo
     if [[ ${cloudflare} == "yes" ]]; then
         _cloudflare & spinner $!;echo;
+    fi
+    if [[ ${csfdenyhosts} == "yes" ]]; then
+      _csfblockpublic & spinner $!;echo;
     fi
 elif [[ ${csf} == "no" ]]; then
     _nocsf;
