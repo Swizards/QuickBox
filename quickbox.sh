@@ -1192,7 +1192,6 @@ function _askrtorrent() {
 # xmlrpc-c function (11)
 function _xmlrpc() {
   cd /root/tmp
-  echo -n "Installing xmlrpc-c-${green}1.33.12${normal} ... "
   if [[ -d /root/tmp/xmlrpc-c ]]; then rm -rf xmlrpc-c;fi
   cp -R "$REPOURL/xmlrpc-c_1-33-12/" .
   cd xmlrpc-c_1-33-12
@@ -1207,7 +1206,6 @@ function _xmlrpc() {
 function _libtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -n "Installing libtorrent-${green}$LTORRENT${normal} ... "
   rm -rf xmlrpc-c  >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/libtorrent-${LTORRENT}.tar.gz .
@@ -1223,7 +1221,6 @@ function _libtorrent() {
 function _rtorrent() {
   cd /root/tmp
   MAXCPUS=$(echo "$(nproc) / 2"|bc)
-  echo -n "Installing rtorrent-${green}$RTVERSION${normal} ... "
   rm -rf libtorrent-${LTORRENT}* >>"${OUTTO}" 2>&1
   if [[ -e /root/tmp/libtorrent-${LTORRENT}.tar.gz ]]; then rm -rf libtorrent-${LTORRENT}.tar.gz;fi
   cp $REPOURL/sources/rtorrent-${RTVERSION}.tar.gz .
@@ -1452,6 +1449,175 @@ else
 fi
 }
 
+# install deluge question ()
+function _askdeluge() {
+  echo -ne "${bold}${yellow}Install Deluge?${normal} (Note: You will be able install on the dashboard also) (Default: ${red}N${normal}): "; read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] ) deluge=yes ;;
+    [nN] | [nN][Oo] | "" ) deluge=no ;;
+    *) deluge=no ;;
+  esac
+}
+
+# build deluge from source ()
+function _deluge() {
+  if [[ ${deluge} == "yes" ]]; then
+    echo -n "Building deluge "${DELUGE_VERSION}" from source ... "
+    DELUGE_VERSION=1.3.12
+    cd /root/tmp
+    apt-get -y install python python-geoip python-libtorrent python-notify python-pygame python-gtk2 python-gtk2-dev python-twisted python-twisted-web2 python-openssl python-simplejson python-setuptools gettext python-xdg python-chardet librsvg2-dev xdg-utils python-mako
+    sudo kill -9 `sudo ps aux | grep deluge | grep -v grep | awk '{print $2}' | cut -d. -f 1` &> /dev/null
+    sudo wget https://github.com/Swizards/QuickBox/raw/experimental/sources/deluge_"${DELUGE_VERSION}".tar.gz
+    mkdir -p /etc/quickbox/sources
+    cd /etc/quickbox/sources
+    sudo tar xvfz deluge_"${DELUGE_VERSION}".tar.gz
+    sudo rm deluge_"${DELUGE_VERSION}".tar.gz
+    cd deluge_"${DELUGE_VERSION}"
+    sudo python setup.py build
+    sudo python setup.py install
+    sudo ldconfig
+  fi
+}
+
+function _delugecore() {
+    home="/home/${username}"
+cat >"${home}"/.config/deluge/core.conf<<DL
+{
+  "file": 1,
+  "format": 1
+}{
+  "info_sent": 0.0,
+  "lsd": true,
+  "max_download_speed": -1.0,
+  "send_info": false,
+  "natpmp": true,
+  "move_completed_path": "$home/downloads/deluge.files/",
+  "peer_tos": "0x00",
+  "enc_in_policy": 1,
+  "queue_new_to_top": false,
+  "ignore_limits_on_local_network": true,
+  "rate_limit_ip_overhead": true,
+  "daemon_port": $DPORT,
+  "torrentfiles_location": "$home/deluge.torrents/",
+  "max_active_limit": 8,
+  "geoip_db_location": "/usr/share/GeoIP/GeoIP.dat",
+  "upnp": true,
+  "utpex": true,
+  "max_active_downloading": 3,
+  "max_active_seeding": 5,
+  "allow_remote": true,
+  "outgoing_ports": [
+    0,
+    0
+  ],
+  "enabled_plugins": [],
+  "max_half_open_connections": 50,
+  "download_location": "$home/downloads/deluge.files/",
+  "compact_allocation": false,
+  "max_upload_speed": -1.0,
+  "plugins_location": "$home/.config/deluge/plugins",
+  "max_connections_global": 200,
+  "enc_prefer_rc4": true,
+  "cache_expiry": 60,
+  "dht": true,
+  "stop_seed_at_ratio": false,
+  "stop_seed_ratio": 2.0,
+  "max_download_speed_per_torrent": -1,
+  "prioritize_first_last_pieces": false,
+  "max_upload_speed_per_torrent": -1,
+  "auto_managed": true,
+  "enc_level": 2,
+  "copy_torrent_file": false,
+  "max_connections_per_second": 20,
+  "listen_ports": [
+    $PORT,
+    $PORTEND
+  ],
+  "max_connections_per_torrent": -1,
+  "del_copy_torrent_file": false,
+  "move_completed": false,
+  "autoadd_enable": false,
+  "proxies": {
+    "peer": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    },
+    "web_seed": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    },
+    "tracker": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    },
+    "dht": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    }
+  },
+  "dont_count_slow_torrents": false,
+  "add_paused": false,
+  "random_outgoing_ports": true,
+  "max_upload_slots_per_torrent": -1,
+  "new_release_check": true,
+  "enc_out_policy": 1,
+  "seed_time_ratio_limit": 7.0,
+  "remove_seed_at_ratio": false,
+  "autoadd_location": "$home/dwatch",
+  "max_upload_slots_global": 4,
+  "seed_time_limit": 180,
+  "cache_size": 512,
+  "share_ratio_limit": 2.0,
+  "random_port": true,
+  "listen_interface": ""
+}
+DL
+fi
+}
+
+function _delugeconf() {
+  DELUGESALT=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 32)
+  SHAPASSWD=$(deluge.Userpass.py ${password} ${delugegenpass})
+  home="/home/${username}"
+cat >"${home}"/.config/deluge/web.conf<<DWC
+{
+  "file": 1,
+  "format": 1
+}{
+  "sidebar_show_zero": false,
+  "show_session_speed": false,
+  "pwd_sha1": "$SHAPASSWD",
+  "show_sidebar": true,
+  "enabled_plugins": [],
+  "base": "/",
+  "first_login": false,
+  "theme": "gray",
+  "pkey": "ssl/daemon.pkey",
+  "cert": "ssl/daemon.cert",
+  "session_timeout": 3600,
+  "https": false,
+  "default_daemon": "",
+  "sidebar_multiple_filters": true,
+  "pwd_salt": "$DELUGESALT",
+  "port": $WEBPORT
+}
+DWC
+  echo "You may access Deluge at http://${ip}:$WEBPORT" >>/root/"${username}".info
+fi
+}
+
 # function to configure first user config (18)
 function _rconf() {
 cat >"/home/${username}/.rtorrent.rc"<<EOF
@@ -1596,8 +1762,10 @@ function _additionalsyscommands() {
     wget -q -O /usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
     wget -q -O /usr/local/bin/showspace https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/showspace
     wget -q -O /usr/local/bin/setdisk https://raw.githubusercontent.com/Swizards/QuickBox/development/commands/setdisk
-    dos2unix clean_mem showspace setdisk >>"${OUTTO}" 2>&1;
-    chmod +x clean_mem showspace setdisk >>"${OUTTO}" 2>&1;
+    wget -q -O /usr/local/bin/deluge.changeUserpass.py https://raw.githubusercontent.com/Swizards/QuickBox/experimental/commands/deluge.changeUserpass.py
+    wget -q -O /usr/local/bin/deluge.Userpass.py https://raw.githubusercontent.com/Swizards/QuickBox/experimental/commands/deluge.Userpass.py
+    dos2unix clean_mem showspace setdisk deluge.Userpass.py deluge.changeUserpass.py >>"${OUTTO}" 2>&1;
+    chmod +x clean_mem showspace setdisk deluge.Userpass.py deluge.changeUserpass.py >>"${OUTTO}" 2>&1;
     cd
 }
 
@@ -1911,9 +2079,16 @@ PACKAGEURL="/root/tmp/QuickBox/commands/system/packages/"
 QBVERSION="2.2.2"
 PORT=$(shuf -i 2000-61000 -n 1)
 PORTEND=$((${PORT} + 1500))
+while [[ "$(netstat -ln | grep ':'"$PORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do PORT="$(shuf -i 2000-61000 -n 1)"; done
+WEBPORT=$(shuf -i 8115-8145 -n 1)
+RPORT=$(shuf -i 2000-61000 -n 1)
+DPORT=$(shuf -i 2000-61000 -n 1)
+while [[ "$(netstat -ln | grep ':'"$RPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do RPORT="$(shuf -i 2000-61000 -n 1)"; done
+while [[ "$(netstat -ln | grep ':'"$DPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do DPORT="$(shuf -i 2000-61000 -n 1)"; done
 S=$(date +%s)
 OK=$(echo -e "[ ${bold}${green}DONE${normal} ]")
 genpass=$(_string)
+delugegenpass=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 32)
 HTPASSWD="/etc/htpasswd"
 rutorrent="/srv/rutorrent/"
 REALM="rutorrent"
@@ -1934,54 +2109,59 @@ _logcheck
 _askpartition
 _askcontinue
 _ssdpblock
-echo -n "Updating system ... ";_updates & spinner $!;echo
 clear
 #_locale
 _repos
 _hostname
-echo -n "Installing all needed dependencies ... ";_depends & spinner $!;echo
-_askcsf;
+_askcsf
 if [[ ${csf} == "yes" ]]; then
-    _csf & spinner $!;echo
-    _csfsendmail1 & spinner $!;echo
-    _csfsendmail2
-    _csfsendmail3 & spinner $!;echo
-    _askcloudflare;
-    if [[ ${cloudflare} == "yes" ]]; then
-        _cloudflare & spinner $!;echo;
-    fi
-elif [[ ${csf} == "no" ]]; then
-    _nocsf;
+  _askcloudflare
 fi
 if [[ ${csf} == "yes" ]]; then
     _csfdenyhosts
 else
     _denyhosts
 fi
+_askffmpeg
+_askrtorrent
+_askdeluge
+_adduser
+echo -n "Updating system ... ";_updates & spinner $!;echo
+echo -n "Installing all needed dependencies ... ";_depends & spinner $!;echo
+_additionalsyscommands
+if [[ ${csf} == "yes" ]]; then
+    _csf & spinner $!;echo
+    _csfsendmail1 & spinner $!;echo
+    _csfsendmail2
+    _csfsendmail3 & spinner $!;echo
+    if [[ ${cloudflare} == "yes" ]]; then
+        _cloudflare & spinner $!;echo;
+    fi
+elif [[ ${csf} == "no" ]]; then
+    _nocsf;
+fi
 echo -n "Building required user directories ... ";_skel & spinner $!;echo
-_askffmpeg;
 if [[ ${ffmpeg} == "yes" ]]; then
     _ffmpeg & spinner $!;echo;
 fi
-_askrtorrent
-_xmlrpc & spinner $!;echo
-_libtorrent & spinner $!;echo
-_rtorrent & spinner $!;echo
+_apachesudo
+echo -n "Installing xmlrpc-c-${green}1.33.12${normal} ... ";_xmlrpc & spinner $!;echo
+echo -n "Installing libtorrent-${green}$LTORRENT${normal} ... ";_libtorrent & spinner $!;echo
+echo -n "Installing rtorrent-${green}$RTVERSION${normal} ... ";_rtorrent & spinner $!;echo
 echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;
-#_askshell;
-_adduser;_apachesudo
+echo -n "Building and Installing Deluge ... ";_deluge & spinner $!;echo;
+echo -n "Writing ${username} deluge config ... ";_delugecore & spinner $!;echo;
+echo -n "Writing ${username} deluge web config ... ";_delugeconf & spinner $!;echo;
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf & spinner $!;echo
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf & spinner $!;echo
 echo -n "Installing rutorrent plugins ... ";_plugins & spinner $!;echo
-echo -n "Installing autodl-irssi ... ";_autodl & spinner $!;echo;_plugincommands;_additionalsyscommands
+echo -n "Installing autodl-irssi ... ";_autodl & spinner $!;echo;_plugincommands
 echo -n "Making ${username} directory structure ... ";_makedirs & spinner $!;echo
 echo -n "Writing ${username} system crontab script ... ";_cronfile & spinner $!;echo
 echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf & spinner $!;echo
-#_askquota
 echo -n "Writing seedbox reload script ... ";_reloadscript & spinner $!;echo
 echo -n "Installing VSFTPd ... ";_installftpd & spinner $!;echo
 echo -n "Setting up VSFTPd ... ";_ftpdconfig & spinner $!;echo
-#_askplex;_askbtsync;
 _packagecommands;_quickstats;_quickconsole
 echo -n "Setting irssi/rtorrent to start on boot ... ";_boot & spinner $!;echo;
 echo -n "Setting permissions on ${username} ... ";_perms & spinner $!;echo;
