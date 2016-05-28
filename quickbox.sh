@@ -201,16 +201,18 @@ OK=`echo -e "[\e[0;32mOK\e[00m]"`
 realm="rutorrent"
 htpasswd="/etc/htpasswd"
 genpass=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15)
+delugegenpass=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 32)
 ruconf="/srv/rutorrent/conf/users"
 IRSSI_PASS=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15)
 IRSSI_PORT=$((RANDOM%64025+1024))
-#PORT=$(($RANDOM + ($RANDOM % 2) * 32768))
 PORT=$(shuf -i 2000-61000 -n 1)
+WEBPORT=$(shuf -i 8115-8145 -n 1)
 PORTEND=$(($PORT + 1500))
 while [[ "$(netstat -ln | grep ':'"$PORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do PORT="$(shuf -i 2000-61000 -n 1)"; done
-#RPORT=$(($PORT + 1500))
 RPORT=$(shuf -i 2000-61000 -n 1)
+DPORT=$(shuf -i 2000-61000 -n 1)
 while [[ "$(netstat -ln | grep ':'"$RPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do RPORT="$(shuf -i 2000-61000 -n 1)"; done
+while [[ "$(netstat -ln | grep ':'"$DPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do DPORT="$(shuf -i 2000-61000 -n 1)"; done
 ip=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 # --END HERE --
 echo -n "Username: "; read username
@@ -282,9 +284,9 @@ peer_exchange = no
 check_hash = no
 execute_nothrow=chmod,777,/home/${username}/.sessions/
 # -- END HERE --
-
 RC
 echo $OK
+
 echo -n "setting permissions ... "
   chown $username.www-data /home/$username/{torrents,.sessions,watch,.rtorrent.rc} >/dev/null 2>&1
   usermod -a -G www-data $username >/dev/null 2>&1
@@ -294,8 +296,8 @@ echo -n "setting permissions ... "
   chown ${username}:plex /home/${username} >/dev/null 2>&1
   chmod 750 /home/${username} >/dev/null 2>&1
   setfacl -m g:${username}:rwx /home/${username} >/dev/null 2>&1
-
 echo $OK
+
 echo -n "writing $username rtorrent/irssi cron script ... "
 cat >/home/${username}/.startup<<SU
 #!/bin/bash
@@ -320,6 +322,7 @@ SU
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
   chmod +x /home/${username}/.startup >/dev/null 2>&1
 echo $OK
+
 echo -n "enabling $username cron script ... "
   mkdir "/srv/rutorrent/conf/users/${username}" >/dev/null 2>&1
   mkdir -p /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/ >/dev/null 2>&1
@@ -330,6 +333,7 @@ echo -n "enabling $username cron script ... "
   sudo -u $username chmod 750 /home/$username/ >/dev/null 2>&1
   chown -R $username.www-data /home/${username} >/dev/null 2>&1
 echo $OK
+
 echo -n "writing $username rutorrent config.php ... "
   mkdir $ruconf/$username >/dev/null 2>&1
 cat >$ruconf/$username/config.php<<DH
@@ -373,8 +377,165 @@ cat >/home/$username/.autodl/autodl.cfg<<ADC
 gui-server-port = $IRSSI_PORT
 gui-server-password = $IRSSI_PASS
 ADC
-
 echo $OK
+
+echo -n "writing $username deluge config ... "
+home="/home/$username"
+cat >$home/.config/deluge/core.conf<<DL
+{
+  "file": 1,
+  "format": 1
+}{
+  "info_sent": 0.0,
+  "lsd": true,
+  "max_download_speed": -1.0,
+  "send_info": false,
+  "natpmp": true,
+  "move_completed_path": "$home/downloads/deluge.files/",
+  "peer_tos": "0x00",
+  "enc_in_policy": 1,
+  "queue_new_to_top": false,
+  "ignore_limits_on_local_network": true,
+  "rate_limit_ip_overhead": true,
+  "daemon_port": $DPORT,
+  "torrentfiles_location": "$home/deluge.torrents/",
+  "max_active_limit": 8,
+  "geoip_db_location": "/usr/share/GeoIP/GeoIP.dat",
+  "upnp": true,
+  "utpex": true,
+  "max_active_downloading": 3,
+  "max_active_seeding": 5,
+  "allow_remote": true,
+  "outgoing_ports": [
+    0,
+    0
+  ],
+  "enabled_plugins": [],
+  "max_half_open_connections": 50,
+  "download_location": "$home/downloads/deluge.files/",
+  "compact_allocation": false,
+  "max_upload_speed": -1.0,
+  "plugins_location": "$home/.config/deluge/plugins",
+  "max_connections_global": 200,
+  "enc_prefer_rc4": true,
+  "cache_expiry": 60,
+  "dht": true,
+  "stop_seed_at_ratio": false,
+  "stop_seed_ratio": 2.0,
+  "max_download_speed_per_torrent": -1,
+  "prioritize_first_last_pieces": false,
+  "max_upload_speed_per_torrent": -1,
+  "auto_managed": true,
+  "enc_level": 2,
+  "copy_torrent_file": false,
+  "max_connections_per_second": 20,
+  "listen_ports": [
+    $PORT,
+    $PORTEND
+  ],
+  "max_connections_per_torrent": -1,
+  "del_copy_torrent_file": false,
+  "move_completed": false,
+  "autoadd_enable": false,
+  "proxies": {
+    "peer": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    },
+    "web_seed": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    },
+    "tracker": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    },
+    "dht": {
+      "username": "",
+      "password": "",
+      "hostname": "",
+      "type": 0,
+      "port": 8080
+    }
+  },
+  "dont_count_slow_torrents": false,
+  "add_paused": false,
+  "random_outgoing_ports": true,
+  "max_upload_slots_per_torrent": -1,
+  "new_release_check": true,
+  "enc_out_policy": 1,
+  "seed_time_ratio_limit": 7.0,
+  "remove_seed_at_ratio": false,
+  "autoadd_location": "$home/dwatch",
+  "max_upload_slots_global": 4,
+  "seed_time_limit": 180,
+  "cache_size": 512,
+  "share_ratio_limit": 2.0,
+  "random_port": true,
+  "listen_interface": ""
+}
+DL
+echo $OK
+
+echo -n "writing $username deluge web config ... "
+DELUGESALT=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 32)
+SHAPASSWD=$(deluge.Userpass.py ${password} ${delugegenpass})
+home="/home/$username"
+cat >$home/.config/deluge/web.conf<<DWC
+{
+  "file": 1,
+  "format": 1
+}{
+  "sidebar_show_zero": false,
+  "show_session_speed": false,
+  "pwd_sha1": "$SHAPASSWD",
+  "show_sidebar": true,
+  "enabled_plugins": [],
+  "base": "/",
+  "first_login": false,
+  "theme": "gray",
+  "pkey": "ssl/daemon.pkey",
+  "cert": "ssl/daemon.cert",
+  "session_timeout": 3600,
+  "https": false,
+  "default_daemon": "",
+  "sidebar_multiple_filters": true,
+  "pwd_salt": "$DELUGESALT",
+  "port": $WEBPORT
+}
+DWC
+echo "You may access Deluge at http://${ip}:$WEBPORT" >>/root/${username}.info
+echo $OK
+
+echo -n "writing $username deluge hostlist config ... "
+home="/home/$username"
+cat >$home/.config/deluge/hostlist.conf.1.2<<DHL
+{
+  "file": 1,
+  "format": 1
+}{
+  "hosts": [
+    [
+      "cb612435a69cc86f21dd8a4299f81a16c73f9916",
+      "127.0.0.1",
+      $DPORT,
+      "",
+      ""
+    ]
+  ]
+}
+DHL
+echo $OK
+
 sudo -u $username /home/$username/.startup >/dev/null 2>&1
 command1="*/1 * * * * /home/${username}/.startup"
 cat <(fgrep -iv "${command1}" <(sh -c 'sudo -u ${username} crontab -l' >/dev/null 2>&1)) <(echo "${command1}") | sudo -u ${username} crontab -
@@ -382,6 +543,17 @@ cat <(fgrep -iv "${command1}" <(sh -c 'sudo -u ${username} crontab -l' >/dev/nul
 cat >/etc/apache2/sites-enabled/alias.${username}.download.conf<<AS
 Alias /${username}.downloads "/home/${username}/torrents/"
   <Directory "/home/${username}/torrents/">
+   Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+          AuthType Digest
+          AuthName "rutorrent"
+          AuthUserFile '/etc/htpasswd'
+          Require valid-user
+    Order allow,deny
+    Allow from all
+  </Directory>
+Alias /${username}.deluge.downloads "/home/${username}/downloads/deluge.files/"
+  <Directory "/home/${username}/downloads/deluge.files/">
    Options Indexes FollowSymLinks MultiViews
     AllowOverride None
           AuthType Digest
@@ -711,7 +883,7 @@ function _depends() {
     fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
     ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
     libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl \
-    libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libxml-libxslt-perl libapache2-mod-scgi python-software-properties lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   elif [[ "${rel}" =~ ("14.04"|"15.04"|"15.10") ]]; then
   apt-get -y update >>"${OUTTO}" 2>&1
     apt-get install -y build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
@@ -720,7 +892,7 @@ function _depends() {
     fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
     ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
     libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl \
-    libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libxml-libxslt-perl libapache2-mod-scgi python-software-properties lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   elif [[ "${rel}" = "16.04" ]]; then
   apt-get -y update >>"${OUTTO}" 2>&1
     apt-get -y install build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
@@ -728,7 +900,7 @@ function _depends() {
     apache2-utils autoconf cron curl libapache2-mod-fastcgi libapache2-mod-geoip libxslt-dev libncurses5-dev yasm pcregrep apache2 php-net-socket \
     libdbd-mysql-perl libdbi-perl php7.0 php7.0-fpm php7.0-mbstring php7.0-zip php7.0-mysql php7.0-curl php-memcached memcached php7.0-gd \
     php7.0-json php7.0-mcrypt php7.0-opcache php7.0-xml php7.0-zip fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 \
-    rar unrar mediainfo ifstat libapache2-mod-php7.0 ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl \
+    rar unrar mediainfo ifstat libapache2-mod-php7.0 python-software-properties ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl \
     libnet-ssleay-perl openjdk-8-jre-headless openjdk-8-jre openjdk-8-jdk libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev \
     libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   fi
