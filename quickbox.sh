@@ -908,179 +908,12 @@ function _depends() {
 
 # install and adjust config server firewall function (15)
 function _askcsf() {
-  echo -n "${bold}${yellow}Do you want to install CSF (Config Server Firewall)?${normal} (${bold}${green}Y${normal}/n): "
+  echo -n "${bold}${yellow}Do you want to install CSF (Config Server Firewall)?${normal} [${green}y${normal}]es or [n]o: "
   read responce
   case $responce in
     [yY] | [yY][Ee][Ss] | "" ) csf=yes ;;
     [nN] | [nN][Oo] ) csf=no ;;
   esac
-}
-
-function _csf() {
-  if [[ ${csf} == "yes" ]]; then
-    echo -n "${green}Installing and Adjusting CSF${normal} ... "
-    apt-get -y install e2fsprogs >/dev/null 2>&1;
-    wget http://www.configserver.com/free/csf.tgz >/dev/null 2>&1;
-    tar -xzf csf.tgz >/dev/null 2>&1;
-    ufw disable >>"${OUTTO}" 2>&1;
-    cd csf
-    sh install.sh >>"${OUTTO}" 2>&1;
-    perl /usr/local/csf/bin/csftest.pl >>"${OUTTO}" 2>&1;
-    # modify csf blocklists - essentially like CloudFlare, but on your machine
-    sed -i.bak -e "s/#SPAMDROP|86400|0|/SPAMDROP|86400|100|/" \
-               -e "s/#SPAMEDROP|86400|0|/SPAMEDROP|86400|100|/" \
-               -e "s/#DSHIELD|86400|0|/DSHIELD|86400|100|/" \
-               -e "s/#TOR|86400|0|/TOR|86400|100|/" \
-               -e "s/#ALTTOR|86400|0|/ALTTOR|86400|100|/" \
-               -e "s/#BOGON|86400|0|/BOGON|86400|100|/" \
-               -e "s/#HONEYPOT|86400|0|/HONEYPOT|86400|100|/" \
-               -e "s/#CIARMY|86400|0|/CIARMY|86400|100|/" \
-               -e "s/#BFB|86400|0|/BFB|86400|100|/" \
-               -e "s/#OPENBL|86400|0|/OPENBL|86400|100|/" \
-               -e "s/#AUTOSHUN|86400|0|/AUTOSHUN|86400|100|/" \
-               -e "s/#MAXMIND|86400|0|/MAXMIND|86400|100|/" \
-               -e "s/#BDE|3600|0|/BDE|3600|100|/" \
-               -e "s/#BDEALL|86400|0|/BDEALL|86400|100|/" /etc/csf/csf.blocklists;
-    # modify csf process ignore - ignore nginx, varnish & mysql
-    echo >> /etc/csf/csf.pignore;
-    echo "[ QuickBox Additions - These are necessary to avoid noisy emails ]" >> /etc/csf/csf.pignore;
-    echo "exe:/usr/sbin/rsyslogd" >> /etc/csf/csf.pignore;
-    echo "exe:/lib/systemd/systemd-timesyncd" >> /etc/csf/csf.pignore;
-    echo "exe:/lib/systemd/systemd-resolved" >> /etc/csf/csf.pignore;
-    # modify csf conf - make suitable changes for non-cpanel environment
-    cd /etc/csf
-    rm csf.conf
-    touch /install/.csf.lock
-    wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/csf.conf
-  fi
-}
-
-# NOTE: Sendmail is a requirement of CSF. Using sendmail ensures that the user receives the needed
-# emails in regards to SSH access and IP blocking as well as any spikes in resources usage.
-# Don't want sendmail to be installed? Don't install CSF and adapt your own solution for security. ;)
-function _csfsendmail1() {
-    # install sendmail as it's binary is required by CSF
-    echo -n "${green}Installing Sendmail${normal} ... "
-    apt-get -y install sendmail sendmail-bin >>"${OUTTO}" 2>&1;
-    export DEBIAN_FRONTEND=noninteractive | /usr/sbin/sendmailconfig >>"${OUTTO}" 2>&1;
-}
-function _csfsendmail2() {
-    # add administrator email
-    echo "${magenta}${bold}Add an administrator email below for receiving alerts${normal}"
-    read -p "${bold}Email: ${normal}" admin_email
-    echo
-    echo "${bold}The email ${green}${bold}$admin_email${normal} ${bold}is now the forwarding address for root mail${normal}"
-}
-function _csfsendmail3() {
-    echo -n "${green}finalizing sendmail installation${normal} ... "
-    # install aliases
-    echo -e "mailer-daemon: postmaster
-postmaster: root
-nobody: root
-hostmaster: root
-usenet: root
-news: root
-webmaster: root
-www: root
-ftp: root
-abuse: root
-root: $admin_email" > /etc/aliases
-    newaliases >>"${OUTTO}" 2>&1;
-}
-
-function _nocsf() {
-  if [[ ${csf} == "no" ]]; then
-    echo "${cyan}Skipping Config Server Firewall Installation${normal} ... "
-  fi
-}
-
-# if you're using cloudlfare as a protection and/or cdn - this next bit is important
-function _askcloudflare() {
-  echo -ne "${bold}${yellow}Would you like to whitelist CloudFlare IPs?${normal} (${bold}${green}Y${normal}/n): "
-  read responce
-  case $responce in
-    [yY] | [yY][Ee][Ss] | "" ) cloudflare=yes ;;
-    [nN] | [nN][Oo] ) cloudflare=no ;;
-  esac
-}
-
-function _cloudflare() {
-  if [[ ${cloudflare} == "yes" ]]; then
-    echo -n "${green}Whitelisting Cloudflare IPv4 and IPv6${normal} ... "
-    echo -e "# BEGIN CLOUDFLARE WHITELIST
-# ips-v4
-103.21.244.0/22
-103.22.200.0/22
-103.31.4.0/22
-104.16.0.0/12
-108.162.192.0/18
-131.0.72.0/22
-141.101.64.0/18
-162.158.0.0/15
-172.64.0.0/13
-173.245.48.0/20
-188.114.96.0/20
-190.93.240.0/20
-197.234.240.0/22
-198.41.128.0/17
-199.27.128.0/21
-# ips-v6
-2400:cb00::/32
-2405:8100::/32
-2405:b500::/32
-2606:4700::/32
-2803:f800::/32
-# END CLOUDFLARE WHITELIST
-" >> /etc/csf/csf.allow
-  fi
-}
-
-# ban public trackers [csf option] (8)
-function _csfdenyhosts() {
-echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
-read responce
-case $responce in
-  [yY] | [yY][Ee][Ss] | "" ) csfdenyhosts=yes ;;
-  [nN] | [nN][Oo] ) csfdenyhosts=no ;;
-esac
-}
-
-function _csfblockpublic() {
-  if [[ ${csfdenyhosts} == "yes" ]]; then
-    echo -n "[ ${red}Blocking public trackers${normal} ]"
-    sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" \
-       -e "/GLOBAL_DYNDNS = \"\"/cGLOBAL_DYNDNS = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" /etc/csf/csf.conf
-  else
-    echo -n "[ ${green}Allowing${normal} ]"
-  fi
-}
-
-# ban public trackers [iptables option] (8)
-function _denyhosts() {
-echo -ne "${bold}${yellow}Block Public Trackers?${normal}: (Default: ${green}Y${normal})"; read responce
-case $responce in
-  [yY] | [yY][Ee][Ss] | "")
-echo "[ ${red}Blocking public trackers${normal} ]"
-wget -q -O /etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
-cat >/etc/cron.daily/denypublic<<'EOF'
-IFS=$'\n'
-L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
-for fn in $L; do
-        /sbin/iptables -D INPUT -d $fn -j DROP
-        /sbin/iptables -D FORWARD -d $fn -j DROP
-        /sbin/iptables -D OUTPUT -d $fn -j DROP
-        /sbin/iptables -A INPUT -d $fn -j DROP
-        /sbin/iptables -A FORWARD -d $fn -j DROP
-        /sbin/iptables -A OUTPUT -d $fn -j DROP
-done
-EOF
-chmod +x /etc/cron.daily/denypublic
-curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
-cat hostsTrackers >> /etc/hosts
-  ;;
-  [nN] | [nN][Oo] ) echo "[ ${green}Allowing${normal} ]"
-                ;;
-        esac
 }
 
 function _skel() {
@@ -1145,9 +978,172 @@ overssh         : ['ls', 'rsync','scp']
 LS
 }
 
+function _csf() {
+    echo -n "${green}Installing and Adjusting CSF${normal} ... "
+    apt-get -y install e2fsprogs >/dev/null 2>&1;
+    wget http://www.configserver.com/free/csf.tgz >/dev/null 2>&1;
+    tar -xzf csf.tgz >/dev/null 2>&1;
+    ufw disable >>"${OUTTO}" 2>&1;
+    cd csf
+    sh install.sh >>"${OUTTO}" 2>&1;
+    perl /usr/local/csf/bin/csftest.pl >>"${OUTTO}" 2>&1;
+    # modify csf blocklists - essentially like CloudFlare, but on your machine
+    sed -i.bak -e "s/#SPAMDROP|86400|0|/SPAMDROP|86400|100|/" \
+               -e "s/#SPAMEDROP|86400|0|/SPAMEDROP|86400|100|/" \
+               -e "s/#DSHIELD|86400|0|/DSHIELD|86400|100|/" \
+               -e "s/#TOR|86400|0|/TOR|86400|100|/" \
+               -e "s/#ALTTOR|86400|0|/ALTTOR|86400|100|/" \
+               -e "s/#BOGON|86400|0|/BOGON|86400|100|/" \
+               -e "s/#HONEYPOT|86400|0|/HONEYPOT|86400|100|/" \
+               -e "s/#CIARMY|86400|0|/CIARMY|86400|100|/" \
+               -e "s/#BFB|86400|0|/BFB|86400|100|/" \
+               -e "s/#OPENBL|86400|0|/OPENBL|86400|100|/" \
+               -e "s/#AUTOSHUN|86400|0|/AUTOSHUN|86400|100|/" \
+               -e "s/#MAXMIND|86400|0|/MAXMIND|86400|100|/" \
+               -e "s/#BDE|3600|0|/BDE|3600|100|/" \
+               -e "s/#BDEALL|86400|0|/BDEALL|86400|100|/" /etc/csf/csf.blocklists;
+    # modify csf process ignore - ignore nginx, varnish & mysql
+    echo >> /etc/csf/csf.pignore;
+    echo "[ QuickBox Additions - These are necessary to avoid noisy emails ]" >> /etc/csf/csf.pignore;
+    echo "exe:/usr/sbin/rsyslogd" >> /etc/csf/csf.pignore;
+    echo "exe:/lib/systemd/systemd-timesyncd" >> /etc/csf/csf.pignore;
+    echo "exe:/lib/systemd/systemd-resolved" >> /etc/csf/csf.pignore;
+    # modify csf conf - make suitable changes for non-cpanel environment
+    cd /etc/csf
+    rm csf.conf
+    touch /install/.csf.lock
+    wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/csf.conf
+}
+
+# NOTE: Sendmail is a requirement of CSF. Using sendmail ensures that the user receives the needed
+# emails in regards to SSH access and IP blocking as well as any spikes in resources usage.
+# Don't want sendmail to be installed? Don't install CSF and adapt your own solution for security. ;)
+function _csfsendmail1() {
+    # install sendmail as it's binary is required by CSF
+    echo -n "${green}Installing Sendmail${normal} ... "
+    apt-get -y install sendmail sendmail-bin >>"${OUTTO}" 2>&1;
+    export DEBIAN_FRONTEND=noninteractive | /usr/sbin/sendmailconfig >>"${OUTTO}" 2>&1;
+}
+function _csfsendmail2() {
+    # add administrator email
+    echo "${magenta}${bold}Add an administrator email below for receiving alerts${normal}"
+    read -p "${bold}Email: ${normal}" admin_email
+    echo
+    echo "${bold}The email ${green}${bold}$admin_email${normal} ${bold}is now the forwarding address for root mail${normal}"
+}
+function _csfsendmail3() {
+    echo -n "${green}finalizing sendmail installation${normal} ... "
+    # install aliases
+    echo -e "mailer-daemon: postmaster
+postmaster: root
+nobody: root
+hostmaster: root
+usenet: root
+news: root
+webmaster: root
+www: root
+ftp: root
+abuse: root
+root: $admin_email" > /etc/aliases
+    newaliases >>"${OUTTO}" 2>&1;
+}
+
+function _nocsf() {
+  if [[ ${csf} == "no" ]]; then
+    echo "${cyan}Skipping Config Server Firewall Installation${normal} ... "
+  fi
+}
+
+# if you're using cloudlfare as a protection and/or cdn - this next bit is important
+function _askcloudflare() {
+  echo -ne "${bold}${yellow}Would you like to whitelist CloudFlare IPs?${normal} [${green}y${normal}]es or [n]o: "
+  read responce
+  case $responce in
+    [yY] | [yY][Ee][Ss] | "" ) cloudflare=yes ;;
+    [nN] | [nN][Oo] ) cloudflare=no ;;
+  esac
+}
+
+function _cloudflare() {
+    echo -n "${green}Whitelisting Cloudflare IPv4 and IPv6${normal} ... "
+    echo -e "# BEGIN CLOUDFLARE WHITELIST
+# ips-v4
+103.21.244.0/22
+103.22.200.0/22
+103.31.4.0/22
+104.16.0.0/12
+108.162.192.0/18
+131.0.72.0/22
+141.101.64.0/18
+162.158.0.0/15
+172.64.0.0/13
+173.245.48.0/20
+188.114.96.0/20
+190.93.240.0/20
+197.234.240.0/22
+198.41.128.0/17
+199.27.128.0/21
+# ips-v6
+2400:cb00::/32
+2405:8100::/32
+2405:b500::/32
+2606:4700::/32
+2803:f800::/32
+# END CLOUDFLARE WHITELIST
+" >> /etc/csf/csf.allow
+}
+
+# ban public trackers [csf option] (8)
+function _csfdenyhosts() {
+echo -ne "${bold}${yellow}Block Public Trackers?${normal}: [${green}y${normal}]es or [n]o"; read responce
+read responce
+case $responce in
+  [yY] | [yY][Ee][Ss] | "" ) csfdenyhosts=yes ;;
+  [nN] | [nN][Oo] ) csfdenyhosts=no ;;
+esac
+}
+
+function _csfblockpublic() {
+  if [[ ${csfdenyhosts} == "yes" ]]; then
+    echo -n "[ ${red}Blocking public trackers${normal} ]"
+    sed -i -e "/GLOBAL_DENY = \"\"/cGLOBAL_DENY = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" \
+       -e "/GLOBAL_DYNDNS = \"\"/cGLOBAL_DYNDNS = \"https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers\"" /etc/csf/csf.conf
+  else
+    echo -n "[ ${green}Allowing${normal} ]"
+  fi
+}
+
+# ban public trackers [iptables option] (8)
+function _denyhosts() {
+echo -ne "${bold}${yellow}Block Public Trackers?${normal}: [${green}y${normal}]es or [n]o"; read responce
+case $responce in
+  [yY] | [yY][Ee][Ss] | "")
+echo "[ ${red}Blocking public trackers${normal} ]"
+wget -q -O /etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
+cat >/etc/cron.daily/denypublic<<'EOF'
+IFS=$'\n'
+L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
+for fn in $L; do
+        /sbin/iptables -D INPUT -d $fn -j DROP
+        /sbin/iptables -D FORWARD -d $fn -j DROP
+        /sbin/iptables -D OUTPUT -d $fn -j DROP
+        /sbin/iptables -A INPUT -d $fn -j DROP
+        /sbin/iptables -A FORWARD -d $fn -j DROP
+        /sbin/iptables -A OUTPUT -d $fn -j DROP
+done
+EOF
+chmod +x /etc/cron.daily/denypublic
+curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
+cat hostsTrackers >> /etc/hosts
+  ;;
+  [nN] | [nN][Oo] ) echo "[ ${green}Allowing${normal} ]"
+                ;;
+        esac
+}
+
 # install ffmpeg question (9)
 function _askffmpeg() {
-  echo -ne "${bold}${yellow}Install ffmpeg? (Used for screenshots)${normal} (Default: ${green}Y${normal}): "; read responce
+  echo -ne "${bold}${yellow}Would you like to install ffmpeg? (Used for screenshots)${normal} [${green}y${normal}]es or [n]o: "; read responce
   case $responce in
     [yY] | [yY][Ee][Ss] | "" ) ffmpeg=yes ;;
     [nN] | [nN][Oo] ) ffmpeg=no ;;
@@ -1192,7 +1188,8 @@ function _askrtorrent() {
     3) RTVERSION=0.9.3;LTORRENT=0.13.3 ;;
     *) RTVERSION=0.9.6;LTORRENT=0.13.6 ;;
   esac
-  echo "Using rtorrent-$RTVERSION/libtorrent-$LTORRENT"
+  echo "We will be using rtorrent-${green}$RTVERSION${normal}/libtorrent-${green}$LTORRENT${normal}"
+  echo
 }
 
 # xmlrpc-c function (11)
@@ -1276,7 +1273,7 @@ function _askshell() {
   #  [nN] | [nN][Oo] | "" ) theshell="/bin/bash" ;;
   #  *) theshell="yes" ;;
   #esac
-  echo -ne "${bold}${yellow}Add user to /etc/sudoers${normal} (Default: ${green}Y${normal}): "; read answer
+  echo -ne "${bold}${yellow}Add user to /etc/sudoers${normal} [${green}y${normal}]es or [n]o: "; read answer
   case $answer in
     [yY] | [yY][Ee][Ss] | "" ) sudoers="yes" ;;
     [nN] | [nN][Oo] ) sudoers="no" ;;
@@ -1468,11 +1465,11 @@ fi
 
 # install deluge question ()
 function _askdeluge() {
-  echo -ne "${bold}${yellow}Install Deluge?${normal} (Note: You will be able install on the dashboard also) (Default: ${red}N${normal}): "; read responce
+  echo -n "${bold}${yellow}Would you like to install Deluge?${normal} [${green}y${normal}]es or [n]o: " read responce
   case $responce in
-    [yY] | [yY][Ee][Ss] ) deluge=yes ;;
-    [nN] | [nN][Oo] | "" ) deluge=no ;;
-    *) deluge=no ;;
+    [yY] | [yY][Ee][Ss] | "" ) deluge=yes ;;
+    [nN] | [nN][Oo] ) deluge=no ;;
+    *) deluge=yes ;;
   esac
 }
 
@@ -1496,7 +1493,7 @@ function _deluge() {
 
 function _delugecore() {
   home="/home/${username}"
-  mkdir -p /home/${username}/{.config/deluge/{icons,plugins,ssl,state},deluge.torrents,downloads/deluge.files,dwatch} >>"${OUTTO}" 2>&1
+  #mkdir -p /home/${username}/{.config/deluge/{icons,plugins,ssl,state},deluge.torrents,downloads/deluge.files,dwatch} >>"${OUTTO}" 2>&1
 cat >"${home}"/.config/deluge/core.conf<<DL
 {
   "file": 1,
@@ -1802,7 +1799,7 @@ WIPEDEAD=yes
 ADDRESS=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
 
 if [ "$WIPEDEAD" == "yes" ]; then
-	screen -wipe >/dev/null 2>&1;
+  screen -wipe >/dev/null 2>&1;
 fi
 
 if [ "$IRSSI_CLIENT" == "yes" ]; then
@@ -2126,37 +2123,42 @@ _ssdpblock
 clear
 #_locale
 _repos
+
 _hostname
-_askcsf
-if [[ ${csf} == "yes" ]]; then
-  _askcloudflare
-fi
-if [[ ${csf} == "yes" ]]; then
-    _csfdenyhosts
-else
-    _denyhosts
-fi
-_askffmpeg
+#_askcsf
+#if [[ ${csf} == "yes" ]]; then
+#  _askcloudflare
+#  _csfdenyhosts
+#else
+#  _denyhosts
+#fi
+echo
 _askrtorrent
 _askdeluge
 _adduser
+_askffmpeg
+_denyhosts
+echo ""
+echo "${bold}${magenta}QuickBox will now install, this may take between${normal}"
+echo "${bold}${magenta}10 and 30 minutes depending on your systems specs${normal}"
+echo ""
 echo -n "Updating system ... ";_updates & spinner $!;echo
 echo -n "Installing all needed dependencies ... ";_depends & spinner $!;echo
 _additionalsyscommands
-if [[ ${csf} == "yes" ]]; then
-    _csf & spinner $!;echo
-    _csfsendmail1 & spinner $!;echo
-    _csfsendmail2
-    _csfsendmail3 & spinner $!;echo
-    if [[ ${cloudflare} == "yes" ]]; then
-        _cloudflare & spinner $!;echo;
-    fi
-    if [[ ${csfdenyhosts} == "yes" ]]; then
-      _csfblockpublic & spinner $!;echo;
-    fi
-elif [[ ${csf} == "no" ]]; then
-    _nocsf;
-fi
+#if [[ ${csf} == "yes" ]]; then
+#    _csf & spinner $!;echo
+#    _csfsendmail1 & spinner $!;echo
+#    _csfsendmail2
+#    _csfsendmail3 & spinner $!;echo
+#    if [[ ${cloudflare} == "yes" ]]; then
+#        _cloudflare & spinner $!;echo;
+#    fi
+#    if [[ ${csfdenyhosts} == "yes" ]]; then
+#      _csfblockpublic & spinner $!;echo;
+#    fi
+#elif [[ ${csf} == "no" ]]; then
+#    _nocsf;
+#fi
 echo -n "Building required user directories ... ";_skel & spinner $!;echo
 if [[ ${ffmpeg} == "yes" ]]; then
     _ffmpeg & spinner $!;echo;
