@@ -1494,7 +1494,7 @@ function _deluge() {
 
 function _delugecore() {
   home="/home/${username}"
-  mkdir -p /home/${username}/{.config/deluge/{icons,plugins,ssl,state},deluge.torrents,downloads/deluge.files,dwatch} >>"${OUTTO}" 2>&1
+  #mkdir -p /home/${username}/{.config/deluge/{icons,plugins,ssl,state},deluge.torrents,downloads/deluge.files,dwatch} >>"${OUTTO}" 2>&1
 cat >"${home}"/.config/deluge/core.conf<<DL
 {
   "file": 1,
@@ -1783,8 +1783,9 @@ function _additionalsyscommands() {
 
 # function to make dirs for first user (21)
 function _makedirs() {
-  mkdir /home/"${username}"/{torrents,.sessions,watch} >>"${OUTTO}" 2>&1
-  chown "${username}".www-data /home/"${username}"/{torrents,.sessions,watch,.rtorrent.rc} >>"${OUTTO}" 2>&1
+  #mkdir /home/"${username}"/{torrents,.sessions,watch} >>"${OUTTO}" 2>&1
+  cp -r /etc/skel/* /home/"${username}"
+  chown -r "${username}".www-data /home/"${username}" >>"${OUTTO}" 2>&1 #/{torrents,.sessions,watch,.rtorrent.rc} >>"${OUTTO}" 2>&1
   usermod -a -G www-data "${username}" >>"${OUTTO}" 2>&1
   usermod -a -G "${username}" www-data >>"${OUTTO}" 2>&1
 }
