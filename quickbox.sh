@@ -1822,6 +1822,14 @@ function _makedirs() {
   usermod -a -G "${username}" www-data >>"${OUTTO}" 2>&1
 
   # Build Jailed Directory for additional users created
+  JKVERSION="2.19"
+  wget http://olivier.sessink.nl/jailkit/jailkit-"${JKVERSION}".tar.gz >>"${OUTTO}" 2>&1
+  tar -vxzf jailkit-"${JKVERSION}".tar.gz >/dev/null 2>&1
+  cd jailkit-"${JKVERSION}"/
+  sudo ./debian/rules binary >>"${OUTTO}" 2>&1
+  cd ..
+  sudo dpkg -i jailkit_"${JKVERSION}"_amd64.deb >>"${OUTTO}" 2>&1
+
   mkdir /home/jail
   chown root:root /home/jail
   jk_init -v /home/jail basicshell >/dev/null 2>&1
