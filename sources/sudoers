@@ -19,16 +19,17 @@ Cmnd_Alias   CLEANMEM = /usr/local/bin/clean_mem, /proc/sys/vm/drop_caches
 Cmnd_Alias   PACKAGEHANDLE = /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*
 Cmnd_Alias   PLUGINHANDLE = /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*
 Cmnd_Alias   GENERALCMNDS = /usr/bin/ifstat, /usr/bin/vnstat, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /etc/init.d/apache2 restart
+Cmnd_Alias   DELUGECMNDS = /usr/local/bin/deluged, /usr/local/bin/deluge-web
 
 # User privilege specification
 root	ALL=(ALL:ALL) ALL
-www-data     ALL = (ALL) NOPASSWD: CLEANMEM, PACKAGEHANDLE, PLUGINHANDLE, GENERALCMNDS
+www-data     ALL = (ALL) NOPASSWD: CLEANMEM, PACKAGEHANDLE, PLUGINHANDLE, GENERALCMNDS, DELUGECMNDS
 
 # Members of the admin group may gain root privileges
 %admin ALL=(ALL) ALL
 
 # Allow members of group sudo to execute any command
-%www-data     ALL = (ALL) NOPASSWD: CLEANMEM, PACKAGEHANDLE, PLUGINHANDLE, GENERALCMNDS
+%www-data     ALL = (ALL) NOPASSWD: CLEANMEM, PACKAGEHANDLE, PLUGINHANDLE, GENERALCMNDS, DELUGECMNDS
 %sudo	ALL=(ALL:ALL) ALL
 
 # See sudoers(5) for more information on "#include" directives:
