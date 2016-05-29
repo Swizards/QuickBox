@@ -1475,7 +1475,6 @@ function _askdeluge() {
 
 # build deluge from source ()
 function _deluge() {
-  echo -n "Building deluge "${DELUGE_VERSION}" from source ... "
   DELUGE_VERSION=1.3.12
   cd /root/tmp
   apt-get -y install python python-geoip python-libtorrent python-notify python-pygame python-gtk2 python-gtk2-dev python-twisted python-twisted-web2 python-openssl python-simplejson python-setuptools gettext python-xdg python-chardet librsvg2-dev xdg-utils python-mako >>"${OUTTO}" 2>&1
@@ -2094,6 +2093,7 @@ while [[ "$(netstat -ln | grep ':'"$PORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do 
 WEBPORT=$(shuf -i 8115-8145 -n 1)
 RPORT=$(shuf -i 2000-61000 -n 1)
 DPORT=$(shuf -i 2000-61000 -n 1)
+DELUGE_VERSION="1.3.12"
 while [[ "$(netstat -ln | grep ':'"$RPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do RPORT="$(shuf -i 2000-61000 -n 1)"; done
 while [[ "$(netstat -ln | grep ':'"$DPORT"'' | grep -c 'LISTEN')" -eq "1" ]]; do DPORT="$(shuf -i 2000-61000 -n 1)"; done
 S=$(date +%s)
@@ -2169,7 +2169,7 @@ echo -n "Installing libtorrent-${green}$LTORRENT${normal} ... ";_libtorrent & sp
 echo -n "Installing rtorrent-${green}$RTVERSION${normal} ... ";_rtorrent & spinner $!;echo
 echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;
 if [[ ${deluge} == "yes" ]]; then
-  echo -n "Building and Installing Deluge ... ";_deluge & spinner $!;echo;
+  echo -n "Building and Installing Deluge-${DELUGE_VERSION} ... ";_deluge & spinner $!;echo;
   echo -n "Writing ${username} deluge config ... ";_delugecore & spinner $!;echo;
   echo -n "Writing ${username} deluge web config ... ";_delugeconf & spinner $!;echo;
 fi
