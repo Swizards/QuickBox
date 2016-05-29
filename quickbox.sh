@@ -1826,9 +1826,9 @@ function _makedirs() {
   wget http://olivier.sessink.nl/jailkit/jailkit-"${JKVERSION}".tar.gz >>"${OUTTO}" 2>&1
   tar -vxzf jailkit-"${JKVERSION}".tar.gz >/dev/null 2>&1
   cd jailkit-"${JKVERSION}"/
-  sudo ./debian/rules binary >>"${OUTTO}" 2>&1
+  sudo ./debian/rules binary >/dev/null 2>&1
   cd ..
-  sudo dpkg -i jailkit_"${JKVERSION}"_amd64.deb >>"${OUTTO}" 2>&1
+  sudo dpkg -i jailkit_"${JKVERSION}"-1_amd64.deb >>"${OUTTO}" 2>&1
 
   mkdir /home/jail
   chown root:root /home/jail
