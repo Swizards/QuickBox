@@ -1492,7 +1492,7 @@ function _deluge() {
 
 function _delugecore() {
   home="/home/${username}"
-  #mkdir -p /home/${username}/{.config/deluge/{icons,plugins,ssl,state},deluge.torrents,downloads/deluge.files,dwatch} >>"${OUTTO}" 2>&1
+  mkdir -p /home/${username}/{.config/deluge/{icons,plugins,ssl,state},deluge.torrents,downloads/deluge.files,dwatch} >>"${OUTTO}" 2>&1
 cat >"${home}"/.config/deluge/core.conf<<DL
 {
   "file": 1,
