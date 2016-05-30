@@ -258,9 +258,9 @@ echo -n "Username: "; read username
     ;;
   esac
 
-#echo -n "writing $username to vsftpd.chroot_list..."
-#echo "$username" >> /etc/vsftpd.chroot_list
-#echo $OK
+echo -n "writing $username to vsftpd.chroot_list..."
+echo "$username" >> /etc/vsftpd.chroot_list
+echo $OK
 
 echo -n "writing $username .rtorrent.rc using port-range (${PORT}-${PORTEND})..."
 cat >/home/jail/home/$username/.rtorrent.rc<<RC
@@ -1823,10 +1823,11 @@ function _makedirs() {
   JKVERSION="2.19"
   wget http://olivier.sessink.nl/jailkit/jailkit-"${JKVERSION}".tar.gz >>"${OUTTO}" 2>&1
   tar -vxzf jailkit-"${JKVERSION}".tar.gz >/dev/null 2>&1
-  cd jailkit-"${JKVERSION}"
+  cd jailkit-"${JKVERSION}"/
   sudo ./debian/rules binary >/dev/null 2>&1
   cd ..
   sudo dpkg -i jailkit_"${JKVERSION}"-1_amd64.deb >/dev/null 2>&1
+
   mkdir /home/jail
   chown root:root /home/jail
   jk_init -v /home/jail basicshell >/dev/null 2>&1
@@ -1970,8 +1971,7 @@ dirmessage_enable=YES
 dirlist_enable=YES
 download_enable=YES
 secure_chroot_dir=/var/run/vsftpd/empty
-chroot_local_user=NO
-chroot_list_enable=YES
+chroot_local_user=YES
 chroot_list_file=/etc/vsftpd.chroot_list
 passwd_chroot_enable=YES
 allow_writeable_chroot=YES
@@ -2096,12 +2096,17 @@ cat >/root/information.info<<EOF
 EOF
 
   rm -rf "$0" >>"${OUTTO}" 2>&1
+  #service quota stop >>"${OUTTO}" 2>&1
+  #quotaoff -a >>"${OUTTO}" 2>&1
+  #quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+  #quotaon -a >>"${OUTTO}" 2>&1
+  #service quota start >>"${OUTTO}" 2>&1
+  #service apache2 restart >>"${OUTTO}" 2>&1
   if [[ "${rel}" = "16.04" ]]; then
     service php7.0-fpm restart >>"${OUTTO}" 2>&1
   fi
   if [[ ${deluge} == "yes" ]]; then
-    sudo su --login --command "deluged" "${username}"
-    sudo su --login --command "deluge-web --fork" "${username}"
+    deluged
   fi
     for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached cron; do
       service $i restart >>"${OUTTO}" 2>&1
