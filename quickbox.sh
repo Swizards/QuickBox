@@ -1826,7 +1826,7 @@ function _makedirs() {
   cd jailkit-"${JKVERSION}"/
   sudo ./debian/rules binary >/dev/null 2>&1
   cd ..
-  sudo dpkg -i jailkit_"${JKVERSION}"-1_amd64.deb >/dev/null 2>&1
+  sudo dpkg -i jailkit_"${JKVERSION}"-1_amd64.deb >>"${OUTTO}" 2>&1
 
   mkdir /home/jail
   chown root:root /home/jail
