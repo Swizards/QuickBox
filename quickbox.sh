@@ -16,6 +16,7 @@
 #
 # find server hostname and repo location for quickbox configuration
 #################################################################################
+#################################################################################
 #Script Console Colors
 black=$(tput setaf 0); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3);
 blue=$(tput setaf 4); magenta=$(tput setaf 5); cyan=$(tput setaf 6); white=$(tput setaf 7);
@@ -1305,15 +1306,12 @@ function _adduser() {
 function _apachesudo() {
   cd /etc
   rm sudoers
-  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/sudoers .
-  if [[ $sudoers == "yes" ]]; then
+  wget -q https://raw.githubusercontent.com/Swizards/QuickBox/master/sources/sudoers
+  #if [[ $sudoers == "yes" ]]; then
     awk -v username=${username} '/^root/ && !x {print username    " ALL=(ALL:ALL) NOPASSWD: ALL"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
     echo -n "${username}" > /etc/apache2/master.txt
-  fi
+  #fi
   cd
-  # We're now basing sudoers file from repo templates - this will aid in transparency and future updates.
-  #awk '/^root/ && !x {print "www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
-  #awk '/^%sudo/ && !x {print "%www-data     ALL = (ALL) NOPASSWD: /usr/bin/ifstat, /usr/bin/vnstat, /usr/local/bin/clean_mem, /usr/local/bin/installpackage-*, /usr/local/bin/removepackage-*, /usr/local/bin/installplugin-*, /usr/local/bin/removeplugin-*, /usr/sbin/repquota, /bin/grep, /usr/bin/awk, /usr/bin/reload, /proc/sys/vm/drop_caches, /etc/init.d/apache2 restart"; x=1} 1' /etc/sudoers > /tmp/sudoers;mv /tmp/sudoers /etc
 }
 
 # function to configure apache (17)
@@ -1821,7 +1819,7 @@ function _perms() {
   chown -R ${username}.${username} /home/${username}/ >>"${OUTTO}" 2>&1
   chown ${username}.${username} /home/${username}/.startup
   sudo -u ${username} chmod 755 /home/${username}/ >>"${OUTTO}" 2>&1
-  #chmod +x /etc/cron.daily/denypublic >/dev/null 2>&1
+  chmod +x /etc/cron.daily/denypublic >/dev/null 2>&1
   chmod 777 /home/${username}/.sessions >/dev/null 2>&1
   chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
   chmod +x /home/${username}/.startup >/dev/null 2>&1
@@ -1961,7 +1959,7 @@ function _packagecommands() {
   mkdir -p /etc/quickbox/commands/system/packages
   mv "${PACKAGEURL}" /etc/quickbox/commands/system/
   PACKAGECOMMANDS="/etc/quickbox/commands/system/packages/"; cd "/usr/local/bin"
-  LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync"
+  LIST="installpackage-plex removepackage-plex installpackage-btsync removepackage-btsync installpackage-csf removepackage-csf installpackage-sickrage removepackage-sickrage installpackage-rapidleech removepackage-rapidleech"
   for i in $LIST; do
   #echo -ne "Setting Up and Initializing Plugin Command: ${green}${i}${normal} "
   cp -R "${PACKAGECOMMANDS}$i" .
@@ -2002,16 +2000,9 @@ function _quickstats() {
 
 function _quickconsole() {
   CONSOLEIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
+
   sed -i -e "s/console-username/${username}/g" \
          -e "s/console-password/${password}/g" /home/${username}/.console/index.php
-         # Deprecated due to browser php back fix
-         #-e "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
-  # Stashing this here
-  #if [[ ${usefqdn} == "yes" ]]; then
-  #  sed -i "s/ipaccess/$FQDN/g" /home/${username}/.console/index.php
-  #else
-  #  sed -i "s/ipaccess/$CONSOLEIP/g" /home/${username}/.console/index.php
-  #fi
 }
 
 # function to show finished data (32)

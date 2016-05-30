@@ -10,6 +10,13 @@
 
 #### Ubuntu Builds
 [![Ubuntu 16.04 Passing](https://img.shields.io/badge/Ubuntu%2016.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Ubuntu 15.10 Passing](https://img.shields.io/badge/Ubuntu%2015.10-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Ubuntu 15.04 Passing](https://img.shields.io/badge/Ubuntu%2015.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Ubuntu 14.04 Passing](https://img.shields.io/badge/Ubuntu%2014.04-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+
+#### Debian Builds
+[![Debian 7 Passing](https://img.shields.io/badge/Debain%207-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Debian 8 Passing](https://img.shields.io/badge/Debain%208-passing-brightgreen.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 
 ---
 
@@ -46,8 +53,8 @@ After that access your box using a SSH client, like PuTTY.
 
 **Run the following command to grab our latest stable release ...**
 ```
-apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install git curl lsb-release; \
-git clone -b qb_u_1604 https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
+apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
+git clone https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 
@@ -60,7 +67,7 @@ bash quickbox.sh
 
 ```
 apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release; \
-git clone https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
+git clone -b development https://github.com/Swizards/QuickBox.git /root/tmp/QuickBox/; \
 cd /root/tmp/QuickBox*; \
 bash quickbox.sh
 

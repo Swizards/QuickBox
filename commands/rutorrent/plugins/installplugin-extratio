@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# [Quick Box :: Install extratio plugin]
+#
+# GitHub:   https://github.com/JMSDOnline/QuickBox
+# Author:   Swizards.net
+# URL:      https://swizards.net
+#
+# QuickBox Copyright (C) 2016 Swizards.net
+# Licensed under GNU General Public License v3.0 GPL-3 (in short)
+# 
+#   You may copy, distribute and modify the software as long as you track
+#   changes/dates in source files. Any modifications to our software 
+#   including (via compiler) GPL-licensed code must also be made available 
+#   under the GPL along with build & install instructions.
+#
+
+function _installplugin-extratio() {
+  rutorrent="/srv/rutorrent/";
+  PLUGINVAULT="/etc/quickbox/rutorrent/plugins/"; cd "${rutorrent}plugins"
+  PLUGIN="extratio"
+    for i in $PLUGIN; do
+      cp -R "${PLUGINVAULT}$i" .
+    done
+    chown -R www-data: ${rutorrent}plugins/$PLUGIN
+    cd
+}
+
+_installplugin-extratio

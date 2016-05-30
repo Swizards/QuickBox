@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# [Quick Box]
+#
+# GitHub:   https://github.com/JMSDOnline/QuickBox
+# Author:   Jason Matthews
+# URL:      https://jmsolodesigns.com
+#
+# Starts rtorrent if it is not already running
+
+FILE="$HOME/downloads/.session/rtorrent.lock"
+SERVICE='rtorrent'
+PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
+
+  if pgrep -fx -u $LOGNAME $SERVICE > /dev/null
+  then
+    /bin/true
+  else
+    rm -f $FILE
+    /home/$LOGNAME/restartSeedbox
+  fi
+
