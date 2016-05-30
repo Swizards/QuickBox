@@ -963,7 +963,7 @@ logpath         : /var/log/lshell/
 loglevel        : 2
 
 [default]
-allowed         : ['cd','cp','-d','-dmS','deluge-web','git','irssi','ll','ls','-m','mkdir','mv','nano','pwd','-R','rm','rtorrent','rsync','-S','scp','screen','tar','unrar','unzip','nano','wget']
+allowed         : ['cd','cp','-d','-dmS','git','irssi','ll','ls','-m','mkdir','mv','nano','pwd','-R','rm','rtorrent','rsync','-S','scp','screen','tar','unrar','unzip','nano','wget']
 forbidden       : [';', '&', '|','`','>','<', '$(', '${','sudo','vi','vim','./']
 warning_counter : 2
 aliases         : {'ls':'ls --color=auto','ll':'ls -l'}
@@ -1477,64 +1477,19 @@ function _askdeluge() {
 
 # build deluge from source ()
 function _deluge() {
+  DELUGE_VERSION=1.3.12
+  cd /root/tmp
   apt-get -y install python python-geoip python-libtorrent python-notify python-pygame python-gtk2 python-gtk2-dev python-twisted python-twisted-web2 python-openssl python-simplejson python-setuptools gettext python-xdg python-chardet librsvg2-dev xdg-utils python-mako >>"${OUTTO}" 2>&1
+  sudo kill -9 `sudo ps aux | grep deluge | grep -v grep | awk '{print $2}' | cut -d. -f 1` &> /dev/null
+  sudo wget https://github.com/Swizards/QuickBox/raw/experimental/sources/deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
   mkdir -p /etc/quickbox/sources
-  kill -9 `sudo ps aux | grep deluge | grep -v grep | awk '{print $2}' | cut -d. -f 1` &> /dev/null
-  wget -O /etc/quickbox/sources/deluge_"${DELUGE_VERSION}".tar.gz https://github.com/Swizards/QuickBox/raw/experimental/sources/deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
   cd /etc/quickbox/sources
-  tar xvfz deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
-  rm deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
-  cd deluge-"${DELUGE_VERSION}"
-  python setup.py build >>"${OUTTO}" 2>&1
-  python setup.py install >>"${OUTTO}" 2>&1
-  ldconfig >>"${OUTTO}" 2>&1
-
-cat >/etc/systemd/system/deluged.service<<DELS
-[Unit]
-Description=Deluge Bittorrent Client Daemon
-After=network-online.target
-
-[Service]
-Type=simple
-User=deluge
-Group=deluge
-UMask=007
-
-ExecStart=/usr/local/bin/deluged -d
-
-Restart=on-failure
-
-# Configures the time to wait before service is stopped forcefully.
-TimeoutStopSec=300
-
-[Install]
-WantedBy=multi-user.target
-DELS
-  systemctl start deluged >>"${OUTTO}" 2>&1
-  systemctl status deluged >>"${OUTTO}" 2>&1
-  systemctl enable deluged >>"${OUTTO}" 2>&1
-cat >/etc/systemd/system/deluge-web.service<<DELWS
-[Unit]
-Description=Deluge Bittorrent Client Web Interface
-After=network-online.target
-
-[Service]
-Type=simple
-
-User=deluge
-Group=deluge
-UMask=027
-
-ExecStart=/usr/local/bin/deluge-web
-
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-DELWS
-  systemctl start deluge-web >>"${OUTTO}" 2>&1
-  systemctl status deluge-web >>"${OUTTO}" 2>&1
-  systemctl enable deluge-web >>"${OUTTO}" 2>&1
+  sudo tar xvfz deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
+  sudo rm deluge_"${DELUGE_VERSION}".tar.gz &> /dev/null
+  cd deluge_"${DELUGE_VERSION}"
+  sudo python setup.py build >>"${OUTTO}" 2>&1
+  sudo python setup.py install >>"${OUTTO}" 2>&1
+  sudo ldconfig >>"${OUTTO}" 2>&1
 }
 
 function _delugecore() {
@@ -1829,9 +1784,7 @@ function _additionalsyscommands() {
 # function to make dirs for first user (21)
 function _makedirs() {
   #mkdir /home/"${username}"/{torrents,.sessions,watch} >>"${OUTTO}" 2>&1
-  #cd /etc/skel/
-  #tar cf - . | tar -C /home/quickbox -x
-  cp -r /etc/skel/. /home/"${username}"/ >>"${OUTTO}" 2>&1
+  cp -r /etc/skel/* /home/"${username}"
   chown -r "${username}".www-data /home/"${username}" >>"${OUTTO}" 2>&1 #/{torrents,.sessions,watch,.rtorrent.rc} >>"${OUTTO}" 2>&1
   usermod -a -G www-data "${username}" >>"${OUTTO}" 2>&1
   usermod -a -G "${username}" www-data >>"${OUTTO}" 2>&1
@@ -2101,18 +2054,13 @@ cat >/root/information.info<<EOF
 EOF
 
   rm -rf "$0" >>"${OUTTO}" 2>&1
-  #service quota stop >>"${OUTTO}" 2>&1
-  #quotaoff -a >>"${OUTTO}" 2>&1
-  #quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
-  #quotaon -a >>"${OUTTO}" 2>&1
-  #service quota start >>"${OUTTO}" 2>&1
-  #service apache2 restart >>"${OUTTO}" 2>&1
-  if [[ "${rel}" = "16.04" ]]; then
-    service php7.0-fpm restart >>"${OUTTO}" 2>&1
-  fi
-  if [[ ${deluge} == "yes" ]]; then
-    deluged
-  fi
+  service quota stop >>"${OUTTO}" 2>&1
+  quotaoff -a >>"${OUTTO}" 2>&1
+  quotacheck -auMF vfsv1 >>"${OUTTO}" 2>&1
+  quotaon -a >>"${OUTTO}" 2>&1
+  service quota start >>"${OUTTO}" 2>&1
+  service apache2 restart >>"${OUTTO}" 2>&1
+  service php7.0-fpm restart >>"${OUTTO}" 2>&1
     for i in ssh apache2 php7.0-fpm vsftpd fail2ban quota memcached cron; do
       service $i restart >>"${OUTTO}" 2>&1
       systemctl enable $i >>"${OUTTO}" 2>&1
@@ -2222,7 +2170,6 @@ _additionalsyscommands
 #    _nocsf;
 #fi
 echo -n "Building required user directories ... ";_skel & spinner $!;echo
-echo -n "Making ${username} directory structure ... ";_makedirs & spinner $!;echo
 if [[ ${ffmpeg} == "yes" ]]; then
     _ffmpeg & spinner $!;echo;
 fi
@@ -2240,7 +2187,7 @@ echo -n "Setting up seedbox.conf for apache ... ";_apacheconf & spinner $!;echo
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf & spinner $!;echo
 echo -n "Installing rutorrent plugins ... ";_plugins & spinner $!;echo
 echo -n "Installing autodl-irssi ... ";_autodl & spinner $!;echo;_plugincommands
-#echo -n "Making ${username} directory structure ... ";_makedirs & spinner $!;echo
+echo -n "Making ${username} directory structure ... ";_makedirs & spinner $!;echo
 echo -n "Writing ${username} system crontab script ... ";_cronfile & spinner $!;echo
 echo -n "Writing ${username} rutorrent config.php file ... ";_ruconf & spinner $!;echo
 echo -n "Writing seedbox reload script ... ";_reloadscript & spinner $!;echo
