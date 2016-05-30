@@ -2144,7 +2144,7 @@ _hostname
 #fi
 echo
 _askrtorrent
-_askdeluge
+#_askdeluge
 _adduser
 _askffmpeg
 _denyhosts
@@ -2178,11 +2178,11 @@ echo -n "Installing xmlrpc-c-${green}1.33.12${normal} ... ";_xmlrpc & spinner $!
 echo -n "Installing libtorrent-${green}$LTORRENT${normal} ... ";_libtorrent & spinner $!;echo
 echo -n "Installing rtorrent-${green}$RTVERSION${normal} ... ";_rtorrent & spinner $!;echo
 echo -n "Installing rutorrent into /srv ... ";_rutorrent & spinner $!;echo;
-if [[ ${deluge} == "yes" ]]; then
-  echo -n "Building and Installing Deluge-${DELUGE_VERSION} ... ";_deluge & spinner $!;echo;
-  echo -n "Writing ${username} deluge config ... ";_delugecore & spinner $!;echo;
-  echo -n "Writing ${username} deluge web config ... ";_delugeconf & spinner $!;echo;
-fi
+#if [[ ${deluge} == "yes" ]]; then
+#  echo -n "Building and Installing Deluge-${DELUGE_VERSION} ... ";_deluge & spinner $!;echo;
+#  echo -n "Writing ${username} deluge config ... ";_delugecore & spinner $!;echo;
+#  echo -n "Writing ${username} deluge web config ... ";_delugeconf & spinner $!;echo;
+#fi
 echo -n "Setting up seedbox.conf for apache ... ";_apacheconf & spinner $!;echo
 echo -n "Installing .rtorrent.rc for ${username} ... ";_rconf & spinner $!;echo
 echo -n "Installing rutorrent plugins ... ";_plugins & spinner $!;echo
