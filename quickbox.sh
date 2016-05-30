@@ -199,8 +199,8 @@ echo -n "Username: "; read user
 function createSeedboxUser() {
 OK=`echo -e "[\e[0;32mOK\e[00m]"`
 realm="rutorrent"
-genpass=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15)
 htpasswd="/etc/htpasswd"
+genpass=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15)
 delugegenpass=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 32)
 ruconf="/srv/rutorrent/conf/users"
 IRSSI_PASS=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15)
@@ -220,24 +220,21 @@ echo -n "Username: "; read username
     echo "$username exists! cant proceed..."
     exit
   else
-    useradd -d /home/$username -m $username -s /bin/bash >/dev/null 2>&1
+    useradd -m -k /etc/skel/ $username -s /usr/bin/lshell
     echo -n "Password: (hit enter to generate a password) ";read password
     chown $username.www-data /home/$username >/dev/null 2>&1
     cp $htpasswd /root/rutorrent-htpasswd.`date +'%d.%m.%y-%S'`
     if [[ "$password" == "" ]]; then
       echo "setting password to $genpass"
       echo "${username}:${genpass}" | chpasswd >/dev/null 2>&1
-      #(echo -n "$username:$realm:" && echo -n "$username:$realm:$genpass" | md5sum | awk '{print $1}' ) >> $jhtpasswd
       (echo -n "$username:$realm:" && echo -n "$username:$realm:$genpass" | md5sum | awk '{print $1}' ) >> $htpasswd
       echo "${username} : $genpass" >/root/${username}.info
     else
       echo "using $password"
       echo "${username}:${password}" | chpasswd >/dev/null 2>&1
-      #(echo -n "$username:$realm:" && echo -n "$username:$realm:$password" | md5sum | awk '{print $1}' ) >> $jhtpasswd
       (echo -n "$username:$realm:" && echo -n "$username:$realm:$password" | md5sum | awk '{print $1}' ) >> $htpasswd
       echo "${username} : $password " >/root/${username}.info
   fi
-  jk_jailuser -m -j /home/jail ${username} >/dev/null 2>&1
   echo "Quota size for user: (EX: 500GB): "
   read SIZE
   case $SIZE in
@@ -254,7 +251,7 @@ echo -n "Username: "; read username
       echo "$SIZE" >>/root/${username}.info
     ;;
     *)
-      echo "Disk Space MUST be in GB/TB, Example: 711GB OR 2TB, Exiting script, type bash $0 and try again";exit 0
+      echo "Disk Space MUST be in GB/TB, Example: 711GB OR 2.5TB, Exiting script, type bash $0 and try again";exit 0
     ;;
   esac
 
@@ -263,7 +260,7 @@ echo "$username" >> /etc/vsftpd.chroot_list
 echo $OK
 
 echo -n "writing $username .rtorrent.rc using port-range (${PORT}-${PORTEND})..."
-cat >/home/jail/home/$username/.rtorrent.rc<<RC
+cat >/home/$username/.rtorrent.rc<<RC
 # -- START HERE --
 scgi_port = localhost:$RPORT
 min_peers = 1
@@ -273,9 +270,9 @@ max_peers_seed = -1
 max_uploads = 100
 download_rate = 0
 upload_rate = 0
-directory = /home/jail/home/$username/torrents/
-session = /home/jail/home/$username/.sessions/
-schedule = watch_directory,5,5,load_start=/home/jail/home/$username/rwatch/*.torrent
+directory = /home/${username}/torrents/
+session = /home/${username}/.sessions/
+schedule = watch_directory,5,5,load_start=/home/${username}/rwatch/*.torrent
 schedule = filter_active,5,5,"view_filter = active,d.get_up_rate="
 view_add = alert
 view_sort_new = alert,less=d.get_message=
@@ -285,24 +282,24 @@ use_udp_trackers = yes
 encryption = allow_incoming,try_outgoing,enable_retry
 peer_exchange = no
 check_hash = no
-execute_nothrow=chmod,777,/home/jail/home/$username/.sessions/
+execute_nothrow=chmod,777,/home/${username}/.sessions/
 # -- END HERE --
 RC
 echo $OK
 
 echo -n "setting permissions ... "
-  chown $username.www-data /home/jail/home/$username/{torrents,.sessions,watch,.rtorrent.rc} >/dev/null 2>&1
+  chown $username.www-data /home/$username/{torrents,.sessions,watch,.rtorrent.rc} >/dev/null 2>&1
   usermod -a -G www-data $username >/dev/null 2>&1
   usermod -a -G $username www-data >/dev/null 2>&1
-  chmod 777 /home/jail/home/$username/${username}/.sessions >/dev/null 2>&1
+  chmod 777 /home/${username}/.sessions >/dev/null 2>&1
   usermod -a -G ${username} plex >/dev/null 2>&1
-  chown ${username}:plex /home/jail/home/$username >/dev/null 2>&1
-  chmod 750 /home/jail/home/$username >/dev/null 2>&1
-  setfacl -m g:${username}:rwx /home/jail/home/$username >/dev/null 2>&1
+  chown ${username}:plex /home/${username} >/dev/null 2>&1
+  chmod 750 /home/${username} >/dev/null 2>&1
+  setfacl -m g:${username}:rwx /home/${username} >/dev/null 2>&1
 echo $OK
 
 echo -n "writing $username rtorrent/irssi cron script ... "
-cat >/home/jail/home/$username/.startup<<SU
+cat >/home/${username}/.startup<<SU
 #!/bin/bash
 export USER=\$(id -un)
 IRSSI_CLIENT=yes
@@ -322,8 +319,8 @@ if [ "\$RTORRENT_CLIENT" == "yes" ]; then
   (screen -ls|grep rtorrent >/dev/null || (screen -dmS rtorrent rtorrent && false))
 fi
 SU
-  chown ${username}.${username} /home/jail/home/$username/.startup >/dev/null 2>&1
-  chmod +x /home/jail/home/$username/.startup >/dev/null 2>&1
+  chown ${username}.${username} /home/${username}/.startup >/dev/null 2>&1
+  chmod +x /home/${username}/.startup >/dev/null 2>&1
 echo $OK
 
 echo -n "enabling $username cron script ... "
@@ -331,10 +328,10 @@ echo -n "enabling $username cron script ... "
   mkdir -p /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/ >/dev/null 2>&1
   cp /srv/rutorrent/plugins/fileupload/conf.php /srv/rutorrent/conf/users/"${username}"/plugins/fileupload/conf.php
   chown -R www-data: /srv/rutorrent/conf/users/"${username}" >/dev/null 2>&1
-  chown $username.$username /home/jail/home/$username/.startup >/dev/null 2>&1
-  sudo -u $username chmod +x /home/jail/home/$username/.startup  >/dev/null 2>&1
-  sudo -u $username chmod 750 /home/jail/home/$username/ >/dev/null 2>&1
-  chown -R $username.www-data /home/jail/home/$username >/dev/null 2>&1
+  chown $username.$username /home/$username/.startup >/dev/null 2>&1
+  sudo -u $username chmod +x /home/$username/.startup  >/dev/null 2>&1
+  sudo -u $username chmod 750 /home/$username/ >/dev/null 2>&1
+  chown -R $username.www-data /home/${username} >/dev/null 2>&1
 echo $OK
 
 echo -n "writing $username rutorrent config.php ... "
@@ -355,7 +352,7 @@ cat >$ruconf/$username/config.php<<DH
   \$log_file = '/tmp/errors.log';
   \$saveUploadedTorrents = true;
   \$overwriteUploadedTorrents = false;
-  \$topDirectory = '/home/jail/';
+  \$topDirectory = '/home/$username/';
   \$forbidUserSettings = false;
   \$scgi_port = $RPORT;
   \$scgi_host = "localhost";
@@ -373,9 +370,9 @@ echo $OK
 
 fi
 echo -n "Setting up autodl-irssi for $username ... "
-mkdir -p /home/jail/home/$username/.autodl >/dev/null 2>&1
-touch /home/jail/home/$username/.autodl/autodl.cfg >/dev/null 2>&1
-cat >/home/jail/home/$username/.autodl/autodl.cfg<<ADC
+mkdir -p /home/$username/.autodl >/dev/null 2>&1
+touch /home/$username/.autodl/autodl.cfg >/dev/null 2>&1
+cat >/home/$username/.autodl/autodl.cfg<<ADC
 [options]
 gui-server-port = $IRSSI_PORT
 gui-server-password = $IRSSI_PASS
@@ -383,7 +380,7 @@ ADC
 echo $OK
 
 echo -n "writing $username deluge config ... "
-home="/home/jail/home/$username"
+home="/home/$username"
 cat >$home/.config/deluge/core.conf<<DL
 {
   "file": 1,
@@ -492,7 +489,7 @@ echo $OK
 echo -n "writing $username deluge web config ... "
 DELUGESALT=$(perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 32)
 SHAPASSWD=$(deluge.Userpass.py ${password} ${delugegenpass})
-home="/home/jail/home/$username"
+home="/home/$username"
 cat >$home/.config/deluge/web.conf<<DWC
 {
   "file": 1,
@@ -520,7 +517,7 @@ echo "You may access Deluge at http://${ip}:$WEBPORT" >>/root/${username}.info
 echo $OK
 
 echo -n "writing $username deluge hostlist config ... "
-home="/home/jail/home/$username"
+home="/home/$username"
 cat >$home/.config/deluge/hostlist.conf.1.2<<DHL
 {
   "file": 1,
@@ -539,13 +536,13 @@ cat >$home/.config/deluge/hostlist.conf.1.2<<DHL
 DHL
 echo $OK
 
-sudo -u $username /home/jail/home/$username/.startup >/dev/null 2>&1
-command1="*/1 * * * * /home/jail/home/$username/.startup"
+sudo -u $username /home/$username/.startup >/dev/null 2>&1
+command1="*/1 * * * * /home/${username}/.startup"
 cat <(fgrep -iv "${command1}" <(sh -c 'sudo -u ${username} crontab -l' >/dev/null 2>&1)) <(echo "${command1}") | sudo -u ${username} crontab -
 
 cat >/etc/apache2/sites-enabled/alias.${username}.download.conf<<AS
-Alias /${username}.downloads "/home/jail/home/$username/torrents/"
-  <Directory "/home/jail/home/$username/">
+Alias /${username}.downloads "/home/${username}/torrents/"
+  <Directory "/home/${username}/torrents/">
    Options Indexes FollowSymLinks MultiViews
     AllowOverride None
           AuthType Digest
@@ -555,8 +552,8 @@ Alias /${username}.downloads "/home/jail/home/$username/torrents/"
     Order allow,deny
     Allow from all
   </Directory>
-Alias /${username}.deluge.downloads "/home/jail/home/$username/downloads/deluge.files/"
-  <Directory "/home/jail/home/${username}/downloads/deluge.files/">
+Alias /${username}.deluge.downloads "/home/${username}/downloads/deluge.files/"
+  <Directory "/home/${username}/downloads/deluge.files/">
    Options Indexes FollowSymLinks MultiViews
     AllowOverride None
           AuthType Digest
@@ -569,8 +566,8 @@ Alias /${username}.deluge.downloads "/home/jail/home/$username/downloads/deluge.
 AS
 
 cat >/etc/apache2/sites-enabled/alias.${username}.console.conf<<CS
-Alias /${username}.console "/home/jail/home/$username/.console/"
-<Directory "/home/jail/home/$username/.console/">
+Alias /${username}.console "/home/${username}/.console/"
+<Directory "/home/${username}/.console/">
   Options Indexes FollowSymLinks MultiViews
   AuthType Digest
   AuthName "rutorrent"
@@ -587,7 +584,7 @@ SCGIMount /${username} 127.0.0.1:$RPORT
 SC
 
 sed -i -e "s/console-username/${username}/g" \
-       -e "s/console-password/${password}/g" /home/jail/home/$username/.console/index.php
+       -e "s/console-password/${password}/g" /home/${username}/.console/index.php
 
 pkill -u "${username}" -f rtorrent >/dev/null 2>&1
 
@@ -598,7 +595,6 @@ function deleteSeedboxUser() {
 
 rutorrent="/srv/rutorrent"
 htpasswd="/etc/htpasswd"
-jhtpasswd="/home/jail/etc/htpasswd"
 OK=$(echo -e "[ \e[0;32mDONE\e[00m ]")
 
 echo -n "Username: "
@@ -630,6 +626,7 @@ function upgradePlex() {
   apt-get install -yqq -f --only-upgrade plexmediaserver
   service plexmediaserver restart
 }
+
 EOF
 }
 
@@ -886,7 +883,7 @@ function _depends() {
     fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
     ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
     libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl \
-    libxml-libxslt-perl libapache2-mod-scgi python-software-properties vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libxml-libxslt-perl libapache2-mod-scgi python-software-properties lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   elif [[ "${rel}" =~ ("14.04"|"15.04"|"15.10") ]]; then
   apt-get -y update >>"${OUTTO}" 2>&1
     apt-get install -y build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
@@ -895,7 +892,7 @@ function _depends() {
     fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 rar unrar mediainfo php5-curl ifstat libapache2-mod-php5 \
     ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl libnet-ssleay-perl php5-geoip openjdk-7-jre-headless openjdk-7-jre openjdk-7-jdk \
     libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl \
-    libxml-libxslt-perl libapache2-mod-scgi python-software-properties vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libxml-libxslt-perl libapache2-mod-scgi python-software-properties lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   elif [[ "${rel}" = "16.04" ]]; then
   apt-get -y update >>"${OUTTO}" 2>&1
     apt-get -y install build-essential fail2ban bc sudo screen zip irssi unzip nano bwm-ng htop iotop git dos2unix subversion \
@@ -905,7 +902,7 @@ function _depends() {
     php7.0-json php7.0-mcrypt php7.0-opcache php7.0-xml php7.0-zip fontconfig quota comerr-dev ca-certificates libfontconfig1-dev libfontconfig1 \
     rar unrar mediainfo ifstat libapache2-mod-php7.0 python-software-properties ttf-mscorefonts-installer checkinstall dtach cfv libarchive-zip-perl \
     libnet-ssleay-perl openjdk-8-jre-headless openjdk-8-jre openjdk-8-jdk libxslt1-dev libxslt1.1 libxml2 libffi-dev python-pip python-dev \
-    libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi vnstat vnstati openvpn >>"${OUTTO}" 2>&1
+    libhtml-parser-perl libxml-libxml-perl libjson-perl libjson-xs-perl libxml-libxslt-perl libapache2-mod-scgi lshell vnstat vnstati openvpn >>"${OUTTO}" 2>&1
   fi
 }
 
@@ -961,6 +958,24 @@ function _skel() {
     #modprobe quota_v1" >> /etc/modules-load.d/modules.conf
 
   fi
+cat >/etc/lshell.conf<<'LS'
+[global]
+logpath         : /var/log/lshell/
+loglevel        : 2
+
+[default]
+allowed         : ['cd','cp','-d','-dmS','deluge-web','git','irssi','ll','ls','-m','mkdir','mv','nano','pwd','-R','rm','rtorrent','rsync','-S','scp','screen','tar','unrar','unzip','nano','wget']
+forbidden       : [';', '&', '|','`','>','<', '$(', '${','sudo','vi','vim','./']
+warning_counter : 2
+aliases         : {'ls':'ls --color=auto','ll':'ls -l'}
+intro           : "== Seedbox Shell ==\nWelcome To Your QuickBox Seedbox Shell\nType '?' to get the list of allowed commands"
+home_path       : '/home/%u'
+env_path        : ':/usr/local/bin:/usr/sbin'
+allowed_cmd_path: ['/home/']
+scp             : 1
+sftp            : 0
+overssh         : ['ls', 'rsync','scp']
+LS
 }
 
 function _csf() {
@@ -1818,17 +1833,6 @@ function _makedirs() {
   chown -r "${username}".www-data /home/"${username}" >>"${OUTTO}" 2>&1 #/{torrents,.sessions,watch,.rtorrent.rc} >>"${OUTTO}" 2>&1
   usermod -a -G www-data "${username}" >>"${OUTTO}" 2>&1
   usermod -a -G "${username}" www-data >>"${OUTTO}" 2>&1
-
-  # Build Jailed Directory for additional users created
-  mkdir /home/jail
-  chown root:root /home/jail
-  jk_init -v /home/jail basicshell >/dev/null 2>&1
-  jk_init -v /home/jail netutils >/dev/null 2>&1
-  jk_init -v /home/jail ssh >/dev/null 2>&1
-  jk_init -v /home/jail jk_lsh >/dev/null 2>&1
-  jk_init -v /home/jail sftp >/dev/null 2>&1
-  jk_init -v /home/jail scp >/dev/null 2>&1
-  cp -r /srv/. /home/jail/srv >/dev/null 2>&1
 }
 
 # function to make crontab .statup file (22)
