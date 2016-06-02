@@ -217,6 +217,7 @@ $rtorrent = processExists("\"main|rtorrent\"",$username);
 $irssi = processExists("irssi",$username);
 $btsync = processExists("btsync",btsync);
 $plex = processExists("Plex",$username);
+$sickrage = processExists("sickrage",$username);
 
 function isEnabled($search, $username){
   $string = file_get_contents('/home/'.$username.'/.startup');
@@ -250,6 +251,8 @@ function readMsg() {
 
 $plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":32400/web/";
 $btsyncURL = "http://" . $_SERVER['HTTP_HOST'] . ":8888/gui/";
+$rapidleechURL = "http://" . $_SERVER['HTTP_HOST'] . ":/rapidleech/";
+$sickrageURL = "http://" . $_SERVER['HTTP_HOST'] . ":8081";
 
 $reload='';
 $service='';
