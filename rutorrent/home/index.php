@@ -24,13 +24,12 @@
                   <li>
                     <?php echo "$ival"; ?>
                   </li>
-                  <!-- <//?php
+                  <?php
                   if ($username == "$master"){
                   echo "<li>";
                     echo "$bval";
                   echo "</li>";
                   } ?>
-                  -->
                 </ul>
               </div>
               <div class="panel-footer"></div>
@@ -49,13 +48,12 @@
                   <li>
                     <?php echo "$cbodyi"; ?>
                   </li>
-                  <!-- <//?php
+                  <?php
                   if ($username == "$master"){
                   echo "<li>";
                     echo "$cbodyb";
                   echo "</li>";
                   } ?>
-                  -->
                 </ul>
               </div>
               <div class="panel-footer"></div>

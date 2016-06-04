@@ -8,10 +8,10 @@
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
-#
+# 
 #   You may copy, distribute and modify the software as long as you track
-#   changes/dates in source files. Any modifications to our software
-#   including (via compiler) GPL-licensed code must also be made available
+#   changes/dates in source files. Any modifications to our software 
+#   including (via compiler) GPL-licensed code must also be made available 
 #   under the GPL along with build & install instructions.
 #
 
@@ -23,7 +23,6 @@ function _removepackage-autodl() {
       rm -rf "${rutorrent}/plugins/$i"
       rm -rf /home/${username}/.autodl
       rm -rf /home/${username}/.irssi
-      rm /install/.autodlirssi.lock
     done
 }
 

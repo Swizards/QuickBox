@@ -22,7 +22,6 @@ function _removeBTSync() {
   sudo killall btsync
   sudo apt-get -y remove --purge btsync* >>"${OUTTO}" 2>&1
   sudo sed -i 's/BTSYNC=yes/BTSYNC=/g' /home/${MASTER}/.startup
-  rm /install/.btsync.lock
   sudo service apache2 reload
 }
 

@@ -3,8 +3,8 @@
 # [Quick Box :: Install plexmediaserver package]
 #
 # GitHub:   https://github.com/Swizards/QuickBox
-# Author:   Swizards.net https://swizards.net
-# URL:      https://plaza.quickbox.io
+# Author:   Swizards.net
+# URL:      https://swizards.net
 #
 # QuickBox Copyright (C) 2016 Swizards.net
 # Licensed under GNU General Public License v3.0 GPL-3 (in short)
@@ -16,24 +16,20 @@
 #
 OUTTO="/root/quick-box.log"
 HOSTNAME1=$(hostname -s)
-PUBLICIP=$(ip route get 8.8.8.8 | awk 'NR==1 {print $NF}')
+PUBLICIP=$(curl -s http://ipecho.net/plain || curl -s http://ifconfig.me/ip ; echo)
 
 function _installPlex() {
-    echo -ne "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
+    echo -n "ServerName ${HOSTNAME1}" | sudo tee /etc/apache2/conf-available/fqdn.conf
     sudo a2enconf fqdn >>"${OUTTO}" 2>&1
     touch /srv/rutorrent/home/.plex
     chown www-data: /srv/rutorrent/home/.plex
     touch /etc/apache2/sites-enabled/plex.conf
     chown www-data: /etc/apache2/sites-enabled/plex.conf
-    wget -O - http://shell.ninthgate.se/packages/shell.ninthgate.se.gpg.key | apt-key add -
-    echo "deb http://www.deb-multimedia.org wheezy main non-free" > /etc/apt/sources.list.d/deb-multimedia.list
-    echo "deb http://shell.ninthgate.se/packages/debian wheezy main" > /etc/apt/sources.list.d/plexmediaserver.list
-    apt-get -y update
-    apt-get install deb-multimedia-keyring -y
-    apt-get -y install plexmediaserver
-    service plexmediaserver restart
-    touch /install/.plex.lock
-    /etc/init.d/apache2 reload
+    echo "deb http://shell.ninthgate.se/packages/debian squeeze main" > /etc/apt/sources.list.d/plexmediaserver.list
+    curl http://shell.ninthgate.se/packages/shell-ninthgate-se-keyring.key >>"${OUTTO}" 2>&1 | sudo apt-key add - >>"${OUTTO}" 2>&1
+    apt-get -qq -y --force-yes update >>"${OUTTO}" 2>&1
+    apt-get install -qq -y --force-yes plexmediaserver >>"${OUTTO}" 2>&1
+    /etc/init.d/apache2 restart
 }
 
 

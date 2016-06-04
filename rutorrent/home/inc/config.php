@@ -15,7 +15,7 @@ $panel = array(
     'author'            => 'Everyone that contributes to the open QuickBox project!',
     'robots'            => 'noindex, nofollow',
     'title'             => 'Your Quickbox Seedbox Panel',
-    'description'       => 'QuickBox is an open-source seedbox project that is developed and maintained by anyone who so choses to provide time and energy. QuickBox has been made possible by the Team at Swizards. See Swizards.net. For more QuickBox, checkout https://plaza.quickbox.io',
+    'description'       => 'QuickBox is an open-source seedbox project that is developed and maintain by anyone who so choses to provide time and energy. QuickBox has been made possible by the Team at Swizards. See Swizards.net',
     'active_page'       => basename($_SERVER['PHP_SELF']),
 );
 
@@ -215,9 +215,8 @@ function processExists($processName, $username) {
 
 $rtorrent = processExists("\"main|rtorrent\"",$username);
 $irssi = processExists("irssi",$username);
-$btsync = processExists("btsync",btsync);
+$btsync = processExists("btsync",$username);
 $plex = processExists("Plex",$username);
-$sickrage = processExists("sickrage",$username);
 
 function isEnabled($search, $username){
   $string = file_get_contents('/home/'.$username.'/.startup');
@@ -251,8 +250,6 @@ function readMsg() {
 
 $plexURL = "http://" . $_SERVER['HTTP_HOST'] . ":32400/web/";
 $btsyncURL = "http://" . $_SERVER['HTTP_HOST'] . ":8888/gui/";
-$rapidleechURL = "http://" . $_SERVER['HTTP_HOST'] . ":/rapidleech/";
-$sickrageURL = "http://" . $_SERVER['HTTP_HOST'] . ":8081";
 
 $reload='';
 $service='';
