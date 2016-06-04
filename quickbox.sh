@@ -37,7 +37,7 @@ fi
 function _string() { perl -le 'print map {(a..z,A..Z,0..9)[rand 62] } 0..pop' 15 ; }
 
 #function _quickboxv() {
-#  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/quickbox
+#  curl -s -o /usr/bin/quickbox https://raw.githubusercontent.com/Swizards/QuickBox/v211/commands/quickbox
 #  chmod +x /usr/bin/quickbox
 #}
 
@@ -693,7 +693,7 @@ echo -ne "Block Public Trackers?: (Default: ${green}Y${normal})"; read responce
 case $responce in
   [yY] | [yY][Ee][Ss] | "")
 echo -n "Blocking public trackers ... "
-wget -q -O/etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/trackers
+wget -q -O/etc/trackers https://raw.githubusercontent.com/Swizards/QuickBox/v211/commands/trackers
 cat >/etc/cron.daily/denypublic<<'EOF'
 IFS=$'\n'
 L=$(/usr/bin/sort /etc/trackers | /usr/bin/uniq)
@@ -707,7 +707,7 @@ for fn in $L; do
 done
 EOF
 chmod +x /etc/cron.daily/denypublic
-curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/hostsTrackers
+curl -s -LO https://raw.githubusercontent.com/Swizards/QuickBox/v211/commands/hostsTrackers
 cat hostsTrackers >> /etc/hosts
   echo "${OK}"
   ;;
@@ -1188,7 +1188,7 @@ function _plugincommands() {
 
 function _additionalsyscommands() {
     cd /usr/local/bin
-    wget -q -O/usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/master/commands/clean_mem
+    wget -q -O/usr/local/bin/clean_mem https://raw.githubusercontent.com/Swizards/QuickBox/v211/commands/clean_mem
     dos2unix clean_mem >>"${OUTTO}" 2>&1;
     chmod +x clean_mem >>"${OUTTO}" 2>&1;
     cd
