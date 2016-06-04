@@ -5,7 +5,7 @@
 
 ## Script status
 
-[![Version 2.1.1-production](https://img.shields.io/badge/version-2.1.1-674172.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
+[![Version 2.1.1-production](https://img.shields.io/badge/version%202.1.1-archived-383732.svg?style=flat-square)](https://plaza.quickbox.io/t/quickbox-readme-md/31)
 
 ---
 
