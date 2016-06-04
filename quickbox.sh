@@ -735,9 +735,9 @@ apt-get install -q -f -y build-essential fail2ban bc sudo screen zip irssi unzip
 fi
   cd
   rm -rf /etc/skel
-  if [[ -e skel.tar ]]; then rm -rf skel.tar;fi
+  if [[ -e skel.tar.gz ]]; then rm -rf skel.tar.gz;fi
   mkdir /etc/skel
-  tar xf $REPOURL/sources/skel.tar -C /etc/skel
+  tar xzf $REPOURL/sources/skel.tar.gz -C /etc/skel
   tar xzf $REPOURL/sources/rarlinux-x64-5.2.1.tar.gz -C ./
   cp ./rar/*rar /usr/bin
   cp ./rar/*rar /usr/sbin
