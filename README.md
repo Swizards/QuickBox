@@ -47,10 +47,9 @@ Though his script is valid for both VPS & Dedicated Environments, please be advi
 
 **Run the following command to grab our latest stable release ...**
 ```
-apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git lsb-release;
-git clone https://github.com/QuickBox/quickbox_setup quickbox_setup
-cd quickbox_setup
-bash quickbox-setup
+apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git lsb-release; \
+git clone --recursive https://github.com/QuickBox/QuickBox QuickBox
+bash ~/QuickBox/setup/quickbox-setup
 ```
 
 ### Would you like to contribute to the QuickBox project?
@@ -59,10 +58,9 @@ bash quickbox-setup
 > Please make all pull requests to the Development branch, requests to the master will more than like be overlooked.
 
 ```
-apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git curl lsb-release;
-git clone -b development https://github.com/QuickBox/quickbox_setup quickbox_setup
-cd quickbox_setup
-bash quickbox-setup
+apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git lsb-release; \
+git clone -b development --recursive https://github.com/QuickBox/QuickBox QuickBox
+bash ~/QuickBox/setup/quickbox-setup
 
 ```
 
