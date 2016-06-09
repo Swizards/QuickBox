@@ -16,12 +16,15 @@
 
 ---
 
-###Quick Advisory Notice on QuickBox
+###Quick Advisory Notice(s) on QuickBox
+
+>### :rotating_light: Heads Up!
+grsec is built into OVH's custom kernel and it absolutely wrecks havoc when using these panels where we depend on the ability for one user (www-data) to see the processes of another running user ($username). 
+<br/>This can be seen clearly by using a task manager such as h/top. 
+<br/>With grsec enabled you can only see the processes owned by your user unless you run htop as root. As such, it is highly recommended to use the stock kernel for your distribution or at the very least installing an OVH kernel that is not compiled with grsec
+<br/>If you are using So You Start (SYS) as a host, you should opt to use the distribution kernel. You will see this as a checkbox option when installing your server.
+
 ---
-
-####Again, Please note:
-> This is being released as a public sandbox... meaning that it is user-contribution driven. Swizards take a great deal of pride in providing quality UI. Enhancement requests and more for the QuickBox Project will not be included in the future unless users feel kind enough to contribute to the repo by pushing requests for their included modifications... basically... it's community driven... simple
-
 
 ### For a full README and CHANGELOG
 For a full README and CHANGELOG on QuickBox as well as how to install, please visit the [QuickBox Plaza](https://plaza.quickbox.io/t/quickbox-readme-md/31)
