@@ -52,17 +52,6 @@ git clone --recursive https://github.com/QuickBox/QuickBox QuickBox
 bash ~/QuickBox/setup/quickbox-setup
 ```
 
-### Would you like to contribute to the QuickBox project?
-
-**Run the following to grab our latest development branch ...**
-> Please make all pull requests to the Development branch, requests to the master will more than like be overlooked.
-
-```
-apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git lsb-release; \
-git clone -b development --recursive https://github.com/QuickBox/QuickBox QuickBox
-bash ~/QuickBox/setup/quickbox-setup
-
-```
 
 ---
 
