@@ -51,7 +51,7 @@ Though his script is valid for both VPS & Dedicated Environments, please be advi
 **Run the following command to grab our latest stable release ...**
 ```
 apt-get -yqq update; apt-get -yqq upgrade; apt-get -yqq install git lsb-release; \
-git clone --recursive https://github.com/QuickBox/QuickBox QuickBox &&
+git clone --recursive https://lab.quickbox.io/QuickBox/QuickBox QuickBox &&
 bash ~/QuickBox/setup/quickbox-setup
 ```
 
@@ -85,42 +85,42 @@ QuickBox is divided into it's relevant parts that aim to make the update process
 
 ####Here are the Repos & examples:
 
-* [quickbox_setup](https://github.com/QuickBox/quickbox_setup) - this is the repo used for the initial setup of QuickBox on the users server. This can be installed by doing the following:
+* [quickbox_setup](https://lab.quickbox.io/QuickBox/quickbox_setup) - this is the repo used for the initial setup of QuickBox on the users server. This can be installed by doing the following:
 ```
-git clone https://github.com/QuickBox/quickbox_setup quickbox_setup
+git clone https://lab.quickbox.io/QuickBox/quickbox_setup quickbox_setup
 cd quickbox_setup
 bash quickbox-setup
 ```
 
-* [quickbox_rutorrent](https://github.com/QuickBox/quickbox_rutorrent) - this is the repo used for ruTorrent. All ruTorrent relevant plugins and theme adjustments, fixes, additions and extra enhancements will be included here.
+* [quickbox_rutorrent](https://lab.quickbox.io/QuickBox/quickbox_rutorrent) - this is the repo used for ruTorrent. All ruTorrent relevant plugins and theme adjustments, fixes, additions and extra enhancements will be included here.
 
 Much like the quickbox_setup repo, the script will be pulled via the following:
 ```
-git clone https://github.com/QuickBox/quickbox_rutorrent quickbox_rutorrent
+git clone https://lab.quickbox.io/QuickBox/quickbox_rutorrent quickbox_rutorrent
 ```
 This is handled during the initial install with the quickbox_setup repo. The quickbox_rutorrent directory is then copied over to your /srv/ directory where it maintains it's git-like qualities for easy updating later on.
 
-* [quickbox_dashboard](https://github.com/QuickBox/quickbox_dashboard) - this is the repo used for the QuickBox UI. All QuickBox Dashboard relevant widgets and theme adjustments, fixes, additions, extra enhancements and **future language files** will be included here.
+* [quickbox_dashboard](https://lab.quickbox.io/QuickBox/quickbox_dashboard) - this is the repo used for the QuickBox UI. All QuickBox Dashboard relevant widgets and theme adjustments, fixes, additions, extra enhancements and **future language files** will be included here.
 
 Much like the other repo's, the script will be pulled via the following as an example:
 ```
-git clone https://github.com/QuickBox/quickbox_dashboard quickbox_dashboard
+git clone https://lab.quickbox.io/QuickBox/quickbox_dashboard quickbox_dashboard
 cd  quickbox_dashboard
 mkdir -p /srv/rutorrent/home
 cp -r home/. /srv/rutorrent/home
 ```
 <sup>Again, this is just an excerpt and this function is handled by the script. Just as with any of the other features, navigate to ``/srv/rutorrent/home`` and run ``git pull`` to push updates to your server.</sup>
 
-* [quickbox_packages](https://github.com/QuickBox/quickbox_packages) - this is the repo used for the installers and uninstallers. All needed files/commands for packages installers/removers as well as plugin installers/removers will be included here.
+* [quickbox_packages](https://lab.quickbox.io/QuickBox/quickbox_packages) - this is the repo used for the installers and uninstallers. All needed files/commands for packages installers/removers as well as plugin installers/removers will be included here.
 Much like the other repo, the script will be pulled via the following:
 ```
-git clone https://github.com/QuickBox/quickbox_packages quickbox_packages
+git clone https://lab.quickbox.io/QuickBox/quickbox_packages quickbox_packages
 cd  quickbox_packages
 cp -r quickbox_packages/. /usr/local/bin/
 ```
 <sup>Again, this is just an excerpt and this function is handled by the script. Just as with any of the other features, navigate to ``/usr/local/bin/quickbox`` and run ``git pull`` to push updates to your server.</sup>
 
-* [club-Swizards](https://github.com/Swizards/club-Swizards) - this is the custom ruTorrent theme created and designed by Swizards. Any adjustments you would like to push can be made here. Updating the template... again, as simple as ``git pull`` from within ``/srv/rutorrent/plugins/theme/themes/club-Swizards``. The theme is independent of the update for the rutorrent directory which handles plugins etc.
+* [club-Swizards](https://lab.quickbox.io/Swizards/club-Swizards) - this is the custom ruTorrent theme created and designed by Swizards. Any adjustments you would like to push can be made here. Updating the template... again, as simple as ``git pull`` from within ``/srv/rutorrent/plugins/theme/themes/club-Swizards``. The theme is independent of the update for the rutorrent directory which handles plugins etc.
 
 
 ##### Here's an example:
@@ -139,7 +139,7 @@ remote: Counting objects: 3, done.
 remote: Compressing objects: 100% (1/1), done.
 remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0
 Unpacking objects: 100% (3/3), done.
-From https://github.com/QuickBox/quickbox_rutorrent
+From https://lab.quickbox.io/QuickBox/quickbox_rutorrent
    81021ae..38bbd0e  master     -> origin/master
 Updating 81021ae..38bbd0e
 Fast-forward
